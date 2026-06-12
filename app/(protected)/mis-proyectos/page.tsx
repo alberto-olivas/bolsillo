@@ -77,7 +77,7 @@ export default async function MisProyectosPage() {
 
         {/* Acciones */}
         <div className="space-y-3">
-          <CrearProyectoForm userId={user.id} />
+          <CrearProyectoForm />
           <UnirseConCodigoForm />
         </div>
 

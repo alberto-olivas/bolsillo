@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { unirseProyecto } from '@/app/actions/proyectos'
 import { Hash } from 'lucide-react'
 
 export default function UnirseConCodigoForm() {
@@ -12,7 +12,7 @@ export default function UnirseConCodigoForm() {
   const [cargando, setCargando] = useState(false)
   const [abierto, setAbierto] = useState(false)
 
-  async function unirse() {
+  async function handleUnirse() {
     const codigoLimpio = codigo.trim().toUpperCase()
     if (codigoLimpio.length !== 6) {
       setError('El código tiene exactamente 6 caracteres')
@@ -20,22 +20,19 @@ export default function UnirseConCodigoForm() {
     }
     setCargando(true)
     setError('')
-    const supabase = createClient()
-    const { data: proyectoId, error: err } = await supabase
-      .rpc('unirse_proyecto', { p_codigo: codigoLimpio })
-    if (err) {
-      setError('Error al unirse. Inténtalo de nuevo.')
+    try {
+      await unirseProyecto(codigoLimpio)
+      setCodigo('')
       setCargando(false)
-      return
-    }
-    if (!proyectoId) {
-      setError('Código no encontrado. Comprueba que está bien escrito.')
+      setAbierto(false)
+      router.refresh()
+    } catch (err: any) {
+      const msg = err?.message === 'Código no encontrado'
+        ? 'Código no encontrado. Comprueba que está bien escrito.'
+        : 'Error al unirse. Inténtalo de nuevo.'
+      setError(msg)
       setCargando(false)
-      return
     }
-    setCodigo('')
-    setAbierto(false)
-    router.refresh()
   }
 
   if (!abierto) {
@@ -63,7 +60,7 @@ export default function UnirseConCodigoForm() {
             type="text"
             value={codigo}
             onChange={e => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
-            onKeyDown={e => { if (e.key === 'Enter' && !cargando) unirse() }}
+            onKeyDown={e => { if (e.key === 'Enter' && !cargando) handleUnirse() }}
             placeholder="AB3X9K"
             maxLength={6}
             autoFocus
@@ -84,7 +81,7 @@ export default function UnirseConCodigoForm() {
         <button
           type="button"
           disabled={cargando || codigo.length < 6}
-          onClick={unirse}
+          onClick={handleUnirse}
           className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
         >
           {cargando ? 'Buscando...' : 'Unirme'}

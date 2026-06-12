@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { crearProyecto } from '@/app/actions/proyectos'
 import { Plus } from 'lucide-react'
 
-export default function CrearProyectoForm({ userId }: { userId: string }) {
+export default function CrearProyectoForm() {
   const router = useRouter()
   const [nombre, setNombre] = useState('')
   const [tipo, setTipo] = useState<'personal' | 'compartido'>('personal')
@@ -13,9 +13,7 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
   const [cargando, setCargando] = useState(false)
   const [abierto, setAbierto] = useState(false)
 
-  // En React 19, onSubmit en formularios renderizados condicionalmente puede
-  // no dispararse. Usamos onClick en el botón directamente para evitar el problema.
-  async function crearProyecto() {
+  async function handleCrear() {
     const nombreLimpio = nombre.trim()
     if (!nombreLimpio) {
       setError('El nombre del proyecto es obligatorio')
@@ -23,20 +21,17 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
     }
     setCargando(true)
     setError('')
-    const supabase = createClient()
-    const { error: err } = await supabase
-      .from('proyectos')
-      .insert({ nombre: nombreLimpio, tipo, creado_por: userId })
-    if (err) {
+    try {
+      await crearProyecto(nombreLimpio, tipo)
+      setNombre('')
+      setTipo('personal')
+      setCargando(false)
+      setAbierto(false)
+      router.refresh()
+    } catch {
       setError('Error al crear el proyecto. Inténtalo de nuevo.')
       setCargando(false)
-      return
     }
-    setNombre('')
-    setTipo('personal')
-    setCargando(false)
-    setAbierto(false)
-    router.refresh()
   }
 
   if (!abierto) {
@@ -62,8 +57,7 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
           type="text"
           value={nombre}
           onChange={e => setNombre(e.target.value)}
-          // Enter en el input también lanza la función directamente
-          onKeyDown={e => { if (e.key === 'Enter' && !cargando) crearProyecto() }}
+          onKeyDown={e => { if (e.key === 'Enter' && !cargando) handleCrear() }}
           placeholder="Ej: Gastos del piso"
           maxLength={60}
           autoFocus
@@ -71,7 +65,6 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
         />
       </div>
 
-      {/* Selector de tipo */}
       <div className="grid grid-cols-2 gap-2">
         {(['personal', 'compartido'] as const).map(t => (
           <button
@@ -106,7 +99,7 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
         <button
           type="button"
           disabled={cargando}
-          onClick={crearProyecto}
+          onClick={handleCrear}
           className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
         >
           {cargando ? 'Creando...' : 'Crear'}
