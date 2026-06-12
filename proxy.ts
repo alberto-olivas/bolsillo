@@ -37,7 +37,10 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
   const isAuthRoute = ['/login', '/register'].includes(pathname)
-  const isProtectedRoute = pathname.startsWith('/home')
+  const isProtectedRoute =
+    pathname.startsWith('/home') ||
+    pathname.startsWith('/mis-proyectos') ||
+    pathname.startsWith('/completar-perfil')
 
   // Si intenta acceder a una ruta protegida sin sesión → redirige a /login
   if (isProtectedRoute && !user) {

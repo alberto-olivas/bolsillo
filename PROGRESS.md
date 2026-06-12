@@ -13,7 +13,7 @@
 - Diseño visual: dark theme, paleta neutral-950 fondo + indigo-600 accent
 
 **Archivos creados/modificados:**
-- `proxy.ts` — protección de rutas (intercepta /home sin sesión → /login, y /login con sesión → /home)
+- `proxy.ts` — protección de rutas
 - `lib/supabase/client.ts` — cliente Supabase para el navegador
 - `lib/supabase/server.ts` — cliente Supabase para el servidor (SSR)
 - `app/layout.tsx` — root layout con fuente Geist y metadata en español
@@ -23,37 +23,106 @@
 - `app/(auth)/login/page.tsx` — pantalla de login
 - `app/(auth)/register/page.tsx` — pantalla de registro
 - `app/(protected)/layout.tsx` — layout wrapper para rutas protegidas
-- `app/(protected)/home/page.tsx` — pantalla home (Server Component, verifica sesión)
+- `app/(protected)/home/page.tsx` — redirige a /mis-proyectos
 - `components/auth/LoginForm.tsx` — formulario de login (Client Component)
 - `components/auth/RegisterForm.tsx` — formulario de registro (Client Component)
 - `components/auth/LogoutButton.tsx` — botón de cierre de sesión (Client Component)
-- `.env.local` — credenciales de Supabase (rellenar con los valores reales)
+- `.env.local` — credenciales de Supabase (nunca commitear)
 
 **Decisiones técnicas:**
-- Framework: Next.js 16 (App Router) — última versión estable
+- Framework: Next.js 16 (App Router)
 - Auth: Supabase Auth con email/contraseña
-- Sesión: manejada por `@supabase/ssr` vía cookies HTTP-only (más seguro que localStorage)
+- Sesión: manejada por `@supabase/ssr` vía cookies HTTP-only
 - Protección: `proxy.ts` (equivalente al antiguo `middleware.ts` en Next.js 16)
 - Paleta: neutral-950 fondo, neutral-900 cards, indigo-600 accent
-- Formularios: Client Components con estado local (sin Server Actions — más simple para este nivel)
+
+---
+
+### FASE 2 — Base de datos en Supabase ✓ (completada y verificada 2026-06-12)
+
+**Qué se hizo:**
+- Esquema completo ejecutado en Supabase (`supabase/fase2_schema.sql`)
+- 7 tablas con RLS, triggers y funciones helper
+- Verificado con dos cuentas reales: aislamiento RLS correcto
+
+**Tablas:**
+- `perfiles` — espejo de auth.users, `nombre` nullable (null = perfil incompleto)
+- `proyectos` — con código de invitación auto-generado (trigger)
+- `miembros_proyecto` — pivote usuario↔proyecto; base de toda la seguridad RLS
+- `categorias` — 8 predefinidas insertadas automáticamente al crear proyecto
+- `gastos_fijos` — plantillas de recurrentes
+- `movimientos` — cada gasto/ingreso
+- `pendientes_confirmar` — cola mensual de gastos fijos a revisar
+
+**Checklist de verificación:**
+- [x] 7 tablas visibles en Table Editor
+- [x] Trigger crea perfil al registrarse
+- [x] Trigger añade código al proyecto compartido
+- [x] Trigger añade creador como miembro
+- [x] Trigger inserta 8 categorías al crear proyecto
+- [x] RLS: usuario_a no ve datos de usuario_b
+- [x] RLS: ambos usuarios ven proyecto compartido tras unirse con código
+
+---
+
+### FASE 3 — Gestión de Proyectos ✓ (implementada 2026-06-12)
+
+**Qué se hizo:**
+- Gate de perfil: si `nombre IS NULL` → redirige a `/completar-perfil` antes de entrar
+- Pantalla "Mis proyectos": lista de proyectos, crear y unirse con código
+- Función `unirse_proyecto()` SECURITY DEFINER en Supabase (bypasea RLS para join)
+
+**SQL pendiente de ejecutar en Supabase:**
+⚠️ Ejecutar `supabase/fase3_rpc.sql` en el SQL Editor de Supabase antes de probar
+  - Limpia datos de prueba de Fase 2
+  - Crea la función `unirse_proyecto(p_codigo text)`
+
+**Archivos creados/modificados:**
+- `proxy.ts` — añadidas `/mis-proyectos` y `/completar-perfil` a rutas protegidas
+- `app/(protected)/layout.tsx` — comprueba `nombre IS NULL` → redirect `/completar-perfil`
+- `app/(protected)/home/page.tsx` — simplificado: redirige a `/mis-proyectos`
+- `app/(onboarding)/layout.tsx` — layout mínimo (auth sí, perfil no → evita bucle)
+- `app/(onboarding)/completar-perfil/page.tsx` — pantalla para poner el nombre
+- `app/(protected)/mis-proyectos/page.tsx` — lista + crear + unirse
+- `components/perfil/CompletarPerfilForm.tsx` — formulario del nombre
+- `components/proyectos/ProyectoCard.tsx` — card con código copiable y miembros
+- `components/proyectos/CrearProyectoForm.tsx` — crear proyecto personal o compartido
+- `components/proyectos/UnirseConCodigoForm.tsx` — input de 6 chars + llamada RPC
+
+**Decisiones técnicas:**
+- Gate de perfil en layout, no en proxy.ts: el proxy solo sabe de auth, no de datos
+- Grupo `(onboarding)` separado de `(protected)` para evitar bucle de redirect
+- `unirse_proyecto()` como RPC SECURITY DEFINER: la única forma de encontrar un proyecto sin ser miembro
+- Cookie `proyecto_activo_id`: se implementará en Fase 4 cuando haya pantalla de gastos
+
+**Flujo completo:**
+```
+Registro → /completar-perfil (nombre) → /mis-proyectos
+                                              ├─ Crear proyecto personal
+                                              ├─ Crear proyecto compartido (con código)
+                                              └─ Unirme con código de invitación
+```
+
+**Checklist de verificación:**
+- [ ] Ejecutar `supabase/fase3_rpc.sql` en Supabase SQL Editor
+- [ ] Registrar cuenta nueva → redirige a `/completar-perfil`
+- [ ] Rellenar nombre → redirige a `/mis-proyectos`
+- [ ] Cuenta con nombre ya rellenado → entra directamente a `/mis-proyectos`
+- [ ] Crear proyecto personal → aparece en la lista
+- [ ] Crear proyecto compartido → aparece con código de 6 chars
+- [ ] Desde cuenta B: unirse con ese código → aparece el proyecto compartido
+- [ ] Verificar en Table Editor: ambos en `miembros_proyecto` del proyecto compartido
 
 ---
 
 ## ⚠️ ANTES DE ARRANCAR: pasos manuales necesarios
 
-### 1. Configurar Supabase
-1. Ve a [supabase.com](https://supabase.com) y crea un proyecto (gratis)
-2. En el dashboard: **Settings → API**
-3. Copia la **Project URL** y la **anon (public) key**
-4. Pégalos en `.env.local` (reemplaza `TU_URL_AQUI` y `TU_ANON_KEY_AQUI`)
+### 1. Ejecutar SQL de Fase 3 en Supabase
+1. Ve a Supabase → SQL Editor
+2. Pega el contenido de `supabase/fase3_rpc.sql`
+3. Pulsa "Run"
 
-### 2. Configurar Auth en Supabase
-En el dashboard: **Authentication → Settings**
-- **Email confirmations → desactivar** (para desarrollo, así no tienes que verificar email cada vez)
-- **Site URL** → `http://localhost:3000`
-- **Redirect URLs** → añadir `http://localhost:3000/**`
-
-### 3. Arrancar la app
+### 2. Arrancar la app
 ```bash
 cd "c:\Users\silav\Desktop\APPS\BOLSILLO\VS CODE\bolsillo"
 npm run dev
@@ -62,53 +131,10 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
-## Checklist de verificación (Fase 1)
-
-- [x] `/` redirige automáticamente a `/login` (sin sesión)
-- [x] `/home` directo → redirige a `/login`
-- [x] Registro funciona → redirige a `/home` con email visible
-- [x] Logout → redirige a `/login`
-- [x] Login funciona → accede a `/home` correctamente
-- [x] Con sesión activa, ir a `/login` → redirige a `/home`
-
----
-
----
-
-### FASE 2 — Base de datos en Supabase (SQL listo, pendiente de ejecutar en Supabase)
-
-**Archivo:** `supabase/fase2_schema.sql` — pegar en Supabase → SQL Editor → Run
-
-**Tablas creadas (7):**
-- `perfiles` — sincronizada con auth.users via trigger; `nombre` nullable (null = perfil sin completar)
-- `proyectos` — con trigger de código de invitación automático (6 chars, sin 0/O/1/I)
-- `miembros_proyecto` — tabla pivote usuario↔proyecto; base de toda la seguridad RLS
-- `categorias` — con 8 predefinidas insertadas automáticamente al crear proyecto
-- `gastos_fijos` — plantillas de gastos/ingresos recurrentes
-- `movimientos` — cada gasto o ingreso registrado
-- `pendientes_confirmar` — cola mensual de gastos fijos a revisar
-
-**Decisiones técnicas:**
-- RLS: función helper `es_miembro(proyecto_id)` con SECURITY DEFINER evita recursión circular
-- Perfil incompleto: se detecta con `nombre IS NULL` (sin boolean extra)
-- Flujo de perfil incompleto: `proxy.ts` verifica auth → `(protected)/layout.tsx` verifica `nombre IS NULL` → redirige a `/completar-perfil`
-- Trigger para creador: SECURITY DEFINER para poder insertar en `miembros_proyecto` antes de que RLS esté activo
-- Índices: `miembros_proyecto(proyecto_id, user_id)`, `movimientos(fecha)`, y todos los `proyecto_id`
-
-**Checklist de verificación (Fase 2):**
-- [ ] Ejecutar `supabase/fase2_schema.sql` en Supabase SQL Editor sin errores
-- [ ] Verificar que aparecen las 7 tablas en Table Editor
-- [ ] Verificar que el perfil del usuario existente se creó en `perfiles`
-- [ ] Test A (aislamiento): usuario_b no ve datos de usuario_a
-- [ ] Test B (compartido): ambos usuarios ven el mismo proyecto tras unirse con código
-
----
-
 ## Próximo paso
 
-**FASE 3 — Gestión de proyectos**
-- Pantalla "Mis proyectos": listado de proyectos del usuario
-- Crear proyecto personal o compartido
-- Unirse a proyecto con código
-- Pantalla "Completar perfil" (nombre obligatorio antes de acceder a la app)
-- Selector de proyecto activo en la cabecera
+**FASE 4 — Registro de movimientos**
+- Pantalla para añadir gastos/ingresos dentro de un proyecto
+- Selector de categoría
+- Listado de movimientos del mes
+- Selector de proyecto activo en la cabecera (cookie `proyecto_activo_id`)
