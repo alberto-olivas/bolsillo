@@ -73,9 +73,42 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
+---
+
+### FASE 2 — Base de datos en Supabase (SQL listo, pendiente de ejecutar en Supabase)
+
+**Archivo:** `supabase/fase2_schema.sql` — pegar en Supabase → SQL Editor → Run
+
+**Tablas creadas (7):**
+- `perfiles` — sincronizada con auth.users via trigger; `nombre` nullable (null = perfil sin completar)
+- `proyectos` — con trigger de código de invitación automático (6 chars, sin 0/O/1/I)
+- `miembros_proyecto` — tabla pivote usuario↔proyecto; base de toda la seguridad RLS
+- `categorias` — con 8 predefinidas insertadas automáticamente al crear proyecto
+- `gastos_fijos` — plantillas de gastos/ingresos recurrentes
+- `movimientos` — cada gasto o ingreso registrado
+- `pendientes_confirmar` — cola mensual de gastos fijos a revisar
+
+**Decisiones técnicas:**
+- RLS: función helper `es_miembro(proyecto_id)` con SECURITY DEFINER evita recursión circular
+- Perfil incompleto: se detecta con `nombre IS NULL` (sin boolean extra)
+- Flujo de perfil incompleto: `proxy.ts` verifica auth → `(protected)/layout.tsx` verifica `nombre IS NULL` → redirige a `/completar-perfil`
+- Trigger para creador: SECURITY DEFINER para poder insertar en `miembros_proyecto` antes de que RLS esté activo
+- Índices: `miembros_proyecto(proyecto_id, user_id)`, `movimientos(fecha)`, y todos los `proyecto_id`
+
+**Checklist de verificación (Fase 2):**
+- [ ] Ejecutar `supabase/fase2_schema.sql` en Supabase SQL Editor sin errores
+- [ ] Verificar que aparecen las 7 tablas en Table Editor
+- [ ] Verificar que el perfil del usuario existente se creó en `perfiles`
+- [ ] Test A (aislamiento): usuario_b no ve datos de usuario_a
+- [ ] Test B (compartido): ambos usuarios ven el mismo proyecto tras unirse con código
+
+---
+
 ## Próximo paso
 
-**FASE 2 — Estructura de base de datos en Supabase**
-- Crear tablas: `proyectos`, `miembros_proyecto`, `categorias`, `movimientos`, `gastos_fijos`, `pendientes_confirmar`
-- Configurar políticas RLS (Row Level Security)
-- Insertar categorías predefinidas por defecto
+**FASE 3 — Gestión de proyectos**
+- Pantalla "Mis proyectos": listado de proyectos del usuario
+- Crear proyecto personal o compartido
+- Unirse a proyecto con código
+- Pantalla "Completar perfil" (nombre obligatorio antes de acceder a la app)
+- Selector de proyecto activo en la cabecera
