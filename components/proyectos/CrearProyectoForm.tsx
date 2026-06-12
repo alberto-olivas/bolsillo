@@ -13,8 +13,9 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
   const [cargando, setCargando] = useState(false)
   const [abierto, setAbierto] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  // En React 19, onSubmit en formularios renderizados condicionalmente puede
+  // no dispararse. Usamos onClick en el botón directamente para evitar el problema.
+  async function crearProyecto() {
     const nombreLimpio = nombre.trim()
     if (!nombreLimpio) {
       setError('El nombre del proyecto es obligatorio')
@@ -40,6 +41,7 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
   if (!abierto) {
     return (
       <button
+        type="button"
         onClick={() => setAbierto(true)}
         className="w-full flex items-center justify-center gap-2 border border-dashed border-neutral-700 hover:border-indigo-500 text-neutral-500 hover:text-indigo-400 rounded-2xl py-4 transition-colors text-sm"
       >
@@ -50,7 +52,7 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-neutral-900 rounded-2xl p-5 border border-indigo-800 space-y-4">
+    <div className="bg-neutral-900 rounded-2xl p-5 border border-indigo-800 space-y-4">
       <p className="text-white font-medium text-sm">Nuevo proyecto</p>
 
       <div className="space-y-2">
@@ -59,6 +61,8 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
           type="text"
           value={nombre}
           onChange={e => setNombre(e.target.value)}
+          // Enter en el input también lanza la función directamente
+          onKeyDown={e => { if (e.key === 'Enter' && !cargando) crearProyecto() }}
           placeholder="Ej: Gastos del piso"
           maxLength={60}
           autoFocus
@@ -99,13 +103,14 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
           Cancelar
         </button>
         <button
-          type="submit"
+          type="button"
           disabled={cargando}
+          onClick={crearProyecto}
           className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
         >
           {cargando ? 'Creando...' : 'Crear'}
         </button>
       </div>
-    </form>
+    </div>
   )
 }

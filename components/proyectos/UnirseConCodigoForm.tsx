@@ -12,8 +12,7 @@ export default function UnirseConCodigoForm() {
   const [cargando, setCargando] = useState(false)
   const [abierto, setAbierto] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function unirse() {
     const codigoLimpio = codigo.trim().toUpperCase()
     if (codigoLimpio.length !== 6) {
       setError('El código tiene exactamente 6 caracteres')
@@ -22,8 +21,6 @@ export default function UnirseConCodigoForm() {
     setCargando(true)
     setError('')
     const supabase = createClient()
-    // unirse_proyecto es una función SECURITY DEFINER en Supabase que bypasea RLS
-    // para que el usuario pueda encontrar el proyecto aunque no sea miembro aún.
     const { data: proyectoId, error: err } = await supabase
       .rpc('unirse_proyecto', { p_codigo: codigoLimpio })
     if (err) {
@@ -44,6 +41,7 @@ export default function UnirseConCodigoForm() {
   if (!abierto) {
     return (
       <button
+        type="button"
         onClick={() => setAbierto(true)}
         className="w-full flex items-center justify-center gap-2 border border-dashed border-neutral-700 hover:border-indigo-500 text-neutral-500 hover:text-indigo-400 rounded-2xl py-4 transition-colors text-sm"
       >
@@ -54,7 +52,7 @@ export default function UnirseConCodigoForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-neutral-900 rounded-2xl p-5 border border-neutral-800 space-y-4">
+    <div className="bg-neutral-900 rounded-2xl p-5 border border-neutral-800 space-y-4">
       <p className="text-white font-medium text-sm">Unirme a un proyecto</p>
 
       <div className="space-y-2">
@@ -65,6 +63,7 @@ export default function UnirseConCodigoForm() {
             type="text"
             value={codigo}
             onChange={e => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
+            onKeyDown={e => { if (e.key === 'Enter' && !cargando) unirse() }}
             placeholder="AB3X9K"
             maxLength={6}
             autoFocus
@@ -83,13 +82,14 @@ export default function UnirseConCodigoForm() {
           Cancelar
         </button>
         <button
-          type="submit"
+          type="button"
           disabled={cargando || codigo.length < 6}
+          onClick={unirse}
           className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
         >
           {cargando ? 'Buscando...' : 'Unirme'}
         </button>
       </div>
-    </form>
+    </div>
   )
 }
