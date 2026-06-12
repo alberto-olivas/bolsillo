@@ -24,6 +24,13 @@ export async function createClient() {
           }
         },
       },
+      // Next.js 16 cachea las llamadas fetch() del cliente de Supabase en su
+      // Data Cache. Con no-store forzamos que cada consulta vaya a Supabase
+      // directamente, sin datos obsoletos al hacer router.refresh().
+      global: {
+        fetch: (url: RequestInfo | URL, options: RequestInit = {}) =>
+          fetch(url, { ...options, cache: 'no-store' }),
+      },
     }
   )
 }
