@@ -34,6 +34,7 @@ export default function CrearProyectoForm({ userId }: { userId: string }) {
     }
     setNombre('')
     setTipo('personal')
+    setCargando(false)
     setAbierto(false)
     router.refresh()
   }
