@@ -72,10 +72,9 @@
 - Pantalla "Mis proyectos": lista de proyectos, crear y unirse con código
 - Función `unirse_proyecto()` SECURITY DEFINER en Supabase (bypasea RLS para join)
 
-**SQL pendiente de ejecutar en Supabase:**
-⚠️ Ejecutar `supabase/fase3_rpc.sql` en el SQL Editor de Supabase antes de probar
-  - Limpia datos de prueba de Fase 2
-  - Crea la función `unirse_proyecto(p_codigo text)`
+**SQL ejecutado en Supabase** (`supabase/fase3_rpc.sql` ✓):
+  - Datos de prueba de Fase 2 eliminados
+  - Función `unirse_proyecto(p_codigo text)` creada
 
 **Archivos creados/modificados:**
 - `proxy.ts` — añadidas `/mis-proyectos` y `/completar-perfil` a rutas protegidas
@@ -104,7 +103,7 @@ Registro → /completar-perfil (nombre) → /mis-proyectos
 ```
 
 **Checklist de verificación:**
-- [ ] Ejecutar `supabase/fase3_rpc.sql` en Supabase SQL Editor
+- [x] Ejecutar `supabase/fase3_rpc.sql` en Supabase SQL Editor
 - [ ] Registrar cuenta nueva → redirige a `/completar-perfil`
 - [ ] Rellenar nombre → redirige a `/mis-proyectos`
 - [ ] Cuenta con nombre ya rellenado → entra directamente a `/mis-proyectos`
@@ -117,12 +116,7 @@ Registro → /completar-perfil (nombre) → /mis-proyectos
 
 ## ⚠️ ANTES DE ARRANCAR: pasos manuales necesarios
 
-### 1. Ejecutar SQL de Fase 3 en Supabase
-1. Ve a Supabase → SQL Editor
-2. Pega el contenido de `supabase/fase3_rpc.sql`
-3. Pulsa "Run"
-
-### 2. Arrancar la app
+### 1. Arrancar la app
 ```bash
 cd "c:\Users\silav\Desktop\APPS\BOLSILLO\VS CODE\bolsillo"
 npm run dev
