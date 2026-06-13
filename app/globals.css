@@ -10,3 +10,8 @@
 body {
   @apply bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white;
 }
+
+@keyframes coinFall {
+  from { transform: translateY(-8vh) rotate(0deg); }
+  to   { transform: translateY(108vh) rotate(360deg); }
+}

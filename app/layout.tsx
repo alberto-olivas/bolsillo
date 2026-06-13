@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
+import CoinRain from "@/components/ui/CoinRain";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={geistSans.variable} suppressHydrationWarning>
       <body className="min-h-full antialiased">
+        <CoinRain />
         <Providers>{children}</Providers>
         <Script
           id="register-sw"
