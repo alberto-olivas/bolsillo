@@ -6,25 +6,19 @@ import { Download, CheckCircle } from 'lucide-react'
 type Estado = 'instalable' | 'instalada' | 'ios' | 'manual'
 
 export default function InstalarAppButton() {
-  const [estado, setEstado] = useState<Estado | null>(null)
+  const [estado, setEstado] = useState<Estado>('manual')
   const [promptEvent, setPromptEvent] = useState<any>(null)
   const [modalAbierto, setModalAbierto] = useState(false)
 
   useEffect(() => {
-    const standalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (navigator as any).standalone === true
-    if (standalone) { setEstado('instalada'); return }
-
-    const esIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
-    if (esIOS) { setEstado('ios'); return }
-
-    const esAndroid = /Android/i.test(navigator.userAgent)
-
-    // En móvil mostramos instrucciones manuales de inmediato como fallback.
-    // En PC esperamos el prompt — si no llega, ocultamos la sección.
-    if (esAndroid) setEstado('manual')
-
+    if (window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true) {
+      setEstado('instalada')
+      return
+    }
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      setEstado('ios')
+      return
+    }
     const handler = (e: Event) => {
       e.preventDefault()
       setPromptEvent(e)
@@ -40,8 +34,6 @@ export default function InstalarAppButton() {
     const { outcome } = await promptEvent.userChoice
     if (outcome === 'accepted') setEstado('instalada')
   }
-
-  if (estado === null) return null
 
   const esIOS = estado === 'ios'
 
