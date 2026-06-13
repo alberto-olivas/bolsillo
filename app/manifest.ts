@@ -15,7 +15,13 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/logo-bolsillo.png',
         sizes: 'any',
         type: 'image/png',
-        purpose: 'any maskable',
+        purpose: 'any',
+      },
+      {
+        src: '/logo-bolsillo.png',
+        sizes: 'any',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   }
