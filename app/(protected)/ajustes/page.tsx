@@ -3,10 +3,11 @@ export const dynamic = 'force-dynamic'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Download } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import LogoutButton from '@/components/auth/LogoutButton'
 import EditarNombreForm from '@/components/ajustes/EditarNombreForm'
+import InstalarAppButton from '@/components/ajustes/InstalarAppButton'
 
 export default async function AjustesPage() {
   const supabase = await createClient()
@@ -68,20 +69,7 @@ export default async function AjustesPage() {
         </div>
 
         {/* Aplicación */}
-        <div className="space-y-2">
-          <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
-            Aplicación
-          </h2>
-          <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-4 py-3 border border-neutral-200 dark:border-neutral-800 flex items-center justify-between opacity-50">
-            <div className="flex items-center gap-3">
-              <Download className="w-5 h-5 text-neutral-500" />
-              <p className="text-sm text-neutral-900 dark:text-white">Instalar app</p>
-            </div>
-            <span className="text-xs text-neutral-400 dark:text-neutral-500 bg-neutral-200 dark:bg-neutral-800 px-2 py-0.5 rounded-full">
-              Próximamente
-            </span>
-          </div>
-        </div>
+        <InstalarAppButton />
 
         {/* Sesión */}
         <div className="space-y-2">
