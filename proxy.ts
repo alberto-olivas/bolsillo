@@ -40,6 +40,7 @@ export async function proxy(request: NextRequest) {
   const isProtectedRoute =
     pathname.startsWith('/home') ||
     pathname.startsWith('/mis-proyectos') ||
+    pathname.startsWith('/proyectos') ||
     pathname.startsWith('/completar-perfil')
 
   // Si intenta acceder a una ruta protegida sin sesión → redirige a /login

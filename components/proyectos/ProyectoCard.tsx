@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { FolderOpen, Users, Copy, Check, Lock } from 'lucide-react'
+import Link from 'next/link'
+import { FolderOpen, Users, Copy, Check, Lock, ArrowRight } from 'lucide-react'
 
 type Miembro = {
   user_id: string
@@ -16,7 +17,7 @@ type Props = {
   miembros: Miembro[]
 }
 
-export default function ProyectoCard({ nombre, tipo, codigo_invitacion, miembros }: Props) {
+export default function ProyectoCard({ id, nombre, tipo, codigo_invitacion, miembros }: Props) {
   const [copiado, setCopiado] = useState(false)
 
   function copiarCodigo() {
@@ -79,6 +80,15 @@ export default function ProyectoCard({ nombre, tipo, codigo_invitacion, miembros
           </div>
         </div>
       )}
+
+      {/* Botón ver movimientos */}
+      <Link
+        href={`/proyectos/${id}`}
+        className="flex items-center justify-between w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white rounded-xl px-4 py-2.5 transition-colors text-sm"
+      >
+        <span>Ver movimientos</span>
+        <ArrowRight className="w-4 h-4" />
+      </Link>
     </div>
   )
 }

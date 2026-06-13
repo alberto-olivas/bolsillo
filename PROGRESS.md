@@ -177,17 +177,19 @@ ALTER TABLE public.movimientos
 - [x] Badge "· Fijo" visible en la lista de movimientos
 - [x] Al editar un fijo: actualiza también `gastos_fijos` (cantidad, categoría, día)
 
-**Bloque C — Pendientes de confirmar (lógica mensual) ⬜**
-- [ ] Al cargar la página de un proyecto en un mes nuevo: generar registros en `pendientes_confirmar` por cada `gasto_fijo` activo que no tenga entrada para ese mes
-- [ ] UI de revisión: lista de `pendientes_confirmar` con estado `pendiente`
-- [ ] Botón "Confirmar" → crea movimiento + marca `confirmado`
-- [ ] Botón "Descartar" → marca `descartado`
+**Bloque C — Pendientes de confirmar (lógica mensual) ✓**
+- [x] Al cargar la página: upsert idempotente en `pendientes_confirmar` por cada `gasto_fijo` activo del mes actual (`onConflict: 'gasto_fijo_id,mes_ano'`)
+- [x] UI de revisión: sección "Pendientes de confirmar" entre ResumenMes y NuevoMovimientoForm
+- [x] Botón "Confirmar" → crea movimiento con fecha calculada + marca `confirmado`
+- [x] Botón "Descartar" → marca `descartado`; sección desaparece cuando no quedan pendientes
 
-**Archivos creados/modificados (Bloques A y B):**
+**Archivos creados/modificados (Bloques A, B y C):**
 - `app/actions/movimientos.ts` — añadidos `editarMovimiento()` y `eliminarMovimiento()`; `crearMovimiento()` y `editarMovimiento()` soportan `esFijo` y `diaDelMes`
+- `app/actions/pendientes.ts` — Server Actions `confirmarPendiente()` y `descartarPendiente()`
 - `components/movimientos/MovimientoItem.tsx` — convertido a Client Component con edición inline, confirmación de borrado y toggle de gasto fijo
 - `components/movimientos/NuevoMovimientoForm.tsx` — añadido toggle "Se repite cada mes" + campo día del mes
-- `app/(protected)/proyectos/[id]/page.tsx` — query ampliada con `es_fijo`, `gasto_fijo_id`, join `gastos_fijos!gasto_fijo_id(dia_del_mes)`
+- `components/movimientos/PendientesConfirmar.tsx` — lista de pendientes con botones confirmar/descartar
+- `app/(protected)/proyectos/[id]/page.tsx` — query ampliada con `es_fijo`, `gasto_fijo_id`, join `gastos_fijos`; generación de pendientes; render de `PendientesConfirmar`
 
 ---
 
@@ -204,5 +206,4 @@ Abrir en el navegador: `http://localhost:3000`
 
 ## Próximo paso
 
-**FASE 5 — Gestión avanzada de movimientos**
-Decidir orden de los tres bloques: A (editar/eliminar), B (recurrentes), C (pendientes mensuales).
+**FASE 6** — pendiente de definir.

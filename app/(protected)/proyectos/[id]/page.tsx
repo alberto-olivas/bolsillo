@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react'
 import NuevoMovimientoForm from '@/components/movimientos/NuevoMovimientoForm'
 import MovimientoItem from '@/components/movimientos/MovimientoItem'
 import ResumenMes from '@/components/movimientos/ResumenMes'
+import PendientesConfirmar from '@/components/movimientos/PendientesConfirmar'
 
 export default async function ProyectoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -40,7 +41,39 @@ export default async function ProyectoPage({ params }: { params: Promise<{ id: s
     .eq('proyecto_id', id)
     .order('nombre')
 
+  const mesAno = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
   const mesLabel = hoy.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+
+  // Gastos fijos activos del proyecto
+  const { data: gastosFijos } = await supabase
+    .from('gastos_fijos')
+    .select('id')
+    .eq('proyecto_id', id)
+    .eq('activo', true)
+
+  // Generar pendientes del mes actual (idempotente — onConflict protege contra duplicados)
+  if (gastosFijos && gastosFijos.length > 0) {
+    await supabase
+      .from('pendientes_confirmar')
+      .upsert(
+        gastosFijos.map(gf => ({
+          proyecto_id: id,
+          gasto_fijo_id: gf.id,
+          mes_ano: mesAno,
+          estado: 'pendiente',
+        })),
+        { onConflict: 'gasto_fijo_id,mes_ano', ignoreDuplicates: true }
+      )
+  }
+
+  // Pendientes del mes con datos del gasto fijo y categoría
+  const { data: pendientes } = await supabase
+    .from('pendientes_confirmar')
+    .select('id, gasto_fijo_id, gastos_fijos(nombre, cantidad, tipo, dia_del_mes, categorias(nombre, icono, color))')
+    .eq('proyecto_id', id)
+    .eq('mes_ano', mesAno)
+    .eq('estado', 'pendiente')
+    .order('created_at')
 
   return (
     <div className="min-h-screen bg-neutral-950">
@@ -64,6 +97,15 @@ export default async function ProyectoPage({ params }: { params: Promise<{ id: s
           </h2>
           <ResumenMes movimientos={movimientos ?? []} />
         </div>
+
+        {/* Pendientes de confirmar */}
+        {pendientes && pendientes.length > 0 && (
+          <PendientesConfirmar
+            pendientes={pendientes as any}
+            proyectoId={id}
+            mesLabel={mesLabel}
+          />
+        )}
 
         {/* Formulario nuevo movimiento */}
         <NuevoMovimientoForm
