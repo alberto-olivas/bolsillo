@@ -232,6 +232,64 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
+---
+
+### FASE 7 — Vista de categorías (donut + listado) ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Nueva ruta `/proyectos/[id]/categorias` con donut SVG (sin dependencias externas) + lista de categorías
+- Donut muestra solo gastos del mes; segmentos coloreados con el color de cada categoría
+- Todas las categorías de gasto aparecen en la lista (incluso con 0€), ordenadas por importe desc
+- Categorías con 0€ aparecen atenuadas y no son clicables
+- Selector de mes ← → sincronizado con la vista de movimientos (mismo `?mes=YYYY-MM`)
+- Al pulsar una categoría → navega a `/proyectos/[id]?mes=X&cat=uuid` con el filtro pre-aplicado
+- Icono de categorías (ChartPie) en la cabecera de la vista de movimientos
+
+**Archivos creados/modificados:**
+- `app/(protected)/proyectos/[id]/categorias/page.tsx` — Server Component: fetch + merge categorías/totales
+- `components/categorias/DonutCategorias.tsx` — SVG donut sin librerías externas
+- `components/categorias/ListaCategorias.tsx` — lista clicable con barra de progreso
+- `app/(protected)/proyectos/[id]/page.tsx` — añadido icono ChartPie, lectura de `?cat=` searchParam
+- `components/movimientos/ListaMovimientos.tsx` — prop `initialCat` para pre-seleccionar filtro
+
+---
+
+## Pendientes futuros (fuera de MVP actual)
+
+- **Modo claro/oscuro intercambiable**: tokens de color, toggle de tema, persistencia de preferencia. Requiere tocar retroactivamente todos los componentes de Fases 1-7. Tratar como mini-fase independiente.
+- **Gráfico de barras semanal** (Fase 8): visión general de gastos por semana.
+
+---
+
+---
+
+### FASE 8 — Home / Dashboard + Bottom Nav ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Bottom navigation fijo en todas las páginas bajo `/proyectos/[id]/*` (Movimientos | Categorías), con icono activo en indigo-400 y preservación del `?mes=` al cambiar de sección
+- Selector de proyecto en la cabecera: dropdown con todos los proyectos del usuario, navega preservando el mes. Si solo hay un proyecto, no muestra chevron
+- Mini donut de categorías en la vista principal (entre ResumenMes y pendientes), con enlace "Ver todas las categorías →"
+- `DonutCategorias` acepta prop `className` para controlar el tamaño desde fuera
+- ArrowLeft de categorías redirige a `/mis-proyectos` (consistente con la vista de movimientos)
+
+**Archivos creados/modificados:**
+- `components/nav/BottomNav.tsx` — Client Component con usePathname + useSearchParams; Suspense en layout
+- `app/(protected)/proyectos/[id]/layout.tsx` — layout que envuelve ambas vistas con BottomNav
+- `components/proyectos/SelectorProyecto.tsx` — dropdown de cambio de proyecto
+- `components/categorias/DonutCategorias.tsx` — prop `className` añadida
+- `app/(protected)/proyectos/[id]/page.tsx` — query todos los proyectos, cálculo mini donut, SelectorProyecto, mini DonutCategorias
+- `app/(protected)/proyectos/[id]/categorias/page.tsx` — pb-24, ArrowLeft → /mis-proyectos
+
+---
+
+## Pendientes futuros (fuera de MVP actual)
+
+- **Modo claro/oscuro intercambiable**: tokens de color, toggle de tema, persistencia de preferencia. Requiere tocar retroactivamente todos los componentes de Fases 1-8. Tratar como mini-fase independiente.
+- **Gráfico de barras semanal**: visión general de gastos por semana (aplazado del plan original de Fase 8).
+- **Sistema de presupuestos por categoría** (Fase 9 o posterior).
+
+---
+
 ## Próximo paso
 
-**FASE 7** — pendiente de definir.
+**FASE 9** — pendiente de definir.

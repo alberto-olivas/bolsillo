@@ -1,5 +1,6 @@
 export const dynamic = 'force-dynamic'
 
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -8,16 +9,18 @@ import NuevoMovimientoForm from '@/components/movimientos/NuevoMovimientoForm'
 import ResumenMes from '@/components/movimientos/ResumenMes'
 import PendientesConfirmar from '@/components/movimientos/PendientesConfirmar'
 import ListaMovimientos from '@/components/movimientos/ListaMovimientos'
+import DonutCategorias from '@/components/categorias/DonutCategorias'
+import SelectorProyecto from '@/components/proyectos/SelectorProyecto'
 
 export default async function ProyectoPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ mes?: string }>
+  searchParams: Promise<{ mes?: string; cat?: string }>
 }) {
   const { id } = await params
-  const { mes } = await searchParams
+  const { mes, cat } = await searchParams
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -30,6 +33,12 @@ export default async function ProyectoPage({
     .eq('id', id)
     .single()
   if (!proyecto) redirect('/mis-proyectos')
+
+  // Todos los proyectos del usuario (para el selector)
+  const { data: todosLosProyectos } = await supabase
+    .from('proyectos')
+    .select('id, nombre, tipo')
+    .order('nombre')
 
   // Calcular rango del mes (actual o el de searchParams)
   const hoy = new Date()
@@ -86,23 +95,63 @@ export default async function ProyectoPage({
     .eq('estado', 'pendiente')
     .order('created_at')
 
+  // Calcular totales por categoría para el mini donut (solo gastos, sin query extra)
+  const totalesCat = new Map<string, { nombre: string; icono: string; color: string; catId: string; total: number }>()
+  for (const m of movimientos ?? []) {
+    if (m.tipo !== 'gasto') continue
+    const cat2 = m.categorias as any
+    if (!cat2) continue
+    const key = cat2.nombre
+    const prev = totalesCat.get(key) ?? { nombre: cat2.nombre, icono: cat2.icono, color: cat2.color, catId: key, total: 0 }
+    prev.total += Number(m.cantidad)
+    totalesCat.set(key, prev)
+  }
+  const totalGastosMes = [...totalesCat.values()].reduce((s, c) => s + c.total, 0)
+  const miniDonutData = [...totalesCat.values()]
+    .sort((a, b) => b.total - a.total)
+    .map(c => ({ ...c, porcentaje: totalGastosMes > 0 ? (c.total / totalGastosMes) * 100 : 0 }))
+
   return (
     <div className="min-h-screen bg-neutral-950">
-      <div className="max-w-sm mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
         {/* Cabecera */}
         <div className="flex items-center gap-3">
-          <Link href="/mis-proyectos" className="text-neutral-400 hover:text-white transition-colors">
+          <Link href="/mis-proyectos" className="text-neutral-400 hover:text-white transition-colors flex-shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div>
-            <h1 className="text-lg font-bold text-white">{proyecto.nombre}</h1>
-            <p className="text-neutral-500 text-xs capitalize">{proyecto.tipo}</p>
-          </div>
+          <Suspense fallback={
+            <div>
+              <p className="text-white font-bold text-lg leading-tight">{proyecto.nombre}</p>
+              <p className="text-neutral-500 text-xs capitalize">{proyecto.tipo}</p>
+            </div>
+          }>
+            <SelectorProyecto
+              actual={proyecto}
+              todos={todosLosProyectos ?? []}
+            />
+          </Suspense>
         </div>
 
         {/* Resumen del mes */}
         <ResumenMes movimientos={movimientos ?? []} />
+
+        {/* Mini donut de categorías */}
+        {miniDonutData.length > 0 && (
+          <div className="flex flex-col items-center gap-2">
+            <DonutCategorias
+              categorias={miniDonutData}
+              totalGastos={totalGastosMes}
+              className="w-36 h-36"
+            />
+            <Link
+              href={`/proyectos/${id}/categorias?mes=${mesAno}`}
+              className="text-indigo-400 text-xs hover:text-indigo-300 transition-colors"
+            >
+              Ver todas las categorías →
+            </Link>
+          </div>
+        )}
 
         {/* Pendientes de confirmar */}
         {pendientes && pendientes.length > 0 && (
@@ -126,6 +175,7 @@ export default async function ProyectoPage({
           categorias={categorias ?? []}
           mesAno={mesAno}
           proyectoId={id}
+          initialCat={cat}
         />
 
       </div>

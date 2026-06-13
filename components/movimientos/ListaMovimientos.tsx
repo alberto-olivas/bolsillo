@@ -32,6 +32,7 @@ type Props = {
   categorias: Categoria[]
   mesAno: string
   proyectoId: string
+  initialCat?: string
 }
 
 function fmt(n: number) {
@@ -54,10 +55,10 @@ function formatDia(fechaStr: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
-export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId }: Props) {
+export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat }: Props) {
   const router = useRouter()
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'gasto' | 'ingreso'>('todos')
-  const [filtroCat, setFiltroCat] = useState<string | null>(null)
+  const [filtroCat, setFiltroCat] = useState<string | null>(initialCat ?? null)
 
   const [year, month] = mesAno.split('-').map(Number)
   const mesLabel = new Date(year, month - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
