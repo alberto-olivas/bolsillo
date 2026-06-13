@@ -204,6 +204,34 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
+---
+
+### FASE 6 — Vista general (extracto bancario) ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Selector de mes ← → en la lista de movimientos (navega via `?mes=YYYY-MM` en la URL)
+- Movimientos agrupados por día con total neto de cada día (coloreado verde/rojo)
+- "Hoy" / "Ayer" para fechas recientes; formato largo para el resto
+- Filtro por tipo (Todos / Gastos / Ingresos) — estado cliente, sin re-fetch
+- Filtro por categoría (pills scrollables horizontalmente) — estado cliente
+- Resumen del mes rediseñado: saldo destacado en grande + chips Gastos/Ingresos
+- Rango de fechas del mes correcto (primerDia → ultimoDia) incluyendo el último día
+
+**Archivos creados/modificados:**
+- `components/movimientos/ListaMovimientos.tsx` — Client Component con mes nav, filtros y agrupación por día
+- `components/movimientos/ResumenMes.tsx` — rediseño visual (saldo grande + 2 chips)
+- `app/(protected)/proyectos/[id]/page.tsx` — añadido `searchParams`, rango de fechas parametrizado, render de `ListaMovimientos`
+- `components/movimientos/NuevoMovimientoForm.tsx` — fecha por defecto inteligente: hoy si es el mes actual, último día si es mes pasado, primer día si es mes futuro
+
+---
+
+## Pendientes futuros (fuera de MVP actual)
+
+- **Modo claro/oscuro intercambiable**: tokens de color, toggle de tema, persistencia de preferencia. Requiere tocar retroactivamente todos los componentes de Fases 1-6. Tratar como mini-fase independiente.
+- **Gráfico de barras semanal** (Fase 8): visión general de gastos por semana.
+
+---
+
 ## Próximo paso
 
-**FASE 6** — pendiente de definir.
+**FASE 7** — pendiente de definir.

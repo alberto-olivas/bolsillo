@@ -16,14 +16,28 @@ type Categoria = {
 type Props = {
   proyectoId: string
   categorias: Categoria[]
+  mesAno: string
 }
 
-export default function NuevoMovimientoForm({ proyectoId, categorias }: Props) {
+function fechaPorDefecto(mesAno: string): string {
+  const hoy = new Date()
+  const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
+  if (mesAno === mesActual) return hoy.toISOString().split('T')[0]
+  const [y, m] = mesAno.split('-').map(Number)
+  if (mesAno < mesActual) {
+    // mes pasado → último día del mes
+    return new Date(y, m, 0).toISOString().split('T')[0]
+  }
+  // mes futuro → primer día del mes
+  return `${mesAno}-01`
+}
+
+export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: Props) {
   const [abierto, setAbierto] = useState(false)
   const [tipo, setTipo] = useState<'gasto' | 'ingreso'>('gasto')
   const [cantidad, setCantidad] = useState('')
   const [categoriaId, setCategoriaId] = useState('')
-  const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
+  const [fecha, setFecha] = useState(() => fechaPorDefecto(mesAno))
   const [descripcion, setDescripcion] = useState('')
   const [esFijo, setEsFijo] = useState(false)
   const [diaDelMes, setDiaDelMes] = useState(1)

@@ -18,20 +18,20 @@ export default function ResumenMes({ movimientos }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <div className="bg-neutral-900 rounded-xl p-3 border border-neutral-800">
-        <p className="text-neutral-500 text-xs">Gastos</p>
-        <p className="text-red-400 font-semibold text-sm mt-0.5">-{fmt(gastos)} €</p>
-      </div>
-      <div className="bg-neutral-900 rounded-xl p-3 border border-neutral-800">
-        <p className="text-neutral-500 text-xs">Ingresos</p>
-        <p className="text-green-400 font-semibold text-sm mt-0.5">+{fmt(ingresos)} €</p>
-      </div>
-      <div className="bg-neutral-900 rounded-xl p-3 border border-neutral-800">
-        <p className="text-neutral-500 text-xs">Saldo</p>
-        <p className={`font-semibold text-sm mt-0.5 ${saldo >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-          {saldo >= 0 ? '+' : ''}{fmt(saldo)} €
-        </p>
+    <div className="bg-neutral-900 rounded-2xl p-5 border border-neutral-800">
+      <p className="text-neutral-500 text-xs uppercase tracking-wider">Saldo del mes</p>
+      <p className={`text-3xl font-bold mt-1 ${saldo >= 0 ? 'text-white' : 'text-red-400'}`}>
+        {saldo >= 0 ? '+' : ''}{fmt(saldo)} €
+      </p>
+      <div className="grid grid-cols-2 gap-2 mt-4">
+        <div className="bg-neutral-800 rounded-xl p-3">
+          <p className="text-neutral-500 text-xs">Gastos</p>
+          <p className="text-red-400 font-semibold text-sm mt-1">-{fmt(gastos)} €</p>
+        </div>
+        <div className="bg-neutral-800 rounded-xl p-3">
+          <p className="text-neutral-500 text-xs">Ingresos</p>
+          <p className="text-green-400 font-semibold text-sm mt-1">+{fmt(ingresos)} €</p>
+        </div>
       </div>
     </div>
   )
