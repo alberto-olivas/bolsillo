@@ -4,7 +4,7 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-2">Bolsillo</h1>
+        <h1 className="text-3xl font-bold text-[#D85A30] mb-2">Bolsillo</h1>
         <p className="text-neutral-500 text-sm">Controla tus gastos con facilidad</p>
       </div>
 

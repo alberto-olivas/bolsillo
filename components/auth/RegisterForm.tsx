@@ -44,7 +44,7 @@ export default function RegisterForm() {
           required
           autoComplete="email"
           placeholder="tu@email.com"
-          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#D85A30] transition-colors"
         />
       </div>
 
@@ -61,7 +61,7 @@ export default function RegisterForm() {
           autoComplete="new-password"
           minLength={6}
           placeholder="••••••••"
-          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#D85A30] transition-colors"
         />
         <span className="text-xs text-neutral-500">Mínimo 6 caracteres</span>
       </div>
@@ -75,14 +75,14 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-colors mt-2"
+        className="bg-[#D85A30] hover:bg-[#c14f28] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-colors mt-2"
       >
         {loading ? 'Creando cuenta...' : 'Crear cuenta'}
       </button>
 
       <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">
         ¿Ya tienes cuenta?{' '}
-        <Link href="/login" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+        <Link href="/login" className="text-[#D85A30] dark:text-[#e8784a] hover:underline transition-colors">
           Inicia sesión
         </Link>
       </p>

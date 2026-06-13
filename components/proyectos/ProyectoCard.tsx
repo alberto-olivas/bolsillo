@@ -32,15 +32,15 @@ export default function ProyectoCard({ id, nombre, tipo, codigo_invitacion, miem
       {/* Cabecera */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600/20 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#FAECE7] dark:bg-[#2d1208] flex items-center justify-center flex-shrink-0">
             {tipo === 'personal'
-              ? <FolderOpen className="w-4 h-4 text-indigo-500" />
-              : <Users className="w-4 h-4 text-indigo-500" />
+              ? <FolderOpen className="w-4 h-4 text-[#D85A30]" />
+              : <Users className="w-4 h-4 text-[#D85A30]" />
             }
           </div>
           <div>
             <p className="text-neutral-900 dark:text-white font-medium text-sm leading-tight">{nombre}</p>
-            <span className={`text-xs font-medium ${tipo === 'personal' ? 'text-neutral-500' : 'text-indigo-500'}`}>
+            <span className={`text-xs font-medium ${tipo === 'personal' ? 'text-neutral-500' : 'text-[#D85A30]'}`}>
               {tipo === 'personal' ? 'Personal' : 'Compartido'}
             </span>
           </div>

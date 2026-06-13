@@ -33,7 +33,7 @@ export default function CrearProyectoForm() {
       <button
         type="button"
         onClick={() => setAbierto(true)}
-        className="w-full flex items-center justify-center gap-2 border border-dashed border-neutral-300 dark:border-neutral-700 hover:border-indigo-500 text-neutral-500 hover:text-indigo-400 rounded-2xl py-4 transition-colors text-sm"
+        className="w-full flex items-center justify-center gap-2 border border-dashed border-neutral-300 dark:border-neutral-700 hover:border-[#D85A30] text-neutral-500 hover:text-[#D85A30] rounded-2xl py-4 transition-colors text-sm"
       >
         <Plus className="w-4 h-4" />
         Nuevo proyecto
@@ -42,7 +42,7 @@ export default function CrearProyectoForm() {
   }
 
   return (
-    <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-5 border border-indigo-800 space-y-4">
+    <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-5 border border-[#D85A30]/40 space-y-4">
       <p className="text-neutral-900 dark:text-white font-medium text-sm">Nuevo proyecto</p>
 
       <div className="space-y-2">
@@ -67,7 +67,7 @@ export default function CrearProyectoForm() {
             onClick={() => setTipo(t)}
             className={`py-2.5 rounded-xl text-sm font-medium transition-colors ${
               tipo === t
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-[#D85A30] text-white'
                 : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-700'
             }`}
           >
@@ -94,7 +94,7 @@ export default function CrearProyectoForm() {
           type="button"
           disabled={cargando}
           onClick={handleCrear}
-          className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+          className="flex-1 bg-[#D85A30] hover:bg-[#c14f28] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors text-sm"
         >
           {cargando ? 'Creando...' : 'Crear'}
         </button>

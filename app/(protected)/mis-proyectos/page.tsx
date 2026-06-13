@@ -44,7 +44,7 @@ export default async function MisProyectosPage() {
         {/* Cabecera */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-neutral-900 dark:text-white">Bolsillo</h1>
+            <h1 className="text-xl font-bold text-[#D85A30]">Bolsillo</h1>
             <p className="text-neutral-500 text-xs mt-0.5">Hola, {perfil?.nombre ?? 'tú'}</p>
           </div>
           <Link

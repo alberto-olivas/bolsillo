@@ -35,7 +35,7 @@ export default function UnirseConCodigoForm() {
       <button
         type="button"
         onClick={() => setAbierto(true)}
-        className="w-full flex items-center justify-center gap-2 border border-dashed border-neutral-300 dark:border-neutral-700 hover:border-indigo-500 text-neutral-500 hover:text-indigo-400 rounded-2xl py-4 transition-colors text-sm"
+        className="w-full flex items-center justify-center gap-2 border border-dashed border-neutral-300 dark:border-neutral-700 hover:border-[#D85A30] text-neutral-500 hover:text-[#D85A30] rounded-2xl py-4 transition-colors text-sm"
       >
         <Hash className="w-4 h-4" />
         Unirme con código
@@ -59,7 +59,7 @@ export default function UnirseConCodigoForm() {
             placeholder="AB3X9K"
             maxLength={6}
             autoFocus
-            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl pl-9 pr-4 py-3 text-sm font-mono tracking-widest border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 uppercase"
+            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl pl-9 pr-4 py-3 text-sm font-mono tracking-widest border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-[#D85A30] focus:ring-1 focus:ring-[#D85A30] uppercase"
           />
         </div>
         {error && <p className="text-red-400 text-xs">{error}</p>}
@@ -77,7 +77,7 @@ export default function UnirseConCodigoForm() {
           type="button"
           disabled={cargando || codigo.length < 6}
           onClick={handleUnirse}
-          className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+          className="flex-1 bg-[#D85A30] hover:bg-[#c14f28] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors text-sm"
         >
           {cargando ? 'Buscando...' : 'Unirme'}
         </button>
