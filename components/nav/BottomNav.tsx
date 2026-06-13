@@ -2,8 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { LayoutList, ChartPie } from 'lucide-react'
-import ThemeToggle from '@/components/ui/ThemeToggle'
+import { LayoutList, ChartPie, Settings } from 'lucide-react'
 
 type NavItem = {
   href: (id: string, mesParam: string) => string
@@ -52,7 +51,15 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
             </Link>
           )
         })}
-        <ThemeToggle />
+        <Link
+          href="/ajustes"
+          className={`flex flex-col items-center gap-1 px-6 py-1 rounded-xl transition-colors ${
+            pathname === '/ajustes' ? 'text-indigo-500' : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'
+          }`}
+        >
+          <Settings className="w-5 h-5" />
+          <span className="text-xs font-medium">Ajustes</span>
+        </Link>
       </div>
     </nav>
   )

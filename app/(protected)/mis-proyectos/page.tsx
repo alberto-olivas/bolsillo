@@ -2,11 +2,11 @@ export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import LogoutButton from '@/components/auth/LogoutButton'
+import Link from 'next/link'
+import { Settings } from 'lucide-react'
 import ProyectoCard from '@/components/proyectos/ProyectoCard'
 import CrearProyectoForm from '@/components/proyectos/CrearProyectoForm'
 import UnirseConCodigoForm from '@/components/proyectos/UnirseConCodigoForm'
-import ThemeToggle from '@/components/ui/ThemeToggle'
 
 export default async function MisProyectosPage() {
   const supabase = await createClient()
@@ -47,10 +47,12 @@ export default async function MisProyectosPage() {
             <h1 className="text-xl font-bold text-neutral-900 dark:text-white">Bolsillo</h1>
             <p className="text-neutral-500 text-xs mt-0.5">Hola, {perfil?.nombre ?? 'tú'}</p>
           </div>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <LogoutButton />
-          </div>
+          <Link
+            href="/ajustes"
+            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2"
+          >
+            <Settings className="w-5 h-5" />
+          </Link>
         </div>
 
         {/* Lista de proyectos */}
