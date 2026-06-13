@@ -123,6 +123,74 @@ Registro → /completar-perfil (nombre) → /mis-proyectos
 
 ---
 
+### FASE 4 — Registro de Movimientos ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Página `/proyectos/[id]`: detalle de proyecto con lista de movimientos del mes
+- Botón "Ver movimientos →" en cada ProyectoCard
+- Resumen del mes: totales de gastos, ingresos y saldo
+- Formulario "Nuevo movimiento": tipo (gasto/ingreso), cantidad, categoría con icono y color, fecha, descripción opcional
+- Lista de movimientos con icono de categoría, descripción, fecha y quién lo añadió
+- Server Action `crearMovimiento()` en `app/actions/movimientos.ts`
+- Mapeo de iconos lucide-react en `lib/iconos-categorias.ts`
+
+**Archivos creados/modificados:**
+- `proxy.ts` — añadida `/proyectos` a rutas protegidas
+- `app/(protected)/proyectos/[id]/page.tsx` — página de detalle del proyecto
+- `app/actions/movimientos.ts` — Server Action crearMovimiento()
+- `components/movimientos/NuevoMovimientoForm.tsx` — formulario (Client Component)
+- `components/movimientos/MovimientoItem.tsx` — fila de un movimiento
+- `components/movimientos/ResumenMes.tsx` — totales del mes
+- `components/proyectos/ProyectoCard.tsx` — añadido botón "Ver movimientos →"
+- `lib/iconos-categorias.ts` — mapeo nombre→componente lucide-react
+
+**SQL ejecutado en Supabase:**
+```sql
+ALTER TABLE public.movimientos
+  ADD CONSTRAINT fk_movimientos_perfiles
+  FOREIGN KEY (usuario_id) REFERENCES public.perfiles(id);
+```
+
+**Checklist de verificación:**
+- [x] Botón "Ver movimientos →" en cada ProyectoCard navega a `/proyectos/[id]`
+- [x] Formulario muestra categorías filtradas por tipo (gasto/ingreso)
+- [x] Guardar movimiento → aparece en la lista
+- [x] Totales del resumen se actualizan correctamente
+- [x] FK `movimientos.usuario_id → perfiles.id` añadida en Supabase
+
+**Funcionalidades aplazadas (pasan a Fase 5):**
+- Editar movimiento
+- Eliminar movimiento
+- Selector de proyecto activo en cabecera (cookie `proyecto_activo_id`)
+
+---
+
+### FASE 5 — Gestión avanzada de movimientos 🚧 (en progreso)
+
+**Bloque A — CRUD completo de movimientos ✓**
+- [x] Editar movimiento: cantidad, categoría, fecha, descripción (formulario inline)
+- [x] Eliminar movimiento (confirmación antes de borrar)
+
+**Bloque B — Movimientos recurrentes ✓**
+- [x] Toggle "Se repite cada mes" en crear y editar → inserta en `gastos_fijos`
+- [x] Desactivar toggle en edición → `gastos_fijos.activo = false`
+- [x] Badge "· Fijo" visible en la lista de movimientos
+- [x] Al editar un fijo: actualiza también `gastos_fijos` (cantidad, categoría, día)
+
+**Bloque C — Pendientes de confirmar (lógica mensual) ⬜**
+- [ ] Al cargar la página de un proyecto en un mes nuevo: generar registros en `pendientes_confirmar` por cada `gasto_fijo` activo que no tenga entrada para ese mes
+- [ ] UI de revisión: lista de `pendientes_confirmar` con estado `pendiente`
+- [ ] Botón "Confirmar" → crea movimiento + marca `confirmado`
+- [ ] Botón "Descartar" → marca `descartado`
+
+**Archivos creados/modificados (Bloques A y B):**
+- `app/actions/movimientos.ts` — añadidos `editarMovimiento()` y `eliminarMovimiento()`; `crearMovimiento()` y `editarMovimiento()` soportan `esFijo` y `diaDelMes`
+- `components/movimientos/MovimientoItem.tsx` — convertido a Client Component con edición inline, confirmación de borrado y toggle de gasto fijo
+- `components/movimientos/NuevoMovimientoForm.tsx` — añadido toggle "Se repite cada mes" + campo día del mes
+- `app/(protected)/proyectos/[id]/page.tsx` — query ampliada con `es_fijo`, `gasto_fijo_id`, join `gastos_fijos!gasto_fijo_id(dia_del_mes)`
+
+---
+
 ## ⚠️ ANTES DE ARRANCAR: pasos manuales necesarios
 
 ### 1. Arrancar la app
@@ -136,8 +204,5 @@ Abrir en el navegador: `http://localhost:3000`
 
 ## Próximo paso
 
-**FASE 4 — Registro de movimientos**
-- Pantalla para añadir gastos/ingresos dentro de un proyecto
-- Selector de categoría
-- Listado de movimientos del mes
-- Selector de proyecto activo en la cabecera (cookie `proyecto_activo_id`)
+**FASE 5 — Gestión avanzada de movimientos**
+Decidir orden de los tres bloques: A (editar/eliminar), B (recurrentes), C (pendientes mensuales).
