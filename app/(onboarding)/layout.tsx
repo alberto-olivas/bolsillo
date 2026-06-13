@@ -3,7 +3,7 @@
 // lo que permite que /completar-perfil funcione sin bucle infinito.
 export default function OnboardingLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 flex items-center justify-center p-4">
       {children}
     </div>
   )

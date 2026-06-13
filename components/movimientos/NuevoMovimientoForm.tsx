@@ -25,10 +25,8 @@ function fechaPorDefecto(mesAno: string): string {
   if (mesAno === mesActual) return hoy.toISOString().split('T')[0]
   const [y, m] = mesAno.split('-').map(Number)
   if (mesAno < mesActual) {
-    // mes pasado → último día del mes
     return new Date(y, m, 0).toISOString().split('T')[0]
   }
-  // mes futuro → primer día del mes
   return `${mesAno}-01`
 }
 
@@ -86,8 +84,8 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   }
 
   return (
-    <div className="bg-neutral-900 rounded-2xl p-5 border border-indigo-800 space-y-4">
-      <p className="text-white font-medium text-sm">Nuevo movimiento</p>
+    <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-5 border border-indigo-800 space-y-4">
+      <p className="text-neutral-900 dark:text-white font-medium text-sm">Nuevo movimiento</p>
 
       {/* Tipo */}
       <div className="grid grid-cols-2 gap-2">
@@ -97,7 +95,9 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
             type="button"
             onClick={() => handleCambiarTipo(t)}
             className={`py-2.5 rounded-xl text-sm font-medium transition-colors ${
-              tipo === t ? 'bg-indigo-600 text-white' : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
+              tipo === t
+                ? 'bg-indigo-600 text-white'
+                : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-700'
             }`}
           >
             {t === 'gasto' ? 'Gasto' : 'Ingreso'}
@@ -107,7 +107,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
 
       {/* Cantidad */}
       <div className="space-y-1.5">
-        <label className="text-xs text-neutral-400">Cantidad (€)</label>
+        <label className="text-xs text-neutral-600 dark:text-neutral-400">Cantidad (€)</label>
         <input
           type="number"
           inputMode="decimal"
@@ -116,13 +116,13 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
           value={cantidad}
           onChange={e => setCantidad(e.target.value)}
           placeholder="0.00"
-          className="w-full bg-neutral-800 text-white placeholder-neutral-600 rounded-xl px-4 py-3 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-3 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
       {/* Categoría */}
       <div className="space-y-1.5">
-        <label className="text-xs text-neutral-400">Categoría</label>
+        <label className="text-xs text-neutral-600 dark:text-neutral-400">Categoría</label>
         <div className="grid grid-cols-4 gap-2">
           {categoriasFiltradas.map(cat => {
             const Icono = ICONOS[cat.icono] ?? Package
@@ -135,11 +135,11 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
                 className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors border ${
                   seleccionada
                     ? 'border-indigo-500 bg-indigo-600/20'
-                    : 'border-neutral-700 bg-neutral-800 hover:bg-neutral-700'
+                    : 'border-neutral-300 dark:border-neutral-700 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700'
                 }`}
               >
                 <Icono className="w-4 h-4" style={{ color: cat.color }} />
-                <span className="text-xs text-neutral-300 leading-tight text-center">{cat.nombre}</span>
+                <span className="text-xs text-neutral-700 dark:text-neutral-300 leading-tight text-center">{cat.nombre}</span>
               </button>
             )
           })}
@@ -148,19 +148,19 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
 
       {/* Fecha */}
       <div className="space-y-1.5">
-        <label className="text-xs text-neutral-400">Fecha</label>
+        <label className="text-xs text-neutral-600 dark:text-neutral-400">Fecha</label>
         <input
           type="date"
           value={fecha}
           onChange={e => setFecha(e.target.value)}
-          className="w-full bg-neutral-800 text-white rounded-xl px-4 py-3 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-3 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
       {/* Descripción */}
       <div className="space-y-1.5">
-        <label className="text-xs text-neutral-400">
-          Descripción <span className="text-neutral-600">(opcional)</span>
+        <label className="text-xs text-neutral-600 dark:text-neutral-400">
+          Descripción <span className="text-neutral-400 dark:text-neutral-600">(opcional)</span>
         </label>
         <input
           type="text"
@@ -168,34 +168,34 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
           onChange={e => setDescripcion(e.target.value)}
           placeholder="Ej: Mercadona"
           maxLength={100}
-          className="w-full bg-neutral-800 text-white placeholder-neutral-600 rounded-xl px-4 py-3 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-3 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
       {/* Gasto fijo */}
       <div
-        className="flex items-center justify-between bg-neutral-800 rounded-xl px-4 py-3 border border-neutral-700 cursor-pointer"
+        className="flex items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-xl px-4 py-3 border border-neutral-300 dark:border-neutral-700 cursor-pointer"
         onClick={() => setEsFijo(!esFijo)}
       >
         <div>
-          <p className="text-white text-sm">Se repite cada mes</p>
+          <p className="text-neutral-900 dark:text-white text-sm">Se repite cada mes</p>
           <p className="text-neutral-500 text-xs">Guardará una plantilla de gasto fijo</p>
         </div>
-        <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${esFijo ? 'bg-indigo-600' : 'bg-neutral-600'}`}>
+        <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${esFijo ? 'bg-indigo-600' : 'bg-neutral-400 dark:bg-neutral-600'}`}>
           <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${esFijo ? 'translate-x-5' : 'translate-x-0.5'}`} />
         </div>
       </div>
 
       {esFijo && (
         <div className="space-y-1.5">
-          <label className="text-xs text-neutral-400">Día del mes en que se repite</label>
+          <label className="text-xs text-neutral-600 dark:text-neutral-400">Día del mes en que se repite</label>
           <input
             type="number"
             min="1"
             max="31"
             value={diaDelMes}
             onChange={e => setDiaDelMes(Math.min(31, Math.max(1, Number(e.target.value))))}
-            className="w-full bg-neutral-800 text-white rounded-xl px-4 py-3 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-3 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
           />
         </div>
       )}
@@ -206,7 +206,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
         <button
           type="button"
           onClick={() => { setAbierto(false); setError('') }}
-          className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 font-medium py-3 rounded-xl transition-colors text-sm"
+          className="flex-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 font-medium py-3 rounded-xl transition-colors text-sm"
         >
           Cancelar
         </button>

@@ -32,7 +32,6 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
 
-  // Estado del formulario de edición (inicializado con valores actuales)
   const [editCantidad, setEditCantidad] = useState(String(Number(cantidad)))
   const [editCategoriaId, setEditCategoriaId] = useState(categoria ? (categorias.find(c => c.nombre === categoria.nombre)?.id ?? '') : '')
   const [editFecha, setEditFecha] = useState(fecha)
@@ -89,14 +88,14 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
   // Vista: confirmar eliminación
   if (modo === 'eliminar') {
     return (
-      <div className="py-3 border-b border-neutral-800 last:border-0 space-y-2">
-        <p className="text-white text-sm">¿Eliminar este movimiento?</p>
+      <div className="py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0 space-y-2">
+        <p className="text-neutral-900 dark:text-white text-sm">¿Eliminar este movimiento?</p>
         {error && <p className="text-red-400 text-xs">{error}</p>}
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => { setModo('normal'); setError('') }}
-            className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 text-sm font-medium py-2 rounded-xl transition-colors"
+            className="flex-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 text-sm font-medium py-2 rounded-xl transition-colors"
           >
             Cancelar
           </button>
@@ -116,7 +115,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
   // Vista: formulario de edición
   if (modo === 'editar') {
     return (
-      <div className="py-3 border-b border-neutral-800 last:border-0 space-y-3">
+      <div className="py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0 space-y-3">
         {/* Cantidad */}
         <input
           type="number"
@@ -126,7 +125,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           value={editCantidad}
           onChange={e => setEditCantidad(e.target.value)}
           placeholder="0.00"
-          className="w-full bg-neutral-800 text-white placeholder-neutral-600 rounded-xl px-4 py-2.5 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Categoría */}
@@ -142,11 +141,11 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
                 className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors border ${
                   seleccionada
                     ? 'border-indigo-500 bg-indigo-600/20'
-                    : 'border-neutral-700 bg-neutral-800 hover:bg-neutral-700'
+                    : 'border-neutral-300 dark:border-neutral-700 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700'
                 }`}
               >
                 <CatIcono className="w-4 h-4" style={{ color: cat.color }} />
-                <span className="text-xs text-neutral-300 leading-tight text-center">{cat.nombre}</span>
+                <span className="text-xs text-neutral-700 dark:text-neutral-300 leading-tight text-center">{cat.nombre}</span>
               </button>
             )
           })}
@@ -157,7 +156,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           type="date"
           value={editFecha}
           onChange={e => setEditFecha(e.target.value)}
-          className="w-full bg-neutral-800 text-white rounded-xl px-4 py-2.5 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Descripción */}
@@ -167,16 +166,16 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           onChange={e => setEditDescripcion(e.target.value)}
           placeholder="Descripción (opcional)"
           maxLength={100}
-          className="w-full bg-neutral-800 text-white placeholder-neutral-600 rounded-xl px-4 py-2.5 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Gasto fijo */}
         <div
-          className="flex items-center justify-between bg-neutral-800 rounded-xl px-3 py-2.5 border border-neutral-700 cursor-pointer"
+          className="flex items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-xl px-3 py-2.5 border border-neutral-300 dark:border-neutral-700 cursor-pointer"
           onClick={() => setEditEsFijo(!editEsFijo)}
         >
-          <p className="text-white text-sm">Se repite cada mes</p>
-          <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${editEsFijo ? 'bg-indigo-600' : 'bg-neutral-600'}`}>
+          <p className="text-neutral-900 dark:text-white text-sm">Se repite cada mes</p>
+          <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${editEsFijo ? 'bg-indigo-600' : 'bg-neutral-400 dark:bg-neutral-600'}`}>
             <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${editEsFijo ? 'translate-x-5' : 'translate-x-0.5'}`} />
           </div>
         </div>
@@ -189,7 +188,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
             value={editDiaDelMes}
             onChange={e => setEditDiaDelMes(Math.min(31, Math.max(1, Number(e.target.value))))}
             placeholder="Día del mes (1-31)"
-            className="w-full bg-neutral-800 text-white rounded-xl px-3 py-2.5 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-3 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
           />
         )}
 
@@ -199,7 +198,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           <button
             type="button"
             onClick={() => { setModo('normal'); setError('') }}
-            className="flex-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 text-sm font-medium py-2 rounded-xl transition-colors"
+            className="flex-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 text-sm font-medium py-2 rounded-xl transition-colors"
           >
             Cancelar
           </button>
@@ -218,15 +217,15 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
 
   // Vista: normal
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-neutral-800 last:border-0">
+    <div className="flex items-center gap-3 py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0">
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: color + '20' }}
+        style={{ backgroundColor: color + '33' }}
       >
         <Icono className="w-4 h-4" style={{ color }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-white text-sm font-medium truncate">
+        <p className="text-neutral-900 dark:text-white text-sm font-medium truncate">
           {categoria?.nombre ?? 'Sin categoría'}
         </p>
         <p className="text-neutral-500 text-xs truncate">
@@ -242,7 +241,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
         <button
           type="button"
           onClick={() => setModo('editar')}
-          className="p-1.5 text-neutral-600 hover:text-neutral-300 transition-colors rounded-lg hover:bg-neutral-800"
+          className="p-1.5 text-neutral-400 dark:text-neutral-600 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
           title="Editar"
         >
           <Pencil className="w-3.5 h-3.5" />
@@ -250,7 +249,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
         <button
           type="button"
           onClick={() => setModo('eliminar')}
-          className="p-1.5 text-neutral-600 hover:text-red-400 transition-colors rounded-lg hover:bg-neutral-800"
+          className="p-1.5 text-neutral-400 dark:text-neutral-600 hover:text-red-400 transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
           title="Eliminar"
         >
           <Trash2 className="w-3.5 h-3.5" />

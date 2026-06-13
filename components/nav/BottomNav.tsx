@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { LayoutList, ChartPie } from 'lucide-react'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 type NavItem = {
   href: (id: string, mesParam: string) => string
@@ -33,8 +34,8 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
   const mesParam = mes ? `?mes=${mes}` : ''
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-neutral-900 border-t border-neutral-800">
-      <div className="max-w-sm mx-auto flex justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
+      <div className="max-w-sm mx-auto flex items-center justify-around py-2">
         {NAV_ITEMS.map(item => {
           const activo = item.match(pathname)
           const Icono = item.icon
@@ -43,7 +44,7 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
               key={item.label}
               href={item.href(proyectoId, mesParam)}
               className={`flex flex-col items-center gap-1 px-6 py-1 rounded-xl transition-colors ${
-                activo ? 'text-indigo-400' : 'text-neutral-500 hover:text-neutral-300'
+                activo ? 'text-indigo-500' : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'
               }`}
             >
               <Icono className="w-5 h-5" />
@@ -51,6 +52,7 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
             </Link>
           )
         })}
+        <ThemeToggle />
       </div>
     </nav>
   )

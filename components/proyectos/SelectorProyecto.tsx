@@ -33,7 +33,7 @@ export default function SelectorProyecto({ actual, todos }: Props) {
         className={`flex items-center gap-1 text-left ${hayOtros ? 'cursor-pointer' : 'cursor-default'}`}
       >
         <div>
-          <p className="text-white font-bold text-lg leading-tight">{actual.nombre}</p>
+          <p className="text-neutral-900 dark:text-white font-bold text-lg leading-tight">{actual.nombre}</p>
           <p className="text-neutral-500 text-xs capitalize">{actual.tipo}</p>
         </div>
         {hayOtros && (
@@ -44,16 +44,16 @@ export default function SelectorProyecto({ actual, todos }: Props) {
       {abierto && hayOtros && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setAbierto(false)} />
-          <div className="absolute left-0 top-full mt-2 z-50 bg-neutral-800 border border-neutral-700 rounded-xl shadow-xl overflow-hidden min-w-48">
+          <div className="absolute left-0 top-full mt-2 z-50 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-xl overflow-hidden min-w-48">
             {todos.map(p => (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => navegar(p.id)}
-                className="w-full flex items-center justify-between gap-3 px-4 py-3 hover:bg-neutral-700 transition-colors text-left"
+                className="w-full flex items-center justify-between gap-3 px-4 py-3 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors text-left"
               >
                 <div>
-                  <p className="text-white text-sm font-medium">{p.nombre}</p>
+                  <p className="text-neutral-900 dark:text-white text-sm font-medium">{p.nombre}</p>
                   <p className="text-neutral-500 text-xs capitalize">{p.tipo}</p>
                 </div>
                 {p.id === actual.id && <Check className="w-4 h-4 text-indigo-400 flex-shrink-0" />}

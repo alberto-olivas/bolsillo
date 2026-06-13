@@ -35,9 +35,9 @@ export default function CompletarPerfilForm({ userId }: { userId: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 shadow-xl space-y-4">
+    <form onSubmit={handleSubmit} className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 shadow-xl space-y-4">
       <div className="space-y-2">
-        <label className="text-sm text-neutral-400 block">Tu nombre</label>
+        <label className="text-sm text-neutral-600 dark:text-neutral-400 block">Tu nombre</label>
         <div className="relative">
           <User className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 w-4 h-4" />
           <input
@@ -47,7 +47,7 @@ export default function CompletarPerfilForm({ userId }: { userId: string }) {
             placeholder="Alberto"
             maxLength={50}
             autoFocus
-            className="w-full bg-neutral-800 text-white placeholder-neutral-600 rounded-xl pl-9 pr-4 py-3 text-sm border border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl pl-9 pr-4 py-3 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
           />
         </div>
         {error && <p className="text-red-400 text-xs">{error}</p>}

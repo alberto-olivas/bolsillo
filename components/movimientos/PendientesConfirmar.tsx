@@ -63,15 +63,15 @@ function PendienteRow({ pendiente, proyectoId }: { pendiente: Pendiente; proyect
   }
 
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-neutral-800 last:border-0">
+    <div className="flex items-center gap-3 py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0">
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: color + '20' }}
+        style={{ backgroundColor: color + '33' }}
       >
         <Icono className="w-4 h-4" style={{ color }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-white text-sm font-medium truncate">{gf.nombre}</p>
+        <p className="text-neutral-900 dark:text-white text-sm font-medium truncate">{gf.nombre}</p>
         <p className="text-neutral-500 text-xs">
           {fmt(gf.cantidad)} € · día {gf.dia_del_mes}
           {error && <span className="text-red-400 ml-1">{error}</span>}
@@ -82,10 +82,10 @@ function PendienteRow({ pendiente, proyectoId }: { pendiente: Pendiente; proyect
           type="button"
           disabled={cargando !== null}
           onClick={handleDescartar}
-          className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 disabled:opacity-40 transition-colors"
+          className="p-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 disabled:opacity-40 transition-colors"
           title="Descartar este mes"
         >
-          <X className="w-4 h-4 text-neutral-400" />
+          <X className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
         </button>
         <button
           type="button"
@@ -104,10 +104,10 @@ function PendienteRow({ pendiente, proyectoId }: { pendiente: Pendiente; proyect
 export default function PendientesConfirmar({ pendientes, proyectoId, mesLabel }: Props) {
   return (
     <div className="space-y-2">
-      <h2 className="text-neutral-400 text-xs font-medium uppercase tracking-wider">
+      <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
         Pendientes de confirmar — {mesLabel}
       </h2>
-      <div className="bg-neutral-900 rounded-2xl px-5 border border-yellow-800/40">
+      <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-5 border border-yellow-800/40">
         {pendientes.map(p => (
           <PendienteRow key={p.id} pendiente={p} proyectoId={proyectoId} />
         ))}

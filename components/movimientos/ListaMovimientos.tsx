@@ -72,7 +72,6 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
     router.push(`/proyectos/${proyectoId}?mes=${nuevo}`)
   }
 
-  // Filtrado
   const filtrados = movimientos.filter(m => {
     if (filtroTipo !== 'todos' && m.tipo !== filtroTipo) return false
     if (filtroCat !== null) {
@@ -83,7 +82,6 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
     return true
   })
 
-  // Agrupación por día
   const grupos: Record<string, typeof filtrados> = {}
   for (const m of filtrados) {
     if (!grupos[m.fecha]) grupos[m.fecha] = []
@@ -91,7 +89,6 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
   }
   const dias = Object.keys(grupos).sort((a, b) => b.localeCompare(a))
 
-  // Categorías únicas presentes en los movimientos del mes (para filtro)
   const catIds = new Set(
     movimientos.map(m => categorias.find(c => c.nombre === m.categorias?.nombre)?.id).filter(Boolean)
   )
@@ -104,15 +101,15 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
         <button
           type="button"
           onClick={() => navMes(-1)}
-          className="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+          className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <span className="text-white font-medium capitalize text-sm">{mesLabel}</span>
+        <span className="text-neutral-900 dark:text-white font-medium capitalize text-sm">{mesLabel}</span>
         <button
           type="button"
           onClick={() => navMes(1)}
-          className="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+          className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -128,7 +125,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filtroTipo === t
                 ? 'bg-indigo-600 text-white'
-                : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
+                : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-700'
             }`}
           >
             {t === 'todos' ? 'Todos' : t === 'gasto' ? 'Gastos' : 'Ingresos'}
@@ -145,7 +142,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filtroCat === null
                 ? 'bg-indigo-600 text-white'
-                : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
+                : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-700'
             }`}
           >
             Todas
@@ -160,7 +157,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
                 className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   filtroCat === cat.id
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
+                    : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-700'
                 }`}
               >
                 <Icono className="w-3 h-3" style={{ color: filtroCat === cat.id ? 'white' : cat.color }} />
@@ -183,13 +180,13 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
               <div key={dia} className="space-y-1">
                 {/* Cabecera del día */}
                 <div className="flex items-center justify-between px-1">
-                  <span className="text-neutral-400 text-xs font-medium">{formatDia(dia)}</span>
+                  <span className="text-neutral-500 dark:text-neutral-400 text-xs font-medium">{formatDia(dia)}</span>
                   <span className={`text-xs font-semibold ${totalDia >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {totalDia >= 0 ? '+' : ''}{fmt(totalDia)} €
                   </span>
                 </div>
                 {/* Movimientos del día */}
-                <div className="bg-neutral-900 rounded-2xl px-5 border border-neutral-800">
+                <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-5 border border-neutral-200 dark:border-neutral-800">
                   {items.map(m => (
                     <MovimientoItem
                       key={m.id}
@@ -212,9 +209,9 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
           })}
         </div>
       ) : (
-        <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 text-center">
+        <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 text-center">
           <p className="text-neutral-500 text-sm">Sin movimientos este mes.</p>
-          <p className="text-neutral-600 text-xs mt-1">Añade tu primer gasto o ingreso.</p>
+          <p className="text-neutral-400 dark:text-neutral-600 text-xs mt-1">Añade tu primer gasto o ingreso.</p>
         </div>
       )}
     </div>

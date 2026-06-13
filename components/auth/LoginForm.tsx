@@ -26,7 +26,6 @@ export default function LoginForm() {
       return
     }
 
-    // Redirigimos y refrescamos para que el proxy detecte la nueva sesión
     router.push('/home')
     router.refresh()
   }
@@ -34,7 +33,7 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm text-neutral-400">
+        <label htmlFor="email" className="text-sm text-neutral-600 dark:text-neutral-400">
           Email
         </label>
         <input
@@ -45,12 +44,12 @@ export default function LoginForm() {
           required
           autoComplete="email"
           placeholder="tu@email.com"
-          className="bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm text-neutral-400">
+        <label htmlFor="password" className="text-sm text-neutral-600 dark:text-neutral-400">
           Contraseña
         </label>
         <input
@@ -61,7 +60,7 @@ export default function LoginForm() {
           required
           autoComplete="current-password"
           placeholder="••••••••"
-          className="bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-3 text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
         />
       </div>
 
@@ -79,7 +78,7 @@ export default function LoginForm() {
         {loading ? 'Entrando...' : 'Iniciar sesión'}
       </button>
 
-      <p className="text-center text-neutral-400 text-sm">
+      <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">
         ¿No tienes cuenta?{' '}
         <Link href="/register" className="text-indigo-400 hover:text-indigo-300 transition-colors">
           Regístrate

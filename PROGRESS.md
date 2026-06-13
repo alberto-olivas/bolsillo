@@ -282,9 +282,43 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
+---
+
+### MINI-FASE — Modo claro/oscuro ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Instalado `next-themes`; `ThemeProvider` envuelve la app en `app/providers.tsx`
+- `suppressHydrationWarning` en `<html>` para evitar flash de hidratación
+- Tailwind v4: `@custom-variant dark (&:where(.dark, .dark *));` en `globals.css` para modo clase (no media query)
+- `ThemeToggle` (sol/luna) añadido al BottomNav y a la cabecera de `/mis-proyectos`
+- Preferencia persistida en `localStorage` automáticamente vía `next-themes`
+- Mapa de equivalencias aplicado a los ~20 archivos con clases hard-codeadas en dark
+- Iconos de categoría: opacidad del fondo pasó de `'20'` (12.5%) a `'33'` (20%) para visibilidad en modo claro
+- SVG del donut: migrado de atributos `fill`/`stroke` hardcodeados a `className="fill-..."` de Tailwind
+
+**Archivos creados:**
+- `app/providers.tsx` — ThemeProvider
+- `components/ui/ThemeToggle.tsx` — toggle sol/luna con check de `mounted`
+
+**Archivos modificados (todos los componentes y páginas):**
+- `app/globals.css`, `app/layout.tsx`
+- `app/(auth)/layout.tsx`, `app/(onboarding)/layout.tsx`
+- `app/(auth)/login/page.tsx`, `app/(auth)/register/page.tsx`
+- `app/(onboarding)/completar-perfil/page.tsx`
+- `app/(protected)/mis-proyectos/page.tsx`
+- `app/(protected)/proyectos/[id]/page.tsx`
+- `app/(protected)/proyectos/[id]/categorias/page.tsx`
+- `components/auth/LoginForm.tsx`, `components/auth/RegisterForm.tsx`, `components/auth/LogoutButton.tsx`
+- `components/perfil/CompletarPerfilForm.tsx`
+- `components/proyectos/ProyectoCard.tsx`, `components/proyectos/CrearProyectoForm.tsx`, `components/proyectos/UnirseConCodigoForm.tsx`, `components/proyectos/SelectorProyecto.tsx`
+- `components/movimientos/ResumenMes.tsx`, `components/movimientos/NuevoMovimientoForm.tsx`, `components/movimientos/MovimientoItem.tsx`, `components/movimientos/ListaMovimientos.tsx`, `components/movimientos/PendientesConfirmar.tsx`
+- `components/categorias/DonutCategorias.tsx`, `components/categorias/ListaCategorias.tsx`
+- `components/nav/BottomNav.tsx`
+
+---
+
 ## Pendientes futuros (fuera de MVP actual)
 
-- **Modo claro/oscuro intercambiable**: tokens de color, toggle de tema, persistencia de preferencia. Requiere tocar retroactivamente todos los componentes de Fases 1-8. Tratar como mini-fase independiente.
 - **Gráfico de barras semanal**: visión general de gastos por semana (aplazado del plan original de Fase 8).
 - **Sistema de presupuestos por categoría** (Fase 9 o posterior).
 

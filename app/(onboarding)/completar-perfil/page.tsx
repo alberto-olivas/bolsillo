@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import CompletarPerfilForm from '@/components/perfil/CompletarPerfilForm'
 
-// Si el usuario ya tiene nombre, no necesita estar aquí.
 export default async function CompletarPerfilPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -20,8 +19,8 @@ export default async function CompletarPerfilPage() {
   return (
     <div className="w-full max-w-sm space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-white">Bienvenido a Bolsillo</h1>
-        <p className="text-neutral-400 text-sm mt-2">¿Cómo quieres que te llamemos?</p>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Bienvenido a Bolsillo</h1>
+        <p className="text-neutral-500 text-sm mt-2">¿Cómo quieres que te llamemos?</p>
       </div>
       <CompletarPerfilForm userId={user.id} />
     </div>
