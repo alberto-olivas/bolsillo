@@ -1,12 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { crearProyecto } from '@/app/actions/proyectos'
 import { Plus } from 'lucide-react'
 
 export default function CrearProyectoForm() {
-  const router = useRouter()
   const [nombre, setNombre] = useState('')
   const [tipo, setTipo] = useState<'personal' | 'compartido'>('personal')
   const [error, setError] = useState('')
@@ -23,12 +21,8 @@ export default function CrearProyectoForm() {
     setError('')
     try {
       await crearProyecto(nombreLimpio, tipo)
-      setNombre('')
-      setTipo('personal')
-      setCargando(false)
-      setAbierto(false)
-      router.refresh()
-    } catch {
+      window.location.reload()
+    } catch (error) {
       setError('Error al crear el proyecto. Inténtalo de nuevo.')
       setCargando(false)
     }

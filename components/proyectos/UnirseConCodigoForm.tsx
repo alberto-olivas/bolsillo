@@ -1,12 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { unirseProyecto } from '@/app/actions/proyectos'
 import { Hash } from 'lucide-react'
 
 export default function UnirseConCodigoForm() {
-  const router = useRouter()
   const [codigo, setCodigo] = useState('')
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
@@ -22,10 +20,7 @@ export default function UnirseConCodigoForm() {
     setError('')
     try {
       await unirseProyecto(codigoLimpio)
-      setCodigo('')
-      setCargando(false)
-      setAbierto(false)
-      router.refresh()
+      window.location.reload()
     } catch (err: any) {
       const msg = err?.message === 'Código no encontrado'
         ? 'Código no encontrado. Comprueba que está bien escrito.'

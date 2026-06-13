@@ -65,7 +65,7 @@
 
 ---
 
-### FASE 3 — Gestión de Proyectos ✓ (implementada 2026-06-12)
+### FASE 3 — Gestión de Proyectos ✓ (completada y verificada 2026-06-13)
 
 **Qué se hizo:**
 - Gate de perfil: si `nombre IS NULL` → redirige a `/completar-perfil` antes de entrar
@@ -92,7 +92,15 @@
 - Gate de perfil en layout, no en proxy.ts: el proxy solo sabe de auth, no de datos
 - Grupo `(onboarding)` separado de `(protected)` para evitar bucle de redirect
 - `unirse_proyecto()` como RPC SECURITY DEFINER: la única forma de encontrar un proyecto sin ser miembro
-- Cookie `proyecto_activo_id`: se implementará en Fase 4 cuando haya pantalla de gastos
+- Server Actions sin `revalidatePath`: en Next.js 16 + React 19 `revalidatePath` bloquea la respuesta al cliente y el `await` del Server Action nunca resuelve; se usa `window.location.reload()` en su lugar
+- Foreign key `miembros_proyecto.user_id → perfiles.id` necesaria en Supabase para que PostgREST pueda hacer el join anidado en la query de proyectos
+
+**SQL adicional ejecutado en Supabase:**
+```sql
+ALTER TABLE public.miembros_proyecto
+  ADD CONSTRAINT fk_miembros_proyecto_perfiles
+  FOREIGN KEY (user_id) REFERENCES public.perfiles(id);
+```
 
 **Flujo completo:**
 ```
@@ -104,13 +112,14 @@ Registro → /completar-perfil (nombre) → /mis-proyectos
 
 **Checklist de verificación:**
 - [x] Ejecutar `supabase/fase3_rpc.sql` en Supabase SQL Editor
-- [ ] Registrar cuenta nueva → redirige a `/completar-perfil`
-- [ ] Rellenar nombre → redirige a `/mis-proyectos`
-- [ ] Cuenta con nombre ya rellenado → entra directamente a `/mis-proyectos`
-- [ ] Crear proyecto personal → aparece en la lista
-- [ ] Crear proyecto compartido → aparece con código de 6 chars
-- [ ] Desde cuenta B: unirse con ese código → aparece el proyecto compartido
-- [ ] Verificar en Table Editor: ambos en `miembros_proyecto` del proyecto compartido
+- [x] Foreign key `miembros_proyecto → perfiles` añadida en Supabase
+- [x] Registrar cuenta nueva → redirige a `/completar-perfil`
+- [x] Rellenar nombre → redirige a `/mis-proyectos`
+- [x] Cuenta con nombre ya rellenado → entra directamente a `/mis-proyectos`
+- [x] Crear proyecto personal → aparece en la lista
+- [x] Crear proyecto compartido → aparece con código de 6 chars
+- [x] Desde cuenta B: unirse con ese código → aparece el proyecto compartido
+- [x] Verificar en Table Editor: ambos en `miembros_proyecto` del proyecto compartido
 
 ---
 
