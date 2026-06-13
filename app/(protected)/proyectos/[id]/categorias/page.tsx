@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
-import DonutCategorias from '@/components/categorias/DonutCategorias'
+import DonutCarousel from '@/components/categorias/DonutCarousel'
 import ListaCategorias from '@/components/categorias/ListaCategorias'
 
 export default async function CategoriasPage({
@@ -42,16 +42,21 @@ export default async function CategoriasPage({
     .eq('tipo', 'gasto')
     .order('nombre')
 
+  // Todos los movimientos del mes (gastos e ingresos) en una sola query
   const { data: movimientos } = await supabase
     .from('movimientos')
-    .select('cantidad, categorias(id, nombre)')
+    .select('tipo, cantidad, categorias(id, nombre)')
     .eq('proyecto_id', id)
-    .eq('tipo', 'gasto')
     .gte('fecha', primerDia)
     .lte('fecha', ultimoDia)
 
+  const movimientosGasto = movimientos?.filter(m => m.tipo === 'gasto') ?? []
+  const totalIngresos = movimientos
+    ?.filter(m => m.tipo === 'ingreso')
+    .reduce((s, m) => s + Number(m.cantidad), 0) ?? 0
+
   const totalesPorCat = new Map<string, number>()
-  for (const m of movimientos ?? []) {
+  for (const m of movimientosGasto) {
     const cat = m.categorias as any
     if (!cat?.id) continue
     totalesPorCat.set(cat.id, (totalesPorCat.get(cat.id) ?? 0) + Number(m.cantidad))
@@ -104,13 +109,17 @@ export default async function CategoriasPage({
           </Link>
         </div>
 
-        {/* Donut */}
-        <DonutCategorias categorias={categoriaStats} totalGastos={totalGastos} />
+        {/* Carrusel de donuts */}
+        <DonutCarousel
+          categorias={categoriaStats}
+          totalGastos={totalGastos}
+          totalIngresos={totalIngresos}
+        />
 
         {/* Lista de categorías */}
         <div className="space-y-2">
           <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
-            Gastos por categoría
+            Detalle por categoría
           </h2>
           <ListaCategorias
             categorias={categoriaStats}

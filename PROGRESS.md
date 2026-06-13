@@ -317,13 +317,33 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
-## Pendientes futuros (fuera de MVP actual)
+---
 
-- **Gráfico de barras semanal**: visión general de gastos por semana (aplazado del plan original de Fase 8).
-- **Sistema de presupuestos por categoría** (Fase 9 o posterior).
+### FASE 9 — Nuevas categorías + Donut de balance ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Dos categorías nuevas predefinidas: Ahorro (PiggyBank, #10b981) y Inversión (TrendingUp, #8b5cf6)
+- Trigger de nuevos proyectos actualizado para incluir las 10 categorías
+- SQL idempotente para añadir Ahorro e Inversión a los proyectos existentes (`WHERE NOT EXISTS`)
+- Nuevo donut "Ingresos vs gastos": dos segmentos (rojo=gastos, verde=restante), muestra saldo, mensaje dinámico (% gastado / exceso / sin ingresos)
+- Carrusel horizontal con scroll-snap nativo (sin dependencias): un donut visible a la vez, deslizando o pulsando puntos se pasa al otro. Título del `<h2>` cambia dinámicamente según el slide activo.
+
+**Archivos creados:**
+- `components/categorias/DonutBalanceMes.tsx` — donut de balance ingresos/gastos
+- `components/categorias/DonutCarousel.tsx` — carrusel con scroll-snap, puntos navegables, título dinámico
+- `supabase/fase9_categorias.sql` — SQL idempotente para nuevas categorías + trigger actualizado
+
+**Archivos modificados:**
+- `lib/iconos-categorias.ts` — PiggyBank y TrendingUp añadidos
+- `app/(protected)/proyectos/[id]/categorias/page.tsx` — query ampliada a todos los tipos de movimiento, cálculo de totalIngresos, DonutCarousel en lugar de los dos donuts apilados
+
+**SQL a ejecutar en Supabase** (`supabase/fase9_categorias.sql`):
+- Actualiza el trigger `handle_new_proyecto_categorias` para incluir Ahorro e Inversión
+- Inserta Ahorro e Inversión en todos los proyectos existentes (idempotente)
 
 ---
 
-## Próximo paso
+## Pendientes futuros (fuera de MVP actual)
 
-**FASE 9** — pendiente de definir.
+- **Gráfico de barras semanal**: visión general de gastos por semana (aplazado del plan original de Fase 8).
+- **Sistema de presupuestos por categoría** (Fase 10 o posterior).
