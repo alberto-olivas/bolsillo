@@ -14,13 +14,13 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         src: '/logo-bolsillo.png',
         sizes: 'any',
-        type: 'image/png',
+        type: 'image/jpeg',
         purpose: 'any',
       },
       {
         src: '/logo-bolsillo.png',
         sizes: 'any',
-        type: 'image/png',
+        type: 'image/jpeg',
         purpose: 'maskable',
       },
     ],
