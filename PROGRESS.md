@@ -343,7 +343,32 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
+---
+
+### FASE 10 — Pantalla de Ajustes ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- Nueva ruta `/ajustes` con 5 secciones: Cuenta, Perfil, Apariencia, Aplicación, Sesión
+- Editar nombre: Server Action `editarNombre()` + Client Component `EditarNombreForm`, mismo patrón que el resto de la app (`window.location.reload()`)
+- ThemeToggle consolidado en /ajustes (eliminado de BottomNav y cabecera de mis-proyectos)
+- LogoutButton movido a /ajustes (eliminado de cabecera de mis-proyectos)
+- Sección "Instalar app" como placeholder desactivado con badge "Próximamente" (para Fase 11 PWA)
+- BottomNav: icono Settings (engranaje) como tercer item; cabecera de mis-proyectos: icono engranaje enlazando a /ajustes
+- Botón `←` en /ajustes enlaza siempre a /mis-proyectos (no `router.back()` para evitar comportamiento impredecible)
+
+**Archivos creados:**
+- `app/(protected)/ajustes/page.tsx` — Server Component con fetch de perfil y email
+- `app/actions/perfil.ts` — Server Action `editarNombre()`
+- `components/ajustes/EditarNombreForm.tsx` — formulario de edición de nombre
+
+**Archivos modificados:**
+- `components/nav/BottomNav.tsx` — ThemeToggle eliminado, icono Settings añadido
+- `app/(protected)/mis-proyectos/page.tsx` — ThemeToggle y LogoutButton eliminados, icono engranaje añadido
+
+---
+
 ## Pendientes futuros (fuera de MVP actual)
 
-- **Gráfico de barras semanal**: visión general de gastos por semana (aplazado del plan original de Fase 8).
-- **Sistema de presupuestos por categoría** (Fase 10 o posterior).
+- **Fase 11 — PWA**: botón "Instalar app" ya tiene placeholder en /ajustes.
+- **Gráfico de barras semanal**: visión general de gastos por semana.
+- **Sistema de presupuestos por categoría**.
