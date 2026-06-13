@@ -19,8 +19,11 @@ export default function InstalarAppButton() {
     const esIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
     if (esIOS) { setEstado('ios'); return }
 
-    // No iOS: mostrar "manual" de inmediato, mejorar a "instalable" si llega el prompt
-    setEstado('manual')
+    const esAndroid = /Android/i.test(navigator.userAgent)
+
+    // En móvil mostramos instrucciones manuales de inmediato como fallback.
+    // En PC esperamos el prompt — si no llega, ocultamos la sección.
+    if (esAndroid) setEstado('manual')
 
     const handler = (e: Event) => {
       e.preventDefault()
