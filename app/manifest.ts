@@ -8,19 +8,14 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/mis-proyectos',
     display: 'standalone',
     background_color: '#0a0a0a',
-    theme_color: '#4f46e5',
+    theme_color: '#0a0a0a',
     orientation: 'portrait',
     icons: [
       {
-        src: '/api/pwa-icon?size=192',
-        sizes: '192x192',
+        src: '/logo-bolsillo.png',
+        sizes: 'any',
         type: 'image/png',
-      },
-      {
-        src: '/api/pwa-icon?size=512',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable',
+        purpose: 'any maskable',
       },
     ],
   }

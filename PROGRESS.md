@@ -367,8 +367,80 @@ Abrir en el navegador: `http://localhost:3000`
 
 ---
 
-## Pendientes futuros (fuera de MVP actual)
+---
 
-- **Fase 11 — PWA**: botón "Instalar app" ya tiene placeholder en /ajustes.
+### FASE 11 — PWA instalable ✓ (completada 2026-06-13)
+
+**Qué se hizo:**
+- `app/manifest.ts`: manifest nativo Next.js con nombre, colores, `start_url`, `display: standalone`
+- Iconos PWA generados dinámicamente vía `app/api/pwa-icon/route.ts` (next/og, React.createElement sin JSX)
+- Apple touch icon via `app/apple-icon.tsx` (same pattern)
+- Service worker manual `public/sw.js`: cache-first solo para `/_next/static/`, nunca para Supabase ni HTML. Versionado con `CACHE = 'bolsillo-v1'` y comentario visible para recordar incrementarlo en deploys
+- `InstalarAppButton`: detección de plataforma (standalone, iOS, Android), captura de `beforeinstallprompt` para Android, modal iOS con icono SVG del botón Compartir de Safari
+- Metadata `appleWebApp` y `viewport.themeColor` en `app/layout.tsx`
+- Service worker registrado con `<Script strategy="afterInteractive">` en layout
+
+**Archivos creados:**
+- `app/manifest.ts`
+- `app/api/pwa-icon/route.ts` (eliminado en Fase 14, sustituido por logo real)
+- `app/apple-icon.tsx` (eliminado en Fase 14, sustituido por logo real)
+- `public/sw.js`
+- `components/ajustes/InstalarAppButton.tsx`
+
+**Archivos modificados:**
+- `app/layout.tsx` — metadata PWA + Script service worker
+
+---
+
+### FASE 12 — Sistema de Presupuestos ✓ (completada 2026-06-14)
+
+**Qué se hizo:**
+- Tabla `presupuestos` en Supabase con dos índices únicos parciales: uno para fijos (`es_fijo=true AND activo=true`) y otro para puntuales (`es_fijo=false` + `mes_ano`). Fijo y puntual coexisten para la misma categoría; el puntual tiene prioridad en la UI.
+- Soft delete (`activo=false`) para mantener historial sin romper restricciones de índice
+- RLS con 4 políticas (`es_miembro(proyecto_id)`) — mismo patrón que el resto de tablas
+- Server Actions: `guardarPresupuesto()` (upsert manual con maybeSingle) y `eliminarPresupuesto()` (soft delete)
+- `PresupuestoModal`: bottom sheet con límite, toggle fijo/puntual, guardar y eliminar. Si cambia el tipo, elimina el anterior antes de crear el nuevo
+- `ListaPresupuestos`: split "con presupuesto" / "sin presupuesto", barras de progreso verde/rojo, exceso mostrado en rojo
+- Presupuestos como sección independiente en el BottomNav (icono `Wallet`, entre Categorías y Ajustes)
+- Nueva ruta `/proyectos/[id]/presupuestos` con selector de mes y `ListaPresupuestos`
+- Vista de Categorías simplificada (sin tabs, sin fetch de presupuestos)
+
+**SQL ejecutado en Supabase** (`supabase/fase12_presupuestos.sql` ✓)
+
+**Archivos creados:**
+- `supabase/fase12_presupuestos.sql`
+- `app/actions/presupuestos.ts` — `guardarPresupuesto()`, `eliminarPresupuesto()`
+- `components/categorias/PresupuestoModal.tsx`
+- `components/categorias/ListaPresupuestos.tsx`
+- `app/(protected)/proyectos/[id]/presupuestos/page.tsx`
+
+**Archivos modificados:**
+- `components/nav/BottomNav.tsx` — 4º icono Presupuestos (Wallet); match de Movimientos actualizado para excluir /presupuestos y /ajustes
+- `app/(protected)/proyectos/[id]/categorias/page.tsx` — simplificado (sin tabs ni presupuestos fetch)
+- `app/(protected)/ajustes/page.tsx` — BottomNav integrado; botón volver eliminado; `?proyecto=` preserva contexto del proyecto
+
+---
+
+### FASE 14 — Logo definitivo ✓ (completada 2026-06-14)
+
+**Qué se hizo:**
+- Logo `public/logo-bolsillo.png` (1254×1254px, bolsillo con moneda €, fondo negro) como fuente única para todos los iconos
+- Manifest e iconos apuntan a `/logo-bolsillo.png` con `sizes: 'any'` y `purpose: 'any maskable'` — el navegador escala sin procesamiento adicional
+- `app/api/pwa-icon/route.ts` y `app/apple-icon.tsx` eliminados (ya no hacen falta)
+- `theme_color` y `themeColor` actualizados de `#4f46e5` (indigo) a `#0a0a0a` (negro del logo)
+- `icons.icon` e `icons.apple` en metadata del layout apuntan al logo
+
+**Archivos modificados:**
+- `app/manifest.ts` — iconos → `/logo-bolsillo.png`, `theme_color` → `#0a0a0a`
+- `app/layout.tsx` — `icons.icon`/`icons.apple` → `/logo-bolsillo.png`, `themeColor` → `#0a0a0a`
+
+**Archivos eliminados:**
+- `app/api/pwa-icon/route.ts`
+- `app/apple-icon.tsx`
+
+---
+
+## Pendientes futuros
+
 - **Gráfico de barras semanal**: visión general de gastos por semana.
-- **Sistema de presupuestos por categoría**.
+- **Editar/eliminar categorías**: gestión completa del catálogo de categorías.

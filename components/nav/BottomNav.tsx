@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { LayoutList, ChartPie, Settings } from 'lucide-react'
+import { LayoutList, ChartPie, Wallet, Settings } from 'lucide-react'
 
 type NavItem = {
   href: (id: string, mesParam: string) => string
@@ -16,13 +16,19 @@ const NAV_ITEMS: NavItem[] = [
     href: (id, mes) => `/proyectos/${id}${mes}`,
     icon: LayoutList,
     label: 'Movimientos',
-    match: (p) => !p.includes('/categorias'),
+    match: (p) => !p.includes('/categorias') && !p.includes('/presupuestos') && !p.startsWith('/ajustes'),
   },
   {
     href: (id, mes) => `/proyectos/${id}/categorias${mes}`,
     icon: ChartPie,
     label: 'Categorías',
     match: (p) => p.includes('/categorias'),
+  },
+  {
+    href: (id, mes) => `/proyectos/${id}/presupuestos${mes}`,
+    icon: Wallet,
+    label: 'Presupuestos',
+    match: (p) => p.includes('/presupuestos'),
   },
 ]
 
@@ -42,7 +48,7 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
             <Link
               key={item.label}
               href={item.href(proyectoId, mesParam)}
-              className={`flex flex-col items-center gap-1 px-6 py-1 rounded-xl transition-colors ${
+              className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${
                 activo ? 'text-indigo-500' : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'
               }`}
             >
@@ -52,8 +58,8 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
           )
         })}
         <Link
-          href="/ajustes"
-          className={`flex flex-col items-center gap-1 px-6 py-1 rounded-xl transition-colors ${
+          href={`/ajustes?proyecto=${proyectoId}`}
+          className={`flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-colors ${
             pathname === '/ajustes' ? 'text-indigo-500' : 'text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300'
           }`}
         >
