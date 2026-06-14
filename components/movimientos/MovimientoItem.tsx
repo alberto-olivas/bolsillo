@@ -125,7 +125,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           value={editCantidad}
           onChange={e => setEditCantidad(e.target.value)}
           placeholder="0.00"
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Categoría */}
@@ -156,7 +156,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           type="date"
           value={editFecha}
           onChange={e => setEditFecha(e.target.value)}
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Descripción */}
@@ -166,7 +166,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           onChange={e => setEditDescripcion(e.target.value)}
           placeholder="Descripción (opcional)"
           maxLength={100}
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Gasto fijo */}
@@ -188,7 +188,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
             value={editDiaDelMes}
             onChange={e => setEditDiaDelMes(Math.min(31, Math.max(1, Number(e.target.value))))}
             placeholder="Día del mes (1-31)"
-            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-3 py-2.5 text-sm border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-3 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
           />
         )}
 

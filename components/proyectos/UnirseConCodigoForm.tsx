@@ -59,7 +59,7 @@ export default function UnirseConCodigoForm() {
             placeholder="AB3X9K"
             maxLength={6}
             autoFocus
-            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl pl-9 pr-4 py-3 text-sm font-mono tracking-widest border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-[#D85A30] focus:ring-1 focus:ring-[#D85A30] uppercase"
+            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl pl-9 pr-4 py-3 text-base font-mono tracking-widest border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-[#D85A30] focus:ring-1 focus:ring-[#D85A30] uppercase"
           />
         </div>
         {error && <p className="text-red-400 text-xs">{error}</p>}
