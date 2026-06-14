@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 import { ICONOS } from '@/lib/iconos-categorias'
+import { mesAnterior, mesSiguiente } from '@/lib/utils-fecha'
 import MovimientoItem from '@/components/movimientos/MovimientoItem'
 
 type Categoria = {
@@ -64,11 +65,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
   const mesLabel = new Date(year, month - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
 
   function navMes(delta: -1 | 1) {
-    let nm = month + delta
-    let ny = year
-    if (nm < 1) { nm = 12; ny-- }
-    if (nm > 12) { nm = 1; ny++ }
-    const nuevo = `${ny}-${String(nm).padStart(2, '0')}`
+    const nuevo = delta === -1 ? mesAnterior(mesAno) : mesSiguiente(mesAno)
     router.push(`/proyectos/${proyectoId}?mes=${nuevo}`)
   }
 

@@ -11,6 +11,8 @@ import PendientesConfirmar from '@/components/movimientos/PendientesConfirmar'
 import ListaMovimientos from '@/components/movimientos/ListaMovimientos'
 import DonutCategorias from '@/components/categorias/DonutCategorias'
 import SelectorProyecto from '@/components/proyectos/SelectorProyecto'
+import ArrastreMes from '@/components/movimientos/ArrastreMes'
+import { mesAnterior } from '@/lib/utils-fecha'
 
 export default async function ProyectoPage({
   params,
@@ -87,6 +89,68 @@ export default async function ProyectoPage({
     .eq('estado', 'pendiente')
     .order('created_at')
 
+  // ---- Arrastre de saldo del mes anterior ----
+  const mesAnoAnterior = mesAnterior(mesAno)
+  const [yearAnt, monthAnt] = mesAnoAnterior.split('-').map(Number)
+  const mesLabelAnterior = new Date(yearAnt, monthAnt - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+
+  const { data: arrastreActual } = await supabase
+    .from('arrastres_mes')
+    .select('id, importe, estado')
+    .eq('proyecto_id', id)
+    .eq('mes_ano', mesAno)
+    .maybeSingle()
+
+  let arrastrePendiente: { id: string; importe: number } | null = null
+  let arrastreConfirmadoImporte = 0
+
+  if (arrastreActual?.estado === 'confirmado') {
+    arrastreConfirmadoImporte = Number(arrastreActual.importe)
+  } else if (arrastreActual?.estado !== 'descartado') {
+    // No existe o está pendiente — calcular/recalcular saldo del mes anterior
+    const { data: arrastreMesAnterior } = await supabase
+      .from('arrastres_mes')
+      .select('importe, estado')
+      .eq('proyecto_id', id)
+      .eq('mes_ano', mesAnoAnterior)
+      .maybeSingle()
+
+    const arrastreConfirmadoAnterior = arrastreMesAnterior?.estado === 'confirmado'
+      ? Number(arrastreMesAnterior.importe)
+      : 0
+
+    const primerDiaAnt = `${mesAnoAnterior}-01`
+    const ultimoDiaAnt = new Date(yearAnt, monthAnt, 0).toISOString().split('T')[0]
+
+    const { data: movsAnt } = await supabase
+      .from('movimientos')
+      .select('tipo, cantidad')
+      .eq('proyecto_id', id)
+      .gte('fecha', primerDiaAnt)
+      .lte('fecha', ultimoDiaAnt)
+
+    const ingresosAnt = (movsAnt ?? []).filter(m => m.tipo === 'ingreso').reduce((s, m) => s + Number(m.cantidad), 0)
+    const gastosAnt = (movsAnt ?? []).filter(m => m.tipo === 'gasto').reduce((s, m) => s + Number(m.cantidad), 0)
+    const saldoAnterior = arrastreConfirmadoAnterior + ingresosAnt - gastosAnt
+
+    if (Math.abs(saldoAnterior) >= 0.005) {
+      if (arrastreActual?.estado === 'pendiente') {
+        await supabase
+          .from('arrastres_mes')
+          .update({ importe: saldoAnterior })
+          .eq('id', arrastreActual.id)
+        arrastrePendiente = { id: arrastreActual.id, importe: saldoAnterior }
+      } else {
+        const { data: nuevo } = await supabase
+          .from('arrastres_mes')
+          .insert({ proyecto_id: id, mes_ano: mesAno, importe: saldoAnterior, estado: 'pendiente' })
+          .select('id, importe')
+          .single()
+        if (nuevo) arrastrePendiente = { id: nuevo.id, importe: Number(nuevo.importe) }
+      }
+    }
+  }
+
   const totalesCat = new Map<string, { nombre: string; icono: string; color: string; catId: string; total: number }>()
   for (const m of movimientos ?? []) {
     if (m.tipo !== 'gasto') continue
@@ -125,7 +189,11 @@ export default async function ProyectoPage({
         </div>
 
         {/* Resumen del mes */}
-        <ResumenMes movimientos={movimientos ?? []} />
+        <ResumenMes
+          movimientos={movimientos ?? []}
+          arrastreConfirmado={arrastreConfirmadoImporte}
+          mesLabelAnterior={mesLabelAnterior}
+        />
 
         {/* Mini donut de categorías */}
         {miniDonutData.length > 0 && (
@@ -142,6 +210,14 @@ export default async function ProyectoPage({
               Ver todas las categorías →
             </Link>
           </div>
+        )}
+
+        {/* Arrastre del mes anterior */}
+        {arrastrePendiente && (
+          <ArrastreMes
+            arrastre={arrastrePendiente}
+            mesLabelAnterior={mesLabelAnterior}
+          />
         )}
 
         {/* Pendientes de confirmar */}
