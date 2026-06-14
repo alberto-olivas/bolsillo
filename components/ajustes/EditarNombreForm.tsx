@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { editarNombre } from '@/app/actions/perfil'
 
 export default function EditarNombreForm({ nombreActual }: { nombreActual: string }) {
+  const router = useRouter()
   const [nombre, setNombre] = useState(nombreActual)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -18,7 +20,7 @@ export default function EditarNombreForm({ nombreActual }: { nombreActual: strin
       setError(result.error)
       setLoading(false)
     } else {
-      window.location.reload()
+      router.refresh()
     }
   }
 

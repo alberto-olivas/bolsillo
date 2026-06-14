@@ -28,45 +28,39 @@ export default async function ProyectoPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: proyecto } = await supabase
-    .from('proyectos')
-    .select('id, nombre, tipo')
-    .eq('id', id)
-    .single()
-  if (!proyecto) redirect('/mis-proyectos')
-
-  const { data: todosLosProyectos } = await supabase
-    .from('proyectos')
-    .select('id, nombre, tipo')
-    .order('nombre')
-
+  // Pre-compute all date values before any query
   const hoy = new Date()
   const mesAno = mes ?? `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
   const [year, month] = mesAno.split('-').map(Number)
   const primerDia = `${mesAno}-01`
   const ultimoDia = new Date(year, month, 0).toISOString().split('T')[0]
   const mesLabel = new Date(year, month - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+  const mesAnoAnterior = mesAnterior(mesAno)
+  const [yearAnt, monthAnt] = mesAnoAnterior.split('-').map(Number)
+  const mesLabelAnterior = new Date(yearAnt, monthAnt - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
 
-  const { data: movimientos } = await supabase
-    .from('movimientos')
-    .select('id, tipo, cantidad, fecha, descripcion, es_fijo, gasto_fijo_id, categorias(nombre, icono, color), perfiles(nombre, email), gastos_fijos!gasto_fijo_id(dia_del_mes)')
-    .eq('proyecto_id', id)
-    .gte('fecha', primerDia)
-    .lte('fecha', ultimoDia)
-    .order('fecha', { ascending: false })
+  // Batch 1: 6 queries en paralelo (todas independientes entre sí)
+  const [
+    { data: proyecto },
+    { data: todosLosProyectos },
+    { data: movimientos },
+    { data: categorias },
+    { data: gastosFijos },
+    { data: arrastreActual },
+  ] = await Promise.all([
+    supabase.from('proyectos').select('id, nombre, tipo').eq('id', id).single(),
+    supabase.from('proyectos').select('id, nombre, tipo').order('nombre'),
+    supabase.from('movimientos')
+      .select('id, tipo, cantidad, fecha, descripcion, es_fijo, gasto_fijo_id, categorias(nombre, icono, color), perfiles(nombre, email), gastos_fijos!gasto_fijo_id(dia_del_mes)')
+      .eq('proyecto_id', id).gte('fecha', primerDia).lte('fecha', ultimoDia).order('fecha', { ascending: false }),
+    supabase.from('categorias').select('id, nombre, icono, color, tipo').eq('proyecto_id', id).order('nombre'),
+    supabase.from('gastos_fijos').select('id').eq('proyecto_id', id).eq('activo', true),
+    supabase.from('arrastres_mes').select('id, importe, estado').eq('proyecto_id', id).eq('mes_ano', mesAno).maybeSingle(),
+  ])
 
-  const { data: categorias } = await supabase
-    .from('categorias')
-    .select('id, nombre, icono, color, tipo')
-    .eq('proyecto_id', id)
-    .order('nombre')
+  if (!proyecto) redirect('/mis-proyectos')
 
-  const { data: gastosFijos } = await supabase
-    .from('gastos_fijos')
-    .select('id')
-    .eq('proyecto_id', id)
-    .eq('activo', true)
-
+  // Pendientes: upsert luego select (secuencial, dependen del upsert)
   if (gastosFijos && gastosFijos.length > 0) {
     await supabase
       .from('pendientes_confirmar')
@@ -89,56 +83,31 @@ export default async function ProyectoPage({
     .eq('estado', 'pendiente')
     .order('created_at')
 
-  // ---- Arrastre de saldo del mes anterior ----
-  const mesAnoAnterior = mesAnterior(mesAno)
-  const [yearAnt, monthAnt] = mesAnoAnterior.split('-').map(Number)
-  const mesLabelAnterior = new Date(yearAnt, monthAnt - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
-
-  const { data: arrastreActual } = await supabase
-    .from('arrastres_mes')
-    .select('id, importe, estado')
-    .eq('proyecto_id', id)
-    .eq('mes_ano', mesAno)
-    .maybeSingle()
-
+  // Arrastre: sub-queries paralelas cuando es necesario recalcular
   let arrastrePendiente: { id: string; importe: number } | null = null
   let arrastreConfirmadoImporte = 0
 
   if (arrastreActual?.estado === 'confirmado') {
     arrastreConfirmadoImporte = Number(arrastreActual.importe)
   } else if (arrastreActual?.estado !== 'descartado') {
-    // No existe o está pendiente — calcular/recalcular saldo del mes anterior
-    const { data: arrastreMesAnterior } = await supabase
-      .from('arrastres_mes')
-      .select('importe, estado')
-      .eq('proyecto_id', id)
-      .eq('mes_ano', mesAnoAnterior)
-      .maybeSingle()
-
-    const arrastreConfirmadoAnterior = arrastreMesAnterior?.estado === 'confirmado'
-      ? Number(arrastreMesAnterior.importe)
-      : 0
-
     const primerDiaAnt = `${mesAnoAnterior}-01`
     const ultimoDiaAnt = new Date(yearAnt, monthAnt, 0).toISOString().split('T')[0]
 
-    const { data: movsAnt } = await supabase
-      .from('movimientos')
-      .select('tipo, cantidad')
-      .eq('proyecto_id', id)
-      .gte('fecha', primerDiaAnt)
-      .lte('fecha', ultimoDiaAnt)
+    // Estas dos sub-queries son independientes entre sí
+    const [{ data: arrastreMesAnterior }, { data: movsAnt }] = await Promise.all([
+      supabase.from('arrastres_mes').select('importe, estado').eq('proyecto_id', id).eq('mes_ano', mesAnoAnterior).maybeSingle(),
+      supabase.from('movimientos').select('tipo, cantidad').eq('proyecto_id', id).gte('fecha', primerDiaAnt).lte('fecha', ultimoDiaAnt),
+    ])
 
+    const arrastreConfirmadoAnterior = arrastreMesAnterior?.estado === 'confirmado'
+      ? Number(arrastreMesAnterior.importe) : 0
     const ingresosAnt = (movsAnt ?? []).filter(m => m.tipo === 'ingreso').reduce((s, m) => s + Number(m.cantidad), 0)
     const gastosAnt = (movsAnt ?? []).filter(m => m.tipo === 'gasto').reduce((s, m) => s + Number(m.cantidad), 0)
     const saldoAnterior = arrastreConfirmadoAnterior + ingresosAnt - gastosAnt
 
     if (Math.abs(saldoAnterior) >= 0.005) {
       if (arrastreActual?.estado === 'pendiente') {
-        await supabase
-          .from('arrastres_mes')
-          .update({ importe: saldoAnterior })
-          .eq('id', arrastreActual.id)
+        await supabase.from('arrastres_mes').update({ importe: saldoAnterior }).eq('id', arrastreActual.id)
         arrastrePendiente = { id: arrastreActual.id, importe: saldoAnterior }
       } else {
         const { data: nuevo } = await supabase
