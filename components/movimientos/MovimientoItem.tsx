@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Package, Pencil, Trash2 } from 'lucide-react'
 import { editarMovimiento, eliminarMovimiento } from '@/app/actions/movimientos'
@@ -31,6 +32,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
   const [modo, setModo] = useState<'normal' | 'editar' | 'eliminar'>('normal')
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const [editCantidad, setEditCantidad] = useState(String(Number(cantidad)))
   const [editCategoriaId, setEditCategoriaId] = useState(categoria ? (categorias.find(c => c.nombre === categoria.nombre)?.id ?? '') : '')
@@ -57,7 +59,8 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
     setError('')
     try {
       await eliminarMovimiento(id)
-      window.location.reload()
+      setCargando(false)
+      router.refresh()
     } catch {
       setError('Error al eliminar.')
       setCargando(false)
@@ -78,7 +81,8 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
     setError('')
     try {
       await editarMovimiento(id, cantidadNum, editCategoriaId, editFecha, editDescripcion || undefined, editEsFijo, editEsFijo ? editDiaDelMes : undefined, gastoFijoId)
-      window.location.reload()
+      setCargando(false)
+      router.refresh()
     } catch {
       setError('Error al guardar.')
       setCargando(false)

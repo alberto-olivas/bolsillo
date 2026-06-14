@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { crearMovimiento } from '@/app/actions/movimientos'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Plus, Package } from 'lucide-react'
@@ -41,6 +42,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   const [diaDelMes, setDiaDelMes] = useState(1)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const categoriasFiltradas = categorias.filter(c => c.tipo === tipo)
 
@@ -63,7 +65,8 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
     setError('')
     try {
       await crearMovimiento(proyectoId, tipo, cantidadNum, categoriaId, fecha, descripcion || undefined, esFijo, esFijo ? diaDelMes : undefined)
-      window.location.reload()
+      setCargando(false)
+      router.refresh()
     } catch {
       setError('Error al guardar. Inténtalo de nuevo.')
       setCargando(false)

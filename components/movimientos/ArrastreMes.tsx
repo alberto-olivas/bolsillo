@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ArrowLeftRight, X, Check } from 'lucide-react'
 import { confirmarArrastre, descartarArrastre } from '@/app/actions/arrastres'
 
@@ -16,6 +17,7 @@ function fmt(n: number) {
 export default function ArrastreMes({ arrastre, mesLabelAnterior }: Props) {
   const [cargando, setCargando] = useState<'confirmar' | 'descartar' | null>(null)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const positivo = arrastre.importe >= 0
 
@@ -24,7 +26,8 @@ export default function ArrastreMes({ arrastre, mesLabelAnterior }: Props) {
     setError('')
     try {
       await confirmarArrastre(arrastre.id)
-      window.location.reload()
+      setCargando(null)
+      router.refresh()
     } catch (e: any) {
       setError(e.message)
       setCargando(null)
@@ -36,7 +39,8 @@ export default function ArrastreMes({ arrastre, mesLabelAnterior }: Props) {
     setError('')
     try {
       await descartarArrastre(arrastre.id)
-      window.location.reload()
+      setCargando(null)
+      router.refresh()
     } catch (e: any) {
       setError(e.message)
       setCargando(null)

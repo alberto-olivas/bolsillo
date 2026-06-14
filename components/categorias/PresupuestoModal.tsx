@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Package } from 'lucide-react'
 import { guardarPresupuesto, eliminarPresupuesto } from '@/app/actions/presupuestos'
@@ -38,6 +39,7 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
   const [loading, setLoading] = useState(false)
   const [loadingEliminar, setLoadingEliminar] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const Icono = ICONOS[categoria.icono] ?? Package
   const limite = parseFloat(limiteStr.replace(',', '.'))
@@ -58,7 +60,8 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
       setError(result.error)
       setLoading(false)
     } else {
-      window.location.reload()
+      setLoading(false)
+      router.refresh()
     }
   }
 
@@ -70,7 +73,8 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
       setError(result.error)
       setLoadingEliminar(false)
     } else {
-      window.location.reload()
+      setLoadingEliminar(false)
+      router.refresh()
     }
   }
 

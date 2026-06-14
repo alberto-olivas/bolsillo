@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Package, Check, X } from 'lucide-react'
 import { confirmarPendiente, descartarPendiente } from '@/app/actions/pendientes'
@@ -30,6 +31,7 @@ function fmt(n: number) {
 function PendienteRow({ pendiente, proyectoId }: { pendiente: Pendiente; proyectoId: string }) {
   const [cargando, setCargando] = useState<'confirmar' | 'descartar' | null>(null)
   const [error, setError] = useState('')
+  const router = useRouter()
 
   const gf = pendiente.gastos_fijos
   if (!gf) return null
@@ -43,7 +45,8 @@ function PendienteRow({ pendiente, proyectoId }: { pendiente: Pendiente; proyect
     setError('')
     try {
       await confirmarPendiente(pendiente.id, pendiente.gasto_fijo_id, proyectoId)
-      window.location.reload()
+      setCargando(null)
+      router.refresh()
     } catch {
       setError('Error al confirmar.')
       setCargando(null)
@@ -55,7 +58,8 @@ function PendienteRow({ pendiente, proyectoId }: { pendiente: Pendiente; proyect
     setError('')
     try {
       await descartarPendiente(pendiente.id)
-      window.location.reload()
+      setCargando(null)
+      router.refresh()
     } catch {
       setError('Error al descartar.')
       setCargando(null)
