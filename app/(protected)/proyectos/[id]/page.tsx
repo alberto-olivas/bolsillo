@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { Suspense } from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -25,8 +25,6 @@ export default async function ProyectoPage({
   const { mes, cat } = await searchParams
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
 
   // Pre-compute all date values before any query
   const hoy = new Date()
@@ -39,8 +37,9 @@ export default async function ProyectoPage({
   const [yearAnt, monthAnt] = mesAnoAnterior.split('-').map(Number)
   const mesLabelAnterior = new Date(yearAnt, monthAnt - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
 
-  // Batch 1: 6 queries en paralelo (todas independientes entre sí)
+  // Batch 1: auth + 6 queries en paralelo
   const [
+    user,
     { data: proyecto },
     { data: todosLosProyectos },
     { data: movimientos },
@@ -48,6 +47,7 @@ export default async function ProyectoPage({
     { data: gastosFijos },
     { data: arrastreActual },
   ] = await Promise.all([
+    getCachedUser(),
     supabase.from('proyectos').select('id, nombre, tipo').eq('id', id).single(),
     supabase.from('proyectos').select('id, nombre, tipo').order('nombre'),
     supabase.from('movimientos')
@@ -57,6 +57,8 @@ export default async function ProyectoPage({
     supabase.from('gastos_fijos').select('id').eq('proyecto_id', id).eq('activo', true),
     supabase.from('arrastres_mes').select('id, importe, estado').eq('proyecto_id', id).eq('mes_ano', mesAno).maybeSingle(),
   ])
+
+  if (!user) redirect('/login')
 
   if (!proyecto) redirect('/mis-proyectos')
 

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Settings } from 'lucide-react'
@@ -10,19 +10,12 @@ import UnirseConCodigoForm from '@/components/proyectos/UnirseConCodigoForm'
 
 export default async function MisProyectosPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getCachedUser()
   if (!user) redirect('/login')
 
-  const { data: perfil } = await supabase
-    .from('perfiles')
-    .select('nombre, email')
-    .eq('id', user.id)
-    .single()
-
-  const { data: proyectos } = await supabase
-    .from('proyectos')
-    .select(`
+  const [{ data: perfil }, { data: proyectos }] = await Promise.all([
+    supabase.from('perfiles').select('nombre, email').eq('id', user.id).single(),
+    supabase.from('proyectos').select(`
       id,
       nombre,
       tipo,
@@ -34,8 +27,8 @@ export default async function MisProyectosPage() {
           email
         )
       )
-    `)
-    .order('created_at', { ascending: false })
+    `).order('created_at', { ascending: false }),
+  ])
 
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950">

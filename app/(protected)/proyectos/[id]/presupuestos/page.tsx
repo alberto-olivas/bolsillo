@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -17,15 +17,6 @@ export default async function PresupuestosPage({
   const { mes } = await searchParams
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: proyecto } = await supabase
-    .from('proyectos')
-    .select('id, nombre')
-    .eq('id', id)
-    .single()
-  if (!proyecto) redirect('/mis-proyectos')
 
   const hoy = new Date()
   const mesAno = mes ?? `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
@@ -34,20 +25,22 @@ export default async function PresupuestosPage({
   const ultimoDia = new Date(year, month, 0).toISOString().split('T')[0]
   const mesLabel = new Date(year, month - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
 
-  const { data: categorias } = await supabase
-    .from('categorias')
-    .select('id, nombre, icono, color')
-    .eq('proyecto_id', id)
-    .eq('tipo', 'gasto')
-    .order('nombre')
+  const [
+    user,
+    { data: proyecto },
+    { data: categorias },
+    { data: movimientos },
+    { data: presupuestosRaw },
+  ] = await Promise.all([
+    getCachedUser(),
+    supabase.from('proyectos').select('id, nombre').eq('id', id).single(),
+    supabase.from('categorias').select('id, nombre, icono, color').eq('proyecto_id', id).eq('tipo', 'gasto').order('nombre'),
+    supabase.from('movimientos').select('tipo, cantidad, categorias(id)').eq('proyecto_id', id).eq('tipo', 'gasto').gte('fecha', primerDia).lte('fecha', ultimoDia),
+    supabase.from('presupuestos').select('id, categoria_id, limite, es_fijo, mes_ano').eq('proyecto_id', id).eq('activo', true).or(`es_fijo.eq.true,mes_ano.eq.${mesAno}`),
+  ])
 
-  const { data: movimientos } = await supabase
-    .from('movimientos')
-    .select('tipo, cantidad, categorias(id)')
-    .eq('proyecto_id', id)
-    .eq('tipo', 'gasto')
-    .gte('fecha', primerDia)
-    .lte('fecha', ultimoDia)
+  if (!user) redirect('/login')
+  if (!proyecto) redirect('/mis-proyectos')
 
   const gastadoPorCat: { [catId: string]: number } = {}
   for (const m of movimientos ?? []) {
@@ -55,13 +48,6 @@ export default async function PresupuestosPage({
     if (!cat?.id) continue
     gastadoPorCat[cat.id] = (gastadoPorCat[cat.id] ?? 0) + Number(m.cantidad)
   }
-
-  const { data: presupuestosRaw } = await supabase
-    .from('presupuestos')
-    .select('id, categoria_id, limite, es_fijo, mes_ano')
-    .eq('proyecto_id', id)
-    .eq('activo', true)
-    .or(`es_fijo.eq.true,mes_ano.eq.${mesAno}`)
 
   const presupuestos = (presupuestosRaw ?? []).map(p => ({
     id: p.id as string,

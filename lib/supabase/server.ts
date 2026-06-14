@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 
 // Cliente Supabase para usar en Server Components y Route Handlers
 export async function createClient() {
@@ -34,3 +35,12 @@ export async function createClient() {
     }
   )
 }
+
+// React.cache() deduplica getUser() dentro del mismo render de servidor.
+// El layout y la página comparten un solo request de red a Supabase Auth
+// en lugar de hacer dos llamadas independientes por navegación.
+export const getCachedUser = cache(async () => {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
+})

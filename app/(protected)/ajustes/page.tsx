@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { Suspense } from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import LogoutButton from '@/components/auth/LogoutButton'
@@ -17,7 +17,7 @@ export default async function AjustesPage({
   const { proyecto: proyectoId } = await searchParams
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getCachedUser()
   if (!user) redirect('/login')
 
   const { data: perfil } = await supabase
