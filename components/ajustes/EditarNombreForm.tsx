@@ -20,6 +20,7 @@ export default function EditarNombreForm({ nombreActual }: { nombreActual: strin
       setError(result.error)
       setLoading(false)
     } else {
+      setLoading(false)
       router.refresh()
     }
   }
