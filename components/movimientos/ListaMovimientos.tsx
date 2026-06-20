@@ -34,6 +34,7 @@ type Props = {
   mesAno: string
   proyectoId: string
   initialCat?: string
+  busqueda?: string
 }
 
 function fmt(n: number) {
@@ -56,7 +57,13 @@ function formatDia(fechaStr: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
-export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat }: Props) {
+function formatMes(mesStr: string): string {
+  const [y, m] = mesStr.split('-').map(Number)
+  const label = new Date(y, m - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
+
+export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat, busqueda }: Props) {
   const router = useRouter()
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'gasto' | 'ingreso'>('todos')
   const [filtroCat, setFiltroCat] = useState<string | null>(initialCat ?? null)
@@ -64,21 +71,98 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
   const [year, month] = mesAno.split('-').map(Number)
   const mesLabel = new Date(year, month - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
 
+  const modoBusqueda = busqueda !== undefined
+
   function navMes(delta: -1 | 1) {
     const nuevo = delta === -1 ? mesAnterior(mesAno) : mesSiguiente(mesAno)
     router.push(`/proyectos/${proyectoId}?mes=${nuevo}`)
   }
 
-  const filtrados = movimientos.filter(m => {
-    if (filtroTipo !== 'todos' && m.tipo !== filtroTipo) return false
-    if (filtroCat !== null) {
-      const catNombre = m.categorias?.nombre
-      const catObj = categorias.find(c => c.id === filtroCat)
-      if (!catObj || catNombre !== catObj.nombre) return false
-    }
-    return true
-  })
+  // Filtrado según modo
+  const filtrados = modoBusqueda
+    ? (() => {
+        const q = busqueda.toLowerCase()
+        if (!q) return movimientos
+        return movimientos.filter(m => {
+          const desc = (m.descripcion ?? '').toLowerCase()
+          const cat = (m.categorias?.nombre ?? '').toLowerCase()
+          return desc.includes(q) || cat.includes(q)
+        })
+      })()
+    : movimientos.filter(m => {
+        if (filtroTipo !== 'todos' && m.tipo !== filtroTipo) return false
+        if (filtroCat !== null) {
+          const catNombre = m.categorias?.nombre
+          const catObj = categorias.find(c => c.id === filtroCat)
+          if (!catObj || catNombre !== catObj.nombre) return false
+        }
+        return true
+      })
 
+  // Agrupación según modo
+  if (modoBusqueda) {
+    // Agrupar por mes (YYYY-MM)
+    const gruposMes: Record<string, typeof filtrados> = {}
+    for (const m of filtrados) {
+      const mes = m.fecha.slice(0, 7)
+      if (!gruposMes[mes]) gruposMes[mes] = []
+      gruposMes[mes].push(m)
+    }
+    const meses = Object.keys(gruposMes).sort((a, b) => b.localeCompare(a))
+
+    return (
+      <div className="space-y-4">
+        {meses.length > 0 ? (
+          meses.map(mes => {
+            const items = gruposMes[mes]
+            return (
+              <div key={mes} className="space-y-1">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-neutral-500 dark:text-neutral-400 text-xs font-medium capitalize">
+                    {formatMes(mes)}
+                  </span>
+                  <span className="text-neutral-400 dark:text-neutral-600 text-xs">
+                    {items.length} {items.length === 1 ? 'resultado' : 'resultados'}
+                  </span>
+                </div>
+                <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-5 border border-neutral-200 dark:border-neutral-800">
+                  {items.map(m => (
+                    <MovimientoItem
+                      key={m.id}
+                      id={m.id}
+                      tipo={m.tipo}
+                      cantidad={m.cantidad}
+                      fecha={m.fecha}
+                      descripcion={m.descripcion}
+                      categoria={m.categorias as any}
+                      usuario={m.perfiles as any}
+                      categorias={categorias}
+                      esFijo={m.es_fijo ?? false}
+                      gastoFijoId={m.gasto_fijo_id ?? null}
+                      diaDelMes={(m.gastos_fijos as any)?.dia_del_mes ?? null}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+          })
+        ) : (
+          <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 text-center">
+            {busqueda ? (
+              <>
+                <p className="text-neutral-500 text-sm">Sin resultados para «{busqueda}».</p>
+                <p className="text-neutral-400 dark:text-neutral-600 text-xs mt-1">Prueba con otro término.</p>
+              </>
+            ) : (
+              <p className="text-neutral-500 text-sm">No hay movimientos en este proyecto.</p>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Modo normal: agrupar por día
   const grupos: Record<string, typeof filtrados> = {}
   for (const m of filtrados) {
     if (!grupos[m.fecha]) grupos[m.fecha] = []
@@ -175,14 +259,12 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             )
             return (
               <div key={dia} className="space-y-1">
-                {/* Cabecera del día */}
                 <div className="flex items-center justify-between px-1">
                   <span className="text-neutral-500 dark:text-neutral-400 text-xs font-medium">{formatDia(dia)}</span>
                   <span className={`text-xs font-semibold ${totalDia >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {totalDia >= 0 ? '+' : ''}{fmt(totalDia)} €
                   </span>
                 </div>
-                {/* Movimientos del día */}
                 <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-5 border border-neutral-200 dark:border-neutral-800">
                   {items.map(m => (
                     <MovimientoItem
