@@ -66,6 +66,15 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
     try {
       await crearMovimiento(proyectoId, tipo, cantidadNum, categoriaId, fecha, descripcion || undefined, esFijo, esFijo ? diaDelMes : undefined)
       setCargando(false)
+      setAbierto(false)
+      setTipo('gasto')
+      setCantidad('')
+      setCategoriaId('')
+      setFecha(fechaPorDefecto(mesAno))
+      setDescripcion('')
+      setEsFijo(false)
+      setDiaDelMes(1)
+      setError('')
       router.refresh()
     } catch {
       setError('Error al guardar. Inténtalo de nuevo.')
@@ -156,7 +165,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
           type="date"
           value={fecha}
           onChange={e => setFecha(e.target.value)}
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-3 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full max-w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-3 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
