@@ -30,6 +30,8 @@ export default async function MisProyectosPage() {
     `).order('created_at', { ascending: false }),
   ])
 
+  if (!perfil?.nombre) redirect('/completar-perfil')
+
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950">
       <div className="max-w-sm mx-auto px-4 py-6 space-y-6">

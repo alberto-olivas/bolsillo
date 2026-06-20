@@ -1,24 +1,5 @@
-import { createClient, getCachedUser } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-
-// Layout para rutas protegidas.
-// proxy.ts ya verificó que el usuario está autenticado.
-// Aquí verificamos que además tiene el perfil completo (nombre rellenado).
-// Si nombre es NULL → todavía no completó su perfil → /completar-perfil.
-// /completar-perfil está en el grupo (onboarding), no en (protected),
-// así que este layout NO se vuelve a ejecutar para esa ruta y no hay bucle infinito.
-export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCachedUser()
-  if (!user) redirect('/login')
-
-  const supabase = await createClient()
-  const { data: perfil } = await supabase
-    .from('perfiles')
-    .select('nombre')
-    .eq('id', user.id)
-    .single()
-
-  if (!perfil?.nombre) redirect('/completar-perfil')
-
+// proxy.ts garantiza que solo usuarios autenticados llegan aquí.
+// El check de perfil completo ocurre en cada página que lo necesita.
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
