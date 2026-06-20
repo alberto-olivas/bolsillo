@@ -39,8 +39,8 @@ export default function BottomNav({ proyectoId }: { proyectoId: string }) {
   const mesParam = mes ? `?mes=${mes}` : ''
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
-      <div className="max-w-sm mx-auto flex items-center justify-around py-2">
+    <nav className="fixed bottom-3 left-3 right-3 z-50 max-w-sm mx-auto bg-white dark:bg-[#1c1c1e] border border-neutral-200/80 dark:border-white/10 rounded-3xl shadow-lg dark:shadow-black/40 overflow-hidden">
+      <div className="flex items-center justify-around py-2">
         {NAV_ITEMS.map(item => {
           const activo = item.match(pathname)
           const Icono = item.icon

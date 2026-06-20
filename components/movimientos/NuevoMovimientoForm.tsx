@@ -159,13 +159,13 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
       </div>
 
       {/* Fecha */}
-      <div className="space-y-1.5">
+      <div className="space-y-1.5 overflow-hidden">
         <label className="text-xs text-neutral-600 dark:text-neutral-400">Fecha</label>
         <input
           type="date"
           value={fecha}
           onChange={e => setFecha(e.target.value)}
-          className="w-full max-w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-3 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full max-w-full appearance-none box-border min-w-0 bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-3 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 

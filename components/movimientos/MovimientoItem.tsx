@@ -160,7 +160,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           type="date"
           value={editFecha}
           onChange={e => setEditFecha(e.target.value)}
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full max-w-full appearance-none box-border min-w-0 bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
         />
 
         {/* Descripción */}
