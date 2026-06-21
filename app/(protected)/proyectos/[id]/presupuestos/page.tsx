@@ -57,6 +57,19 @@ export default async function PresupuestosPage({
     mesAno: p.mes_ano as string | null,
   }))
 
+  const alertas = presupuestos.flatMap(p => {
+    const cat = categorias?.find(c => c.id === p.categoriaId)
+    if (!cat || p.limite <= 0) return []
+    const gastado = gastadoPorCat[p.categoriaId] ?? 0
+    const pct = (gastado / p.limite) * 100
+    if (pct < 80) return []
+    return [{ cat, gastado, limite: p.limite, pct, excedido: pct >= 100 }]
+  }).sort((a, b) => b.pct - a.pct)
+
+  function fmt(n: number) {
+    return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+
   const prevMes = month === 1 ? `${year - 1}-12` : `${year}-${String(month - 1).padStart(2, '0')}`
   const nextMes = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, '0')}`
 
@@ -94,6 +107,40 @@ export default async function PresupuestosPage({
             <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
+
+        {alertas.length > 0 && (
+          <div className="space-y-2">
+            {alertas.map(a => (
+              <div
+                key={a.cat.id}
+                className={`rounded-2xl p-4 border flex items-start gap-3 ${
+                  a.excedido
+                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800/60'
+                    : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
+                }`}
+              >
+                <span className="text-lg leading-none mt-0.5">{a.excedido ? '🚨' : '⚠️'}</span>
+                <div className="flex-1 min-w-0">
+                  {a.excedido ? (
+                    <>
+                      <p className="text-sm font-semibold text-red-700 dark:text-red-400">{a.cat.nombre}</p>
+                      <p className="text-xs text-red-600 dark:text-red-500 mt-0.5">
+                        Superado en +{fmt(a.gastado - a.limite)} €
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{a.cat.nombre}</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
+                        Llevas el {Math.round(a.pct)}% ({fmt(a.gastado)} de {fmt(a.limite)} €)
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <ListaPresupuestos
           categorias={categorias ?? []}

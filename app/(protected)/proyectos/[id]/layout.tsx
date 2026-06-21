@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import BottomNav from '@/components/nav/BottomNav'
+import BottomNavServer from '@/components/nav/BottomNavServer'
 
 export default async function ProyectoLayout({
   children,
@@ -13,7 +13,7 @@ export default async function ProyectoLayout({
     <>
       {children}
       <Suspense fallback={null}>
-        <BottomNav proyectoId={id} />
+        <BottomNavServer proyectoId={id} />
       </Suspense>
     </>
   )
