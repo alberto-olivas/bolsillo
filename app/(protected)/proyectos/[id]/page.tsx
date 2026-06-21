@@ -16,6 +16,10 @@ import BuscadorConLista from '@/components/movimientos/BuscadorConLista'
 import LupaBoton from '@/components/movimientos/LupaBoton'
 import { mesAnterior } from '@/lib/utils-fecha'
 
+function fmt(n: number) {
+  return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
 export default async function ProyectoPage({
   params,
   searchParams,
@@ -43,7 +47,7 @@ export default async function ProyectoPage({
 
   // Build movements query: all months when searching, current month when not
   let movimientosQ = supabase.from('movimientos')
-    .select('id, tipo, cantidad, fecha, descripcion, es_fijo, gasto_fijo_id, categorias(nombre, icono, color), perfiles(nombre, email), gastos_fijos!gasto_fijo_id(dia_del_mes)')
+    .select('id, tipo, cantidad, fecha, descripcion, es_fijo, gasto_fijo_id, categorias(id, nombre, icono, color), perfiles(nombre, email), gastos_fijos!gasto_fijo_id(dia_del_mes)')
     .eq('proyecto_id', id)
     .order('fecha', { ascending: false })
 
@@ -60,6 +64,7 @@ export default async function ProyectoPage({
     { data: categorias },
     { data: gastosFijos },
     { data: arrastreActual },
+    { data: presupuestosRaw },
   ] = await Promise.all([
     getCachedUser(),
     supabase.from('proyectos').select('id, nombre, tipo').eq('id', id).single(),
@@ -68,6 +73,7 @@ export default async function ProyectoPage({
     supabase.from('categorias').select('id, nombre, icono, color, tipo').eq('proyecto_id', id).order('nombre'),
     supabase.from('gastos_fijos').select('id').eq('proyecto_id', id).eq('activo', true),
     supabase.from('arrastres_mes').select('id, importe, estado').eq('proyecto_id', id).eq('mes_ano', mesAno).maybeSingle(),
+    supabase.from('presupuestos').select('categoria_id, limite').eq('proyecto_id', id).eq('activo', true).or(`es_fijo.eq.true,mes_ano.eq.${mesAno}`),
   ])
 
   if (!user) redirect('/login')
@@ -78,6 +84,9 @@ export default async function ProyectoPage({
   let arrastrePendiente: { id: string; importe: number } | null = null
   let arrastreConfirmadoImporte = 0
   let miniDonutData: { nombre: string; icono: string; color: string; catId: string; total: number; porcentaje: number }[] = []
+  let alertaIngresos = false
+  let pctIngresosGastado = 0
+  let alertasPresupuesto: { cat: { id: string; nombre: string; icono: string; color: string }; gastado: number; limite: number; pct: number; excedido: boolean }[] = []
 
   if (!esBusqueda) {
     // Pendientes: upsert luego select (secuencial, dependen del upsert)
@@ -153,6 +162,30 @@ export default async function ProyectoPage({
     miniDonutData = [...totalesCat.values()]
       .sort((a, b) => b.total - a.total)
       .map(c => ({ ...c, porcentaje: totalGastosMes > 0 ? (c.total / totalGastosMes) * 100 : 0 }))
+
+    // Alerta de ingresos: cuando gastos >= 80% del ingreso del mes
+    const totalIngresos = (movimientos ?? [])
+      .filter(m => m.tipo === 'ingreso')
+      .reduce((s, m) => s + Number(m.cantidad), 0)
+    pctIngresosGastado = totalIngresos > 0 ? (totalGastosMes / totalIngresos) * 100 : 0
+    alertaIngresos = totalIngresos > 0 && pctIngresosGastado >= 80
+
+    // Alertas de presupuesto por categoría
+    const gastadoPorCatId: Record<string, number> = {}
+    for (const m of movimientos ?? []) {
+      if (m.tipo !== 'gasto') continue
+      const cat = m.categorias as any
+      if (!cat?.id) continue
+      gastadoPorCatId[cat.id] = (gastadoPorCatId[cat.id] ?? 0) + Number(m.cantidad)
+    }
+    alertasPresupuesto = (presupuestosRaw ?? []).flatMap(p => {
+      const cat = categorias?.find(c => c.id === p.categoria_id)
+      if (!cat || Number(p.limite) <= 0) return []
+      const gastado = gastadoPorCatId[p.categoria_id] ?? 0
+      const pct = (gastado / Number(p.limite)) * 100
+      if (pct < 80) return []
+      return [{ cat, gastado, limite: Number(p.limite), pct, excedido: pct >= 100 }]
+    }).sort((a, b) => b.pct - a.pct)
   }
 
   return (
@@ -194,6 +227,52 @@ export default async function ProyectoPage({
               </Link>
               <LupaBoton proyectoId={id} />
             </div>
+
+            {/* Alertas de presupuesto e ingresos */}
+            {(alertaIngresos || alertasPresupuesto.length > 0) && (
+              <div className="space-y-2">
+                {alertaIngresos && (
+                  <div className="rounded-2xl p-4 border bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60 flex items-start gap-3">
+                    <span className="text-lg leading-none mt-0.5">⚠️</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">Ingresos del mes</p>
+                      <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
+                        Has gastado el {Math.round(pctIngresosGastado)}% de tus ingresos este mes
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {alertasPresupuesto.map(a => (
+                  <div
+                    key={a.cat.id}
+                    className={`rounded-2xl p-4 border flex items-start gap-3 ${
+                      a.excedido
+                        ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800/60'
+                        : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
+                    }`}
+                  >
+                    <span className="text-lg leading-none mt-0.5">{a.excedido ? '🚨' : '⚠️'}</span>
+                    <div className="flex-1 min-w-0">
+                      {a.excedido ? (
+                        <>
+                          <p className="text-sm font-semibold text-red-700 dark:text-red-400">{a.cat.nombre}</p>
+                          <p className="text-xs text-red-600 dark:text-red-500 mt-0.5">
+                            Superado en +{fmt(a.gastado - a.limite)} €
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{a.cat.nombre}</p>
+                          <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
+                            Llevas el {Math.round(a.pct)}% ({fmt(a.gastado)} de {fmt(a.limite)} €)
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Resumen del mes */}
             <ResumenMes
