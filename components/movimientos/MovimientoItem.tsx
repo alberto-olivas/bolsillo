@@ -26,9 +26,10 @@ type Props = {
   esFijo: boolean
   gastoFijoId: string | null
   diaDelMes: number | null
+  saldo?: number
 }
 
-export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion, categoria, usuario, categorias, esFijo, gastoFijoId, diaDelMes }: Props) {
+export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion, categoria, usuario, categorias, esFijo, gastoFijoId, diaDelMes, saldo }: Props) {
   const [modo, setModo] = useState<'normal' | 'editar' | 'eliminar'>('normal')
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
@@ -238,9 +239,16 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           {esFijo && <span className="ml-1 text-indigo-400">· Fijo</span>}
         </p>
       </div>
-      <span className={`text-sm font-semibold flex-shrink-0 ${tipo === 'gasto' ? 'text-red-400' : 'text-green-400'}`}>
-        {tipo === 'gasto' ? '-' : '+'}{fmt(Number(cantidad))} €
-      </span>
+      <div className="flex flex-col items-end flex-shrink-0">
+        <span className={`text-sm font-semibold ${tipo === 'gasto' ? 'text-red-400' : 'text-green-400'}`}>
+          {tipo === 'gasto' ? '-' : '+'}{fmt(Number(cantidad))} €
+        </span>
+        {saldo !== undefined && (
+          <span className={`text-xs ${saldo < 0 ? 'text-red-400' : 'text-neutral-400 dark:text-neutral-500'}`}>
+            {fmt(saldo)} €
+          </span>
+        )}
+      </div>
       <div className="flex gap-1 flex-shrink-0">
         <button
           type="button"

@@ -31,9 +31,10 @@ type Props = {
   categorias: Categoria[]
   mesAno: string
   proyectoId: string
+  saldoPorId?: Record<string, number>
 }
 
-export default function BuscadorConLista({ movimientos, categorias, mesAno, proyectoId }: Props) {
+export default function BuscadorConLista({ movimientos, categorias, mesAno, proyectoId, saldoPorId }: Props) {
   const [texto, setTexto] = useState('')
   const router = useRouter()
 
@@ -66,6 +67,7 @@ export default function BuscadorConLista({ movimientos, categorias, mesAno, proy
         mesAno={mesAno}
         proyectoId={proyectoId}
         busqueda={texto}
+        saldoPorId={saldoPorId}
       />
     </div>
   )

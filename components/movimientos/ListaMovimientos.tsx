@@ -35,6 +35,7 @@ type Props = {
   proyectoId: string
   initialCat?: string
   busqueda?: string
+  saldoPorId?: Record<string, number>
 }
 
 function fmt(n: number) {
@@ -63,7 +64,7 @@ function formatMes(mesStr: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
-export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat, busqueda }: Props) {
+export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat, busqueda, saldoPorId }: Props) {
   const router = useRouter()
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'gasto' | 'ingreso'>('todos')
   const [filtroCat, setFiltroCat] = useState<string | null>(initialCat ?? null)
@@ -140,6 +141,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
                       esFijo={m.es_fijo ?? false}
                       gastoFijoId={m.gasto_fijo_id ?? null}
                       diaDelMes={(m.gastos_fijos as any)?.dia_del_mes ?? null}
+                      saldo={saldoPorId?.[m.id]}
                     />
                   ))}
                 </div>
@@ -280,6 +282,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
                       esFijo={m.es_fijo ?? false}
                       gastoFijoId={m.gasto_fijo_id ?? null}
                       diaDelMes={(m.gastos_fijos as any)?.dia_del_mes ?? null}
+                      saldo={saldoPorId?.[m.id]}
                     />
                   ))}
                 </div>

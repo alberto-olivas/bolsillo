@@ -47,9 +47,10 @@ export default async function ProyectoPage({
 
   // Build movements query: all months when searching, current month when not
   let movimientosQ = supabase.from('movimientos')
-    .select('id, tipo, cantidad, fecha, descripcion, es_fijo, gasto_fijo_id, categorias(id, nombre, icono, color), perfiles(nombre, email), gastos_fijos!gasto_fijo_id(dia_del_mes)')
+    .select('id, tipo, cantidad, fecha, created_at, descripcion, es_fijo, gasto_fijo_id, categorias(id, nombre, icono, color), perfiles(nombre, email), gastos_fijos!gasto_fijo_id(dia_del_mes)')
     .eq('proyecto_id', id)
     .order('fecha', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (!esBusqueda) {
     movimientosQ = movimientosQ.gte('fecha', primerDia).lte('fecha', ultimoDia) as typeof movimientosQ
@@ -188,6 +189,15 @@ export default async function ProyectoPage({
     }).sort((a, b) => b.pct - a.pct)
   }
 
+  // Saldo acumulado por movimiento (extracto bancario)
+  const inicioSaldo = esBusqueda ? 0 : arrastreConfirmadoImporte
+  const saldoPorId: Record<string, number> = {}
+  let acumulado = inicioSaldo
+  for (const m of [...(movimientos ?? [])].reverse()) {
+    acumulado += m.tipo === 'ingreso' ? Number(m.cantidad) : -Number(m.cantidad)
+    saldoPorId[m.id] = acumulado
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950">
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
@@ -199,6 +209,7 @@ export default async function ProyectoPage({
             categorias={categorias ?? []}
             mesAno={mesAno}
             proyectoId={id}
+            saldoPorId={saldoPorId}
           />
         ) : (
           // Modo normal: vista completa con widgets de mes
@@ -329,6 +340,7 @@ export default async function ProyectoPage({
               mesAno={mesAno}
               proyectoId={id}
               initialCat={cat}
+              saldoPorId={saldoPorId}
             />
           </>
         )}
