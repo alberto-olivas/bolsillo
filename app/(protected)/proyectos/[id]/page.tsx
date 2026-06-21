@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, BarChart3 } from 'lucide-react'
 import NuevoMovimientoForm from '@/components/movimientos/NuevoMovimientoForm'
 import ResumenMes from '@/components/movimientos/ResumenMes'
 import PendientesConfirmar from '@/components/movimientos/PendientesConfirmar'
@@ -186,6 +186,12 @@ export default async function ProyectoPage({
                   todos={todosLosProyectos ?? []}
                 />
               </Suspense>
+              <Link
+                href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
+                className="flex-shrink-0 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-1 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                <BarChart3 className="w-5 h-5" />
+              </Link>
               <LupaBoton proyectoId={id} />
             </div>
 
