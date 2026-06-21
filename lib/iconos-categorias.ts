@@ -1,4 +1,4 @@
-import { Utensils, Car, Film, Home, Heart, ShoppingBag, Banknote, Package, PiggyBank, TrendingUp, PawPrint, type LucideIcon } from 'lucide-react'
+import { Utensils, Car, Film, Home, Heart, ShoppingBag, Banknote, Package, PiggyBank, TrendingUp, PawPrint, Repeat, CreditCard, type LucideIcon } from 'lucide-react'
 
 export const ICONOS: Record<string, LucideIcon> = {
   utensils: Utensils,
@@ -12,4 +12,6 @@ export const ICONOS: Record<string, LucideIcon> = {
   'piggy-bank': PiggyBank,
   'trending-up': TrendingUp,
   'paw-print': PawPrint,
+  repeat: Repeat,
+  'credit-card': CreditCard,
 }
