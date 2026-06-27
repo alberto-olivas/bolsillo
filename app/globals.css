@@ -1,14 +1,39 @@
 @import "tailwindcss";
 
-/* Habilita el prefijo dark: cuando <html> tiene class="dark" */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
+
+  --color-brand: #222222;
+  --color-brand-strong: #000000;
+  --color-cream: #FFE9CE;
+  --color-cream-soft: #FFF8EC;
+  --color-cream-medium: #FBDDB2;
+  --color-yellow: #FFD80B;
+  --color-yellow-soft: #FFF8C7;
+  --color-red: #FD4C38;
+  --color-red-soft: #FFE2DD;
+  --color-green: #2FA84F;
+  --color-green-soft: #E8F8E0;
+  --color-purple: #8B53FF;
+  --color-purple-soft: #F2EAFF;
+  --color-blue: #4FB7E8;
+  --color-blue-soft: #E6F4FC;
+
+  --shadow-offset-sm: 2px 2px 0px 0px #222222;
+  --shadow-offset-md: 4px 4px 0px 0px #222222;
+  --shadow-offset-lg: 6px 6px 0px 0px #222222;
 }
 
 body {
-  @apply bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white;
+  background-color: #FFF8EC;
+  color: #1a1a1a;
+}
+
+.dark body {
+  background-color: #1A1612;
+  color: #FFF8EC;
 }
 
 @keyframes coinFall {
