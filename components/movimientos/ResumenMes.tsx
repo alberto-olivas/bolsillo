@@ -20,9 +20,9 @@ export default function ResumenMes({ movimientos, arrastreConfirmado = 0, mesLab
   const saldo = arrastreConfirmado + ingresos - gastos
 
   return (
-    <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200 dark:border-neutral-800">
-      <p className="text-neutral-500 text-xs uppercase tracking-wider">Saldo del mes</p>
-      <p className={`text-3xl font-bold mt-1 ${saldo >= 0 ? 'text-neutral-900 dark:text-white' : 'text-red-400'}`}>
+    <div className="bg-[#FFF8EC] rounded-2xl p-5 border-2 border-[#222222]" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
+      <p className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">Saldo del mes</p>
+      <p className={`text-3xl font-black mt-1 tracking-tight ${saldo >= 0 ? 'text-neutral-900 dark:text-white' : 'text-red-400'}`}>
         {saldo >= 0 ? '+' : '-'}{fmt(saldo)} €
       </p>
       {arrastreConfirmado !== 0 && mesLabelAnterior && (
@@ -34,13 +34,13 @@ export default function ResumenMes({ movimientos, arrastreConfirmado = 0, mesLab
         </p>
       )}
       <div className="grid grid-cols-2 gap-2 mt-4">
-        <div className="bg-neutral-200 dark:bg-neutral-800 rounded-xl p-3">
-          <p className="text-neutral-500 text-xs">Gastos</p>
-          <p className="text-red-400 font-semibold text-sm mt-1">-{fmt(gastos)} €</p>
+        <div className="bg-[#FFE2DD] rounded-xl p-3 border-2 border-[#222222]">
+          <p className="text-[#222222]/50 text-[10px] font-black uppercase tracking-wide">Gastos</p>
+          <p className="text-[#FD4C38] font-black text-sm mt-1">-{fmt(gastos)} €</p>
         </div>
-        <div className="bg-neutral-200 dark:bg-neutral-800 rounded-xl p-3">
-          <p className="text-neutral-500 text-xs">Ingresos</p>
-          <p className="text-green-400 font-semibold text-sm mt-1">+{fmt(ingresos)} €</p>
+        <div className="bg-[#E8F8E0] rounded-xl p-3 border-2 border-[#222222]">
+          <p className="text-[#222222]/50 text-[10px] font-black uppercase tracking-wide">Ingresos</p>
+          <p className="text-[#2FA84F] font-black text-sm mt-1">+{fmt(ingresos)} €</p>
         </div>
       </div>
     </div>
