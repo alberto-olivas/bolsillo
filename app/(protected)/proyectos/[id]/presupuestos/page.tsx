@@ -74,35 +74,37 @@ export default async function PresupuestosPage({
   const nextMes = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, '0')}`
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
-      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
-
-        {/* Cabecera */}
-        <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-[#FFF8EC]">
+      <div className="bg-[#222222] px-4 pt-6 pb-5">
+        <div className="max-w-sm mx-auto flex items-center gap-3">
           <Link
             href="/mis-proyectos"
-            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+            className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="flex-1">
-            <h1 className="text-lg font-bold text-neutral-900 dark:text-white">{proyecto.nombre}</h1>
-            <p className="text-neutral-500 text-xs">Presupuestos</p>
+            <h1 className="text-lg font-black text-[#FFE9CE]">{proyecto.nombre}</h1>
+            <p className="text-[#FFE9CE]/50 text-xs font-bold">Presupuestos</p>
           </div>
         </div>
+      </div>
+      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
         {/* Selector de mes */}
         <div className="flex items-center justify-between">
           <Link
             href={`/proyectos/${id}/presupuestos?mes=${prevMes}`}
-            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
-          <span className="text-neutral-900 dark:text-white font-medium capitalize text-sm">{mesLabel}</span>
+          <span className="text-[#222222] font-black capitalize text-sm">{mesLabel}</span>
           <Link
             href={`/proyectos/${id}/presupuestos?mes=${nextMes}`}
-            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
           >
             <ChevronRight className="w-5 h-5" />
           </Link>
@@ -113,25 +115,26 @@ export default async function PresupuestosPage({
             {alertas.map(a => (
               <div
                 key={a.cat.id}
-                className={`rounded-2xl p-4 border flex items-start gap-3 ${
+                className={`rounded-2xl p-4 border-2 flex items-start gap-3 ${
                   a.excedido
-                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800/60'
-                    : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
+                    ? 'bg-[#FFE2DD] border-[#FD4C38]'
+                    : 'bg-[#FFF8C7] border-[#222222]'
                 }`}
+                style={{ boxShadow: a.excedido ? '3px 3px 0px 0px #FD4C38' : '3px 3px 0px 0px #222222' }}
               >
                 <span className="text-lg leading-none mt-0.5">{a.excedido ? '🚨' : '⚠️'}</span>
                 <div className="flex-1 min-w-0">
                   {a.excedido ? (
                     <>
-                      <p className="text-sm font-semibold text-red-700 dark:text-red-400">{a.cat.nombre}</p>
-                      <p className="text-xs text-red-600 dark:text-red-500 mt-0.5">
+                      <p className="text-sm font-black text-[#FD4C38]">{a.cat.nombre}</p>
+                      <p className="text-xs text-[#FD4C38]/70 mt-0.5 font-medium">
                         Superado en +{fmt(a.gastado - a.limite)} €
                       </p>
                     </>
                   ) : (
                     <>
-                      <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{a.cat.nombre}</p>
-                      <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
+                      <p className="text-sm font-black text-[#222222]">{a.cat.nombre}</p>
+                      <p className="text-xs text-[#222222]/60 mt-0.5 font-medium">
                         Llevas el {Math.round(a.pct)}% ({fmt(a.gastado)} de {fmt(a.limite)} €)
                       </p>
                     </>
