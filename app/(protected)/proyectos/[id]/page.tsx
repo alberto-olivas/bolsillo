@@ -199,7 +199,32 @@ export default async function ProyectoPage({
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
+    <div className="min-h-screen bg-[#FFF8EC]">
+      <div className="bg-[#222222] px-4 pt-6 pb-5">
+        <div className="max-w-sm mx-auto flex items-center gap-3">
+          <Link href="/mis-proyectos" className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors flex-shrink-0">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <Suspense fallback={
+            <div>
+              <p className="text-[#FFE9CE] font-bold text-lg leading-tight">{proyecto.nombre}</p>
+              <p className="text-[#FFE9CE]/60 text-xs capitalize">{proyecto.tipo}</p>
+            </div>
+          }>
+            <SelectorProyecto
+              actual={proyecto}
+              todos={todosLosProyectos ?? []}
+            />
+          </Suspense>
+          <Link
+            href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
+            className="flex-shrink-0 text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors p-1 rounded-xl"
+          >
+            <BarChart3 className="w-5 h-5" />
+          </Link>
+          <LupaBoton proyectoId={id} />
+        </div>
+      </div>
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
         {esBusqueda ? (
@@ -214,30 +239,6 @@ export default async function ProyectoPage({
         ) : (
           // Modo normal: vista completa con widgets de mes
           <>
-            {/* Cabecera */}
-            <div className="flex items-center gap-3">
-              <Link href="/mis-proyectos" className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors flex-shrink-0">
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
-              <Suspense fallback={
-                <div>
-                  <p className="text-neutral-900 dark:text-white font-bold text-lg leading-tight">{proyecto.nombre}</p>
-                  <p className="text-neutral-500 text-xs capitalize">{proyecto.tipo}</p>
-                </div>
-              }>
-                <SelectorProyecto
-                  actual={proyecto}
-                  todos={todosLosProyectos ?? []}
-                />
-              </Suspense>
-              <Link
-                href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
-                className="flex-shrink-0 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-1 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
-              >
-                <BarChart3 className="w-5 h-5" />
-              </Link>
-              <LupaBoton proyectoId={id} />
-            </div>
 
             {/* Alertas de presupuesto e ingresos */}
             {(alertaIngresos || alertasPresupuesto.length > 0) && (
