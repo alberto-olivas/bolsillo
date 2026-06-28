@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Package } from 'lucide-react'
 import PresupuestoModal from './PresupuestoModal'
@@ -58,105 +57,86 @@ export default function ListaPresupuestos({
     <>
       {/* Categorías con presupuesto */}
       {conPresupuesto.length > 0 && (
-        <div className="space-y-2">
-          <div className="bg-[#FFF8EC] rounded-2xl border-2 border-[#222222] divide-y divide-[#222222]/10" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
-            {conPresupuesto.map(cat => {
-              const Icono = ICONOS[cat.icono] ?? Package
-              const presupuesto = presupuestoPorCat.get(cat.id)!
-              const gastado = gastadoPorCat[cat.id] ?? 0
-              const exceso = gastado - presupuesto.limite
-              const excedido = exceso > 0
-              const pct = Math.min(100, (gastado / presupuesto.limite) * 100)
+        <div className="space-y-3">
+          {conPresupuesto.map(cat => {
+            const Icono = ICONOS[cat.icono] ?? Package
+            const presupuesto = presupuestoPorCat.get(cat.id)!
+            const gastado = gastadoPorCat[cat.id] ?? 0
+            const exceso = gastado - presupuesto.limite
+            const excedido = exceso > 0
+            const cerca = !excedido && (gastado / presupuesto.limite) >= 0.8
+            const pct = Math.min(100, (gastado / presupuesto.limite) * 100)
 
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setCatSeleccionada(cat)}
-                  className="w-full flex items-center gap-3 px-5 py-3.5 text-left hover:bg-[#FFE9CE] transition-colors"
-                >
-                  {/* Icono */}
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#222222]/20"
-                    style={{ backgroundColor: cat.color + '33' }}
-                  >
-                    <Icono className="w-4 h-4" style={{ color: cat.color }} />
-                  </div>
+            const barColor = excedido ? '#FD4C38' : cerca ? '#FFD80B' : '#2FA84F'
+            const borderColor = excedido ? '#FD4C38' : '#222222'
+            const shadowColor = excedido ? '#FD4C38' : '#222222'
+            const bgColor = excedido ? '#FFE2DD' : '#FFF8EC'
 
-                  {/* Nombre + barra */}
-                  <div className="flex-1 min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="text-[#222222] text-sm font-black truncate">{cat.nombre}</p>
-                      {presupuesto.esFijo && (
-                        <span className="text-xs text-[#222222]/50 bg-[#FFE9CE] border border-[#222222]/30 px-1.5 py-0.5 rounded-full flex-shrink-0 font-bold">
-                          Fijo
-                        </span>
-                      )}
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setCatSeleccionada(cat)}
+                className="w-full text-left rounded-2xl p-4 border-2 transition-colors hover:opacity-90"
+                style={{
+                  background: bgColor,
+                  borderColor: borderColor,
+                  boxShadow: `3px 3px 0px 0px ${shadowColor}`,
+                }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#222222]/20"
+                      style={{ backgroundColor: cat.color + '33' }}
+                    >
+                      <Icono className="w-4 h-4" style={{ color: cat.color }} />
                     </div>
-                    <div className="h-2 bg-[#222222]/10 rounded-full overflow-hidden border border-[#222222]/20">
-                      <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${pct}%`,
-                          backgroundColor: excedido ? '#FD4C38' : '#2FA84F',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Importes */}
-                  <div className="flex-shrink-0 text-right">
-                    {excedido ? (
-                      <>
-                        <p className="text-sm font-black text-[#FD4C38]">+{fmt(exceso)} €</p>
-                        <p className="text-xs text-[#222222]/40 font-medium">{fmt(gastado)} / {fmt(presupuesto.limite)} €</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-sm font-black text-[#222222]">
-                          {fmt(gastado)} €
-                        </p>
-                        <p className="text-xs text-[#222222]/40 font-medium">de {fmt(presupuesto.limite)} €</p>
-                      </>
+                    <p className="text-[#222222] text-sm font-black">{cat.nombre}</p>
+                    {presupuesto.esFijo && (
+                      <span className="text-[9px] font-black text-[#222222]/40 bg-[#222222]/10 px-1.5 py-0.5 rounded-full">Fijo</span>
                     )}
                   </div>
-                </button>
-              )
-            })}
-          </div>
+                  <div className="text-right">
+                    {excedido ? (
+                      <p className="text-xs font-black text-[#FD4C38]">
+                        €{fmt(gastado)} / €{fmt(presupuesto.limite)} · +€{fmt(exceso)}
+                      </p>
+                    ) : (
+                      <p className="text-xs font-black text-[#222222]/60">
+                        €{fmt(gastado)} / €{fmt(presupuesto.limite)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="h-3 bg-[#222222]/10 rounded-full overflow-hidden border border-[#222222]/20">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${pct}%`, backgroundColor: barColor }}
+                  />
+                </div>
+              </button>
+            )
+          })}
         </div>
       )}
 
       {/* Categorías sin presupuesto */}
       {sinPresupuesto.length > 0 && (
-        <div className="space-y-2">
-          <h3 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
-            Sin presupuesto
-          </h3>
-          <div className="bg-[#FFF8EC] rounded-2xl border-2 border-[#222222] divide-y divide-[#222222]/10" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
-            {sinPresupuesto.map(cat => {
-              const Icono = ICONOS[cat.icono] ?? Package
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setCatSeleccionada(cat)}
-                  className="w-full flex items-center gap-3 px-5 py-3.5 text-left hover:bg-[#FFE9CE] transition-colors"
-                >
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 opacity-50"
-                    style={{ backgroundColor: cat.color + '33' }}
-                  >
-                    <Icono className="w-4 h-4" style={{ color: cat.color }} />
-                  </div>
-                  <p className="flex-1 text-[#222222]/50 text-sm font-bold">{cat.nombre}</p>
-                  <div className="flex items-center gap-1 text-[#8B53FF] flex-shrink-0">
-                    <Plus className="w-3.5 h-3.5" />
-                    <span className="text-xs font-black">Añadir límite</span>
-                  </div>
-                </button>
-              )
-            })}
+        <div className="bg-[#FFF8C7] rounded-2xl border-2 border-[#222222] p-4"
+          style={{ boxShadow: '3px 3px 0px 0px #222222' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#222222]/50 mb-3">Sin presupuesto</p>
+          <div className="flex flex-wrap gap-2">
+            {sinPresupuesto.map(cat => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setCatSeleccionada(cat)}
+                className="flex items-center gap-1.5 bg-[#FFF8EC] border-2 border-[#222222] rounded-full px-3 py-1.5 text-xs font-black text-[#222222] hover:bg-[#FFE9CE] transition-colors"
+              >
+                {cat.nombre}
+              </button>
+            ))}
           </div>
         </div>
       )}
