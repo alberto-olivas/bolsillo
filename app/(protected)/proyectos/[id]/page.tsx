@@ -9,7 +9,6 @@ import NuevoMovimientoForm from '@/components/movimientos/NuevoMovimientoForm'
 import ResumenMes from '@/components/movimientos/ResumenMes'
 import PendientesConfirmar from '@/components/movimientos/PendientesConfirmar'
 import ListaMovimientos from '@/components/movimientos/ListaMovimientos'
-import DonutCategorias from '@/components/categorias/DonutCategorias'
 import SelectorProyecto from '@/components/proyectos/SelectorProyecto'
 import ArrastreMes from '@/components/movimientos/ArrastreMes'
 import BuscadorConLista from '@/components/movimientos/BuscadorConLista'
@@ -214,29 +213,76 @@ export default async function ProyectoPage({
 
   return (
     <div className="min-h-screen bg-[#FFF8EC]">
-      <div className="bg-[#222222] px-4 pt-6 pb-5">
-        <div className="max-w-sm mx-auto flex items-center gap-3">
-          <Link href="/mis-proyectos" className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors flex-shrink-0">
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <Suspense fallback={
-            <div>
-              <p className="text-[#FFE9CE] font-bold text-lg leading-tight">{proyecto.nombre}</p>
-              <p className="text-[#FFE9CE]/60 text-xs capitalize">{proyecto.tipo}</p>
-            </div>
-          }>
-            <SelectorProyecto
-              actual={proyecto}
-              todos={todosLosProyectos ?? []}
-            />
-          </Suspense>
-          <Link
-            href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
-            className="flex-shrink-0 text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors p-1 rounded-xl"
-          >
-            <BarChart3 className="w-5 h-5" />
-          </Link>
-          <LupaBoton proyectoId={id} />
+      <div className="bg-[#222222] px-4 pt-6 pb-6">
+        <div className="max-w-sm mx-auto space-y-4">
+          {/* Fila superior: nav + acciones */}
+          <div className="flex items-center gap-3">
+            <Link href="/mis-proyectos" className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors flex-shrink-0">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <Suspense fallback={
+              <div>
+                <p className="text-[#FFE9CE] font-black text-base leading-tight">{proyecto.nombre}</p>
+                <p className="text-[#FFE9CE]/50 text-xs capitalize font-bold">{proyecto.tipo}</p>
+              </div>
+            }>
+              <SelectorProyecto
+                actual={proyecto}
+                todos={todosLosProyectos ?? []}
+              />
+            </Suspense>
+            <Link
+              href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
+              className="flex-shrink-0 text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors p-1 rounded-xl"
+            >
+              <BarChart3 className="w-5 h-5" />
+            </Link>
+            <LupaBoton proyectoId={id} />
+          </div>
+
+          {/* Balance total */}
+          <div>
+            <p className="text-[#FFE9CE]/50 text-[10px] font-black uppercase tracking-widest mb-1">
+              Balance total · {mesLabel}
+            </p>
+            <p className={`text-4xl font-black tracking-tight ${
+              (arrastreConfirmadoImporte +
+                (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s,m) => s + Number(m.cantidad), 0) -
+                (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s,m) => s + Number(m.cantidad), 0)
+              ) >= 0 ? 'text-[#FFF8EC]' : 'text-[#FD4C38]'
+            }`}>
+              {(() => {
+                const ingresos = (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s,m) => s + Number(m.cantidad), 0)
+                const gastos = (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s,m) => s + Number(m.cantidad), 0)
+                const saldo = arrastreConfirmadoImporte + ingresos - gastos
+                return `${saldo >= 0 ? '+' : '−'}${Math.abs(saldo).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+              })()}
+            </p>
+          </div>
+
+          {/* Píldoras ingresos/gastos */}
+          <div className="flex gap-2">
+            {(() => {
+              const ingresos = (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s,m) => s + Number(m.cantidad), 0)
+              const gastos = (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s,m) => s + Number(m.cantidad), 0)
+              return (
+                <>
+                  <div className="flex items-center gap-1.5 bg-white/8 border border-white/15 rounded-full px-3 py-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#2FA84F] border border-[#222222] flex-shrink-0" />
+                    <span className="text-[#FFF8EC] text-xs font-black">
+                      +{ingresos.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-white/8 border border-white/15 rounded-full px-3 py-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#FD4C38] border border-[#222222] flex-shrink-0" />
+                    <span className="text-[#FFF8EC] text-xs font-black">
+                      −{gastos.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                    </span>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
         </div>
       </div>
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
@@ -318,22 +364,6 @@ export default async function ProyectoPage({
               <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Últimos movimientos</p>
             </div>
 
-            {/* Mini donut de categorías */}
-            {miniDonutData.length > 0 && (
-              <div className="flex flex-col items-center gap-2">
-                <DonutCategorias
-                  categorias={miniDonutData}
-                  totalGastos={miniDonutData.reduce((s, c) => s + c.total, 0)}
-                  className="w-36 h-36"
-                />
-                <Link
-                  href={`/proyectos/${id}/categorias?mes=${mesAno}`}
-                  className="text-indigo-400 text-xs hover:text-indigo-300 transition-colors"
-                >
-                  Ver todas las categorías →
-                </Link>
-              </div>
-            )}
 
             {/* Arrastre del mes anterior */}
             {arrastrePendiente && (
