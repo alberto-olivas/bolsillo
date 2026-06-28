@@ -4,7 +4,8 @@ import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import DonutCarousel from '@/components/categorias/DonutCarousel'
+import DonutBalanceMes from '@/components/categorias/DonutBalanceMes'
+import DonutCategorias from '@/components/categorias/DonutCategorias'
 import ListaCategorias from '@/components/categorias/ListaCategorias'
 
 export default async function CategoriasPage({
@@ -65,6 +66,10 @@ export default async function CategoriasPage({
   const prevMes = month === 1 ? `${year - 1}-12` : `${year}-${String(month - 1).padStart(2, '0')}`
   const nextMes = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, '0')}`
 
+  const totalAhorroMes = categoriaStats.find(c =>
+    c.nombre.toLowerCase() === 'ahorro'
+  )?.total ?? 0
+
   return (
     <div className="min-h-screen bg-[#FFF8EC]">
       <div className="bg-[#222222] px-4 pt-6 pb-5">
@@ -103,18 +108,64 @@ export default async function CategoriasPage({
       </div>
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
-        {/* Carrusel de donuts */}
-        <DonutCarousel
-          categorias={categoriaStats}
+        {/* Tabs de vista */}
+        <div className="flex gap-0">
+          <div className="flex-1 py-2.5 text-center text-[11px] font-black uppercase tracking-wide bg-[#222222] text-[#FFD80B] rounded-l-xl border-2 border-[#222222]">
+            Categorías
+          </div>
+          <div className="flex-1 py-2.5 text-center text-[11px] font-black uppercase tracking-wide bg-[#FFE9CE] text-[#222222]/50 rounded-r-xl border-2 border-[#222222] border-l-0">
+            Mensual
+          </div>
+        </div>
+
+        {/* Donut ingresos vs gastos */}
+        <DonutBalanceMes
           totalGastos={totalGastos}
           totalIngresos={totalIngresos}
+          totalAhorro={totalAhorroMes}
         />
 
-        {/* Lista de categorías */}
+        {/* Título por categoría */}
+        <div className="flex items-center gap-2">
+          <span className="text-[#FFD80B] text-lg">◆</span>
+          <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Por categoría</p>
+        </div>
+
+        {/* Donut categorías */}
+        <DonutCategorias
+          categorias={categoriaStats}
+          totalGastos={totalGastos}
+        />
+
+        {/* Grid de chips de categoría */}
+        <div className="grid grid-cols-2 gap-2">
+          {categoriaStats.filter(c => c.total > 0).map(cat => (
+            <div
+              key={cat.catId}
+              className="bg-[#FFF8EC] rounded-2xl p-3 border-2 border-[#222222] flex items-center gap-2"
+              style={{ boxShadow: '3px 3px 0px 0px #222222' }}
+            >
+              <div
+                className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222]"
+                style={{ backgroundColor: cat.color }}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-black text-[#222222] truncate">{cat.nombre}</p>
+                <div className="h-1.5 bg-[#222222]/10 rounded-full mt-1 border border-[#222222]/20 overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${cat.porcentaje}%`, backgroundColor: cat.color }}
+                  />
+                </div>
+              </div>
+              <p className="text-[11px] font-black text-[#222222] flex-shrink-0">{Math.round(cat.porcentaje)}%</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Lista detalle */}
         <div className="space-y-2">
-          <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
-            Detalle por categoría
-          </h2>
+          <p className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">Detalle</p>
           <ListaCategorias
             categorias={categoriaStats}
             proyectoId={id}
