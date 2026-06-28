@@ -36,6 +36,7 @@ type Props = {
   initialCat?: string
   busqueda?: string
   saldoPorId?: Record<string, number>
+  ocultarSelectorMes?: boolean
 }
 
 function fmt(n: number) {
@@ -64,7 +65,7 @@ function formatMes(mesStr: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
-export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat, busqueda, saldoPorId }: Props) {
+export default function ListaMovimientos({ movimientos, categorias, mesAno, proyectoId, initialCat, busqueda, saldoPorId, ocultarSelectorMes }: Props) {
   const router = useRouter()
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'gasto' | 'ingreso'>('todos')
   const [filtroCat, setFiltroCat] = useState<string | null>(initialCat ?? null)
@@ -180,25 +181,27 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
   return (
     <div className="space-y-4">
       {/* Selector de mes */}
-      <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => navMes(-1)}
-          className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
-          style={{ boxShadow: '2px 2px 0px 0px #222222' }}
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <span className="text-[#222222] font-black capitalize text-sm">{mesLabel}</span>
-        <button
-          type="button"
-          onClick={() => navMes(1)}
-          className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
-          style={{ boxShadow: '2px 2px 0px 0px #222222' }}
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
+      {!ocultarSelectorMes && (
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => navMes(-1)}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <span className="text-[#222222] font-black capitalize text-sm">{mesLabel}</span>
+          <button
+            type="button"
+            onClick={() => navMes(1)}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
 
       {/* Filtro por tipo */}
       <div className="flex gap-2">

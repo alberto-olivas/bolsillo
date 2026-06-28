@@ -213,7 +213,7 @@ export default async function ProyectoPage({
 
   return (
     <div className="min-h-screen bg-[#FFF8EC]">
-      <div className="bg-[#222222] px-4 pt-6 pb-6">
+      <div className="relative bg-[#222222] px-4 pt-6 pb-6">
         <div className="max-w-sm mx-auto space-y-4">
           {/* Fila superior: nav + acciones */}
           <div className="flex items-center gap-3">
@@ -242,9 +242,6 @@ export default async function ProyectoPage({
 
           {/* Balance total */}
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-2xl">💰</span>
-            </div>
             <p className="text-[#FFE9CE]/50 text-[10px] font-black uppercase tracking-widest mb-1">
               Balance total · {mesLabel}
             </p>
@@ -306,6 +303,7 @@ export default async function ProyectoPage({
             </Link>
           </div>
         </div>
+        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-5xl opacity-10 pointer-events-none select-none">💰</span>
       </div>
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
@@ -419,6 +417,7 @@ export default async function ProyectoPage({
               proyectoId={id}
               initialCat={cat}
               saldoPorId={saldoPorId}
+              ocultarSelectorMes={true}
             />
           </>
         )}
