@@ -88,6 +88,9 @@ export default async function ProyectoPage({
   let alertaIngresos = false
   let pctIngresosGastado = 0
   let alertasPresupuesto: { cat: { id: string; nombre: string; icono: string; color: string }; gastado: number; limite: number; pct: number; excedido: boolean }[] = []
+  let totalAhorro = 0
+  let totalPresupuesto = 0
+  let gastoPresupuestado = 0
 
   if (!esBusqueda) {
     // Pendientes: upsert luego select (secuencial, dependen del upsert)
@@ -187,6 +190,17 @@ export default async function ProyectoPage({
       if (pct < 80) return []
       return [{ cat, gastado, limite: Number(p.limite), pct, excedido: pct >= 100 }]
     }).sort((a, b) => b.pct - a.pct)
+
+    totalAhorro = miniDonutData.find(c =>
+      c.nombre.toLowerCase() === 'ahorro'
+    )?.total ?? 0
+    totalPresupuesto = (presupuestosRaw ?? []).reduce(
+      (s, p) => s + Number(p.limite), 0
+    )
+    gastoPresupuestado = (presupuestosRaw ?? []).reduce((s, p) => {
+      const gastado = gastadoPorCatId[p.categoria_id] ?? 0
+      return s + Math.min(gastado, Number(p.limite))
+    }, 0)
   }
 
   // Saldo acumulado por movimiento (extracto bancario)
@@ -287,11 +301,22 @@ export default async function ProyectoPage({
             )}
 
             {/* Resumen del mes */}
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFD80B] text-lg">◆</span>
+              <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Resumen</p>
+            </div>
             <ResumenMes
               movimientos={movimientos ?? []}
               arrastreConfirmado={arrastreConfirmadoImporte}
               mesLabelAnterior={mesLabelAnterior}
+              totalPresupuesto={totalPresupuesto}
+              gastoPresupuestado={gastoPresupuestado}
+              totalAhorro={totalAhorro}
             />
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFD80B] text-lg">◆</span>
+              <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Últimos movimientos</p>
+            </div>
 
             {/* Mini donut de categorías */}
             {miniDonutData.length > 0 && (
