@@ -62,16 +62,34 @@ export default function DonutCategorias({ categorias, totalGastos, className }: 
   })
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <svg viewBox="0 0 200 200" className={className ?? 'w-52 h-52'}>
-        {segments.map(seg => (
-          <path key={seg.catId} d={seg.path} fill={seg.color} />
-        ))}
-        <text x={CX} y={CY - 8} textAnchor="middle" fill="#22222280" fontSize="10">Total gastos</text>
-        <text x={CX} y={CY + 10} textAnchor="middle" fill="#222222" fontSize="14" fontWeight="900">
-          {fmt(totalGastos)} €
-        </text>
-      </svg>
+    <div className="bg-[#FFF8EC] rounded-2xl border-2 border-[#222222] p-4" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
+      <div className="flex items-center gap-4">
+        <div className="flex-shrink-0">
+          <svg viewBox="0 0 200 200" className="w-24 h-24">
+            {segments.map(seg => (
+              <path key={seg.catId} d={seg.path} fill={seg.color} />
+            ))}
+            <text x={CX} y={CY - 6} textAnchor="middle" fill="#22222280" fontSize="10">Total</text>
+            <text x={CX} y={CY + 9} textAnchor="middle" fill="#222222" fontSize="11" fontWeight="900">
+              €{Math.round(totalGastos).toLocaleString('es-ES')}
+            </text>
+          </svg>
+        </div>
+        <div className="flex-1 space-y-1.5 overflow-hidden">
+          {conGasto.slice(0, 4).map(cat => (
+            <div key={cat.catId} className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <div className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222]" style={{ background: cat.color }} />
+                <span className="text-[11px] font-black text-[#222222] truncate">{cat.nombre}</span>
+              </div>
+              <span className="text-[11px] font-black text-[#222222] flex-shrink-0">€{Math.round(cat.total).toLocaleString('es-ES')}</span>
+            </div>
+          ))}
+          {conGasto.length > 4 && (
+            <p className="text-[10px] text-[#222222]/40 font-bold">+{conGasto.length - 4} más</p>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

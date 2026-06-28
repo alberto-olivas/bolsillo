@@ -108,14 +108,9 @@ export default async function CategoriasPage({
       </div>
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
-        {/* Tabs de vista */}
-        <div className="flex gap-0">
-          <div className="flex-1 py-2.5 text-center text-[11px] font-black uppercase tracking-wide bg-[#222222] text-[#FFD80B] rounded-l-xl border-2 border-[#222222]">
-            Categorías
-          </div>
-          <div className="flex-1 py-2.5 text-center text-[11px] font-black uppercase tracking-wide bg-[#FFE9CE] text-[#222222]/50 rounded-r-xl border-2 border-[#222222] border-l-0">
-            Mensual
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[#FFD80B] text-lg">◆</span>
+          <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Estadísticas</p>
         </div>
 
         {/* Donut ingresos vs gastos */}
