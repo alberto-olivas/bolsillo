@@ -87,14 +87,14 @@ export default function ListaPresupuestos({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <div
-                      className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#222222]/20"
+                      className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#222222]/20 dark:border-[#F5E6D0]/20"
                       style={{ backgroundColor: cat.color + '33' }}
                     >
                       <Icono className="w-4 h-4" style={{ color: cat.color }} />
                     </div>
-                    <p className="text-[#222222] text-sm font-black">{cat.nombre}</p>
+                    <p className="text-[#222222] dark:text-[#F5E6D0] text-sm font-black">{cat.nombre}</p>
                     {presupuesto.esFijo && (
-                      <span className="text-[9px] font-black text-[#222222]/40 bg-[#222222]/10 px-1.5 py-0.5 rounded-full">Fijo</span>
+                      <span className="text-[9px] font-black text-[#222222]/40 dark:text-[#F5E6D0]/40 bg-[#222222]/10 dark:bg-[#F5E6D0]/10 px-1.5 py-0.5 rounded-full">Fijo</span>
                     )}
                   </div>
                   <div className="text-right">
@@ -103,13 +103,13 @@ export default function ListaPresupuestos({
                         €{fmt(gastado)} / €{fmt(presupuesto.limite)} · +€{fmt(exceso)}
                       </p>
                     ) : (
-                      <p className="text-xs font-black text-[#222222]/60">
+                      <p className="text-xs font-black text-[#222222]/60 dark:text-[#F5E6D0]/60">
                         €{fmt(gastado)} / €{fmt(presupuesto.limite)}
                       </p>
                     )}
                   </div>
                 </div>
-                <div className="h-3 bg-[#222222]/10 rounded-full overflow-hidden border border-[#222222]/20">
+                <div className="h-3 bg-[#222222]/10 dark:bg-[#F5E6D0]/10 rounded-full overflow-hidden border border-[#222222]/20 dark:border-[#F5E6D0]/20">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{ width: `${pct}%`, backgroundColor: barColor }}
@@ -123,16 +123,16 @@ export default function ListaPresupuestos({
 
       {/* Categorías sin presupuesto */}
       {sinPresupuesto.length > 0 && (
-        <div className="bg-[#FFF8C7] rounded-2xl border-2 border-[#222222] p-4"
-          style={{ boxShadow: '3px 3px 0px 0px #222222' }}>
-          <p className="text-[10px] font-black uppercase tracking-widest text-[#222222]/50 mb-3">Sin presupuesto</p>
+        <div className="bg-[#FFF8C7] dark:bg-[#3A3010] rounded-2xl border-2 border-[#222222] dark:border-[#F5E6D0] p-4"
+          style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#222222]/50 dark:text-[#F5E6D0]/50 mb-3">Sin presupuesto</p>
           <div className="flex flex-wrap gap-2">
             {sinPresupuesto.map(cat => (
               <button
                 key={cat.id}
                 type="button"
                 onClick={() => setCatSeleccionada(cat)}
-                className="flex items-center gap-1.5 bg-[#FFF8EC] border-2 border-[#222222] rounded-full px-3 py-1.5 text-xs font-black text-[#222222] hover:bg-[#FFE9CE] transition-colors"
+                className="flex items-center gap-1.5 bg-[#FFF8EC] dark:bg-[#2A2420] border-2 border-[#222222] dark:border-[#F5E6D0] rounded-full px-3 py-1.5 text-xs font-black text-[#222222] dark:text-[#F5E6D0] hover:bg-[#FFE9CE] dark:hover:bg-[#332E28] transition-colors"
               >
                 {cat.nombre}
               </button>
@@ -143,8 +143,8 @@ export default function ListaPresupuestos({
 
       {/* Estado vacío */}
       {categorias.length === 0 && (
-        <div className="bg-[#FFF8EC] rounded-2xl p-6 border-2 border-[#222222] text-center">
-          <p className="text-[#222222]/60 text-sm font-bold">No hay categorías de gasto en este proyecto.</p>
+        <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-6 border-2 border-[#222222] dark:border-[#F5E6D0] text-center">
+          <p className="text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-bold">No hay categorías de gasto en este proyecto.</p>
         </div>
       )}
 

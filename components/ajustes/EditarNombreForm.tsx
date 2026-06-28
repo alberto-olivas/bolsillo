@@ -33,14 +33,14 @@ export default function EditarNombreForm({ nombreActual }: { nombreActual: strin
         onChange={e => setNombre(e.target.value)}
         placeholder="Tu nombre"
         maxLength={50}
-        className="w-full bg-[#FFE9CE] border-2 border-[#222222] text-[#222222] placeholder-[#222222]/40 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
+        className="w-full bg-[#FFE9CE] dark:bg-[#332E28] border-2 border-[#222222] dark:border-[#F5E6D0] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
       />
       {error && <p className="text-red-400 text-xs">{error}</p>}
       <button
         type="submit"
         disabled={loading || !nombre.trim()}
         className="w-full bg-[#222222] hover:bg-[#000000] disabled:opacity-50 disabled:cursor-not-allowed text-[#FFD80B] font-black py-3 rounded-xl text-sm transition-colors border-2 border-[#222222]"
-        style={{ boxShadow: '3px 3px 0px 0px rgba(34,34,34,0.2)' }}
+        style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}
       >
         {loading ? 'Guardando...' : 'Guardar nombre'}
       </button>

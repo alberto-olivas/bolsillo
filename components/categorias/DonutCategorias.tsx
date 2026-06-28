@@ -62,7 +62,7 @@ export default function DonutCategorias({ categorias, totalGastos, className }: 
   })
 
   return (
-    <div className="bg-[#FFF8EC] rounded-2xl border-2 border-[#222222] p-4" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
+    <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl border-2 border-[#222222] dark:border-[#F5E6D0] p-4" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
       <div className="flex items-center gap-4">
         <div className="flex-shrink-0">
           <svg viewBox="0 0 200 200" className="w-24 h-24">
@@ -79,14 +79,14 @@ export default function DonutCategorias({ categorias, totalGastos, className }: 
           {conGasto.slice(0, 4).map(cat => (
             <div key={cat.catId} className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
-                <div className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222]" style={{ background: cat.color }} />
-                <span className="text-[11px] font-black text-[#222222] truncate">{cat.nombre}</span>
+                <div className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ background: cat.color }} />
+                <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0] truncate">{cat.nombre}</span>
               </div>
-              <span className="text-[11px] font-black text-[#222222] flex-shrink-0">€{Math.round(cat.total).toLocaleString('es-ES')}</span>
+              <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0] flex-shrink-0">€{Math.round(cat.total).toLocaleString('es-ES')}</span>
             </div>
           ))}
           {conGasto.length > 4 && (
-            <p className="text-[10px] text-[#222222]/40 font-bold">+{conGasto.length - 4} más</p>
+            <p className="text-[10px] text-[#222222]/40 dark:text-[#F5E6D0]/40 font-bold">+{conGasto.length - 4} más</p>
           )}
         </div>
       </div>

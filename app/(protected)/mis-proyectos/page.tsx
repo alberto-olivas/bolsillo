@@ -33,7 +33,7 @@ export default async function MisProyectosPage() {
   if (!perfil?.nombre) redirect('/completar-perfil')
 
   return (
-    <div className="min-h-screen bg-[#FFF8EC]">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
       <div className="bg-[#222222] px-4 pt-6 pb-5">
         <div className="max-w-sm mx-auto flex items-center justify-between">
           <div>
@@ -49,7 +49,7 @@ export default async function MisProyectosPage() {
 
         {/* Lista de proyectos */}
         <div className="space-y-3">
-          <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">Mis proyectos</h2>
+          <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">Mis proyectos</h2>
 
           {proyectos && proyectos.length > 0 ? (
             proyectos.map(p => (
@@ -63,9 +63,9 @@ export default async function MisProyectosPage() {
               />
             ))
           ) : (
-            <div className="bg-[#FFF8EC] rounded-2xl p-6 border-2 border-[#222222] text-center" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
-              <p className="text-[#222222]/60 text-sm font-bold">No tienes proyectos todavía.</p>
-              <p className="text-[#222222]/40 text-xs mt-1 font-medium">Crea uno o únete con un código.</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-6 border-2 border-[#222222] dark:border-[#F5E6D0] text-center" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-bold">No tienes proyectos todavía.</p>
+              <p className="text-[#222222]/40 dark:text-[#F5E6D0]/40 text-xs mt-1 font-medium">Crea uno o únete con un código.</p>
             </div>
           )}
         </div>

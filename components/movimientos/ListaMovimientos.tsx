@@ -120,14 +120,14 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             return (
               <div key={mes} className="space-y-1">
                 <div className="flex items-center justify-between px-1">
-                  <span className="text-[#222222]/50 text-[10px] font-black uppercase tracking-wide capitalize">
+                  <span className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-wide capitalize">
                     {formatMes(mes)}
                   </span>
-                  <span className="text-[#222222]/40 text-xs font-medium">
+                  <span className="text-[#222222]/40 dark:text-[#F5E6D0]/40 text-xs font-medium">
                     {items.length} {items.length === 1 ? 'resultado' : 'resultados'}
                   </span>
                 </div>
-                <div className="bg-[#FFF8EC] rounded-2xl px-5 border-2 border-[#222222]" style={{ boxShadow: '3px 3px 0px 0px #222222' }}>
+                <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-5 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
                   {items.map(m => (
                     <MovimientoItem
                       key={m.id}
@@ -150,14 +150,14 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             )
           })
         ) : (
-          <div className="bg-[#FFF8EC] rounded-2xl p-6 border-2 border-[#222222] text-center">
+          <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-6 border-2 border-[#222222] dark:border-[#F5E6D0] text-center">
             {busqueda ? (
               <>
-                <p className="text-[#222222]/60 text-sm font-bold">Sin resultados para «{busqueda}».</p>
-                <p className="text-[#222222]/40 text-xs mt-1 font-medium">Prueba con otro término.</p>
+                <p className="text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-bold">Sin resultados para «{busqueda}».</p>
+                <p className="text-[#222222]/40 dark:text-[#F5E6D0]/40 text-xs mt-1 font-medium">Prueba con otro término.</p>
               </>
             ) : (
-              <p className="text-[#222222]/60 text-sm font-bold">No hay movimientos en este proyecto.</p>
+              <p className="text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-bold">No hay movimientos en este proyecto.</p>
             )}
           </div>
         )}
@@ -186,17 +186,17 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
           <button
             type="button"
             onClick={() => navMes(-1)}
-            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
-            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222] dark:text-[#F5E6D0] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px var(--shadow-main)' }}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <span className="text-[#222222] font-black capitalize text-sm">{mesLabel}</span>
+          <span className="text-[#222222] dark:text-[#F5E6D0] font-black capitalize text-sm">{mesLabel}</span>
           <button
             type="button"
             onClick={() => navMes(1)}
-            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
-            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222] dark:text-[#F5E6D0] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px var(--shadow-main)' }}
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -213,7 +213,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             className={`px-3 py-1.5 rounded-lg text-xs font-black transition-colors ${
               filtroTipo === t
                 ? 'bg-[#222222] text-[#FFD80B]'
-                : 'bg-[#FFE9CE] text-[#222222]/60 hover:bg-[#FBDDB2] border-2 border-[#222222]'
+                : 'bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222]/60 dark:text-[#F5E6D0]/60 hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] border-2 border-[#222222] dark:border-[#F5E6D0]'
             }`}
           >
             {t === 'todos' ? 'Todos' : t === 'gasto' ? 'Gastos' : 'Ingresos'}
@@ -230,7 +230,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-black transition-colors ${
               filtroCat === null
                 ? 'bg-[#222222] text-[#FFD80B]'
-                : 'bg-[#FFE9CE] text-[#222222]/60 hover:bg-[#FBDDB2] border-2 border-[#222222]'
+                : 'bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222]/60 dark:text-[#F5E6D0]/60 hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] border-2 border-[#222222] dark:border-[#F5E6D0]'
             }`}
           >
             Todas
@@ -245,7 +245,7 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
                 className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition-colors ${
                   filtroCat === cat.id
                     ? 'bg-[#222222] text-[#FFD80B]'
-                    : 'bg-[#FFE9CE] text-[#222222]/60 hover:bg-[#FBDDB2] border-2 border-[#222222]'
+                    : 'bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222]/60 dark:text-[#F5E6D0]/60 hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] border-2 border-[#222222] dark:border-[#F5E6D0]'
                 }`}
               >
                 <Icono className="w-3 h-3" style={{ color: filtroCat === cat.id ? 'white' : cat.color }} />
@@ -267,12 +267,12 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
             return (
               <div key={dia} className="space-y-1">
                 <div className="flex items-center justify-between px-1">
-                  <span className="text-[#222222]/50 text-[10px] font-black uppercase tracking-wide">{formatDia(dia)}</span>
+                  <span className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-wide">{formatDia(dia)}</span>
                   <span className={`text-xs font-black ${totalDia >= 0 ? 'text-[#2FA84F]' : 'text-[#FD4C38]'}`}>
                     {totalDia >= 0 ? '+' : ''}{fmt(totalDia)} €
                   </span>
                 </div>
-                <div className="bg-[#FFF8EC] rounded-2xl px-5 border-2 border-[#222222]" style={{ boxShadow: '3px 3px 0px 0px #222222' }}>
+                <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-5 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
                   {items.map(m => (
                     <MovimientoItem
                       key={m.id}
@@ -296,9 +296,9 @@ export default function ListaMovimientos({ movimientos, categorias, mesAno, proy
           })}
         </div>
       ) : (
-        <div className="bg-[#FFF8EC] rounded-2xl p-6 border-2 border-[#222222] text-center">
-          <p className="text-[#222222]/60 text-sm font-bold">Sin movimientos este mes.</p>
-          <p className="text-[#222222]/40 text-xs mt-1 font-medium">Añade tu primer gasto o ingreso.</p>
+        <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-6 border-2 border-[#222222] dark:border-[#F5E6D0] text-center">
+          <p className="text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-bold">Sin movimientos este mes.</p>
+          <p className="text-[#222222]/40 dark:text-[#F5E6D0]/40 text-xs mt-1 font-medium">Añade tu primer gasto o ingreso.</p>
         </div>
       )}
     </div>

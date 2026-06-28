@@ -59,7 +59,7 @@ export default function DonutBalanceMes({ totalGastos, totalIngresos, totalAhorr
   const pct = totalIngresos > 0 ? Math.round((totalGastos / totalIngresos) * 100) : 0
 
   return (
-    <div className="bg-[#FFF8EC] rounded-2xl border-2 border-[#222222] p-4" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
+    <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl border-2 border-[#222222] dark:border-[#F5E6D0] p-4" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
       <div className="flex items-center gap-4">
         <div className="relative flex-shrink-0">
           <svg viewBox="0 0 200 200" className="w-24 h-24">
@@ -73,29 +73,29 @@ export default function DonutBalanceMes({ totalGastos, totalIngresos, totalAhorr
         <div className="flex-1 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm border-2 border-[#222222]" style={{ background: '#2FA84F' }} />
-              <span className="text-[11px] font-black text-[#222222]">Ingresos</span>
+              <div className="w-3 h-3 rounded-sm border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ background: '#2FA84F' }} />
+              <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0]">Ingresos</span>
             </div>
-            <span className="text-[11px] font-black text-[#222222]">€{fmt(totalIngresos)}</span>
+            <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0]">€{fmt(totalIngresos)}</span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-sm border-2 border-[#222222]" style={{ background: '#FD4C38' }} />
-              <span className="text-[11px] font-black text-[#222222]">Gastos</span>
+              <div className="w-3 h-3 rounded-sm border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ background: '#FD4C38' }} />
+              <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0]">Gastos</span>
             </div>
-            <span className="text-[11px] font-black text-[#222222]">€{fmt(totalGastos)}</span>
+            <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0]">€{fmt(totalGastos)}</span>
           </div>
           {totalAhorro > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-sm border-2 border-[#222222]" style={{ background: '#8B53FF' }} />
-                <span className="text-[11px] font-black text-[#222222]">Ahorro</span>
+                <div className="w-3 h-3 rounded-sm border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ background: '#8B53FF' }} />
+                <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0]">Ahorro</span>
               </div>
-              <span className="text-[11px] font-black text-[#222222]">€{fmt(totalAhorro)}</span>
+              <span className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0]">€{fmt(totalAhorro)}</span>
             </div>
           )}
-          <div className="mt-2 px-2 py-1.5 bg-[#FFF8C7] border-2 border-[#222222] rounded-xl">
-            <p className="text-[10px] font-black text-[#222222]">Has gastado el {pct}% de tus ingresos</p>
+          <div className="mt-2 px-2 py-1.5 bg-[#FFF8C7] dark:bg-[#3A3010] border-2 border-[#222222] dark:border-[#F5E6D0] rounded-xl">
+            <p className="text-[10px] font-black text-[#222222] dark:text-[#F5E6D0]">Has gastado el {pct}% de tus ingresos</p>
           </div>
         </div>
       </div>

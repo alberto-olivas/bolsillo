@@ -28,7 +28,7 @@ export default async function AjustesPage({
 
   return (
     <>
-      <div className="min-h-screen bg-[#FFF8EC]">
+      <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
         <div className="bg-[#222222] px-4 pt-6 pb-5">
           <div className="max-w-sm mx-auto">
             <h1 className="text-lg font-black text-[#FFE9CE]">Ajustes</h1>
@@ -38,33 +38,33 @@ export default async function AjustesPage({
 
           {/* Cuenta */}
           <div className="space-y-2">
-            <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Cuenta
             </h2>
-            <div className="bg-[#FFF8EC] rounded-2xl px-4 py-3 border-2 border-[#222222]" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
-              <p className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">Email</p>
-              <p className="text-sm text-[#222222] mt-0.5 font-medium">{perfil?.email ?? user.email}</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-4 py-3 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">Email</p>
+              <p className="text-sm text-[#222222] dark:text-[#F5E6D0] mt-0.5 font-medium">{perfil?.email ?? user.email}</p>
             </div>
           </div>
 
           {/* Perfil */}
           <div className="space-y-2">
-            <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Perfil
             </h2>
-            <div className="bg-[#FFF8EC] rounded-2xl p-4 border-2 border-[#222222]" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
-              <p className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 mb-3">Nombre</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-4 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50 mb-3">Nombre</p>
               <EditarNombreForm nombreActual={perfil?.nombre ?? ''} />
             </div>
           </div>
 
           {/* Apariencia */}
           <div className="space-y-2">
-            <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Apariencia
             </h2>
-            <div className="bg-[#FFF8EC] rounded-2xl px-4 py-3 border-2 border-[#222222] flex items-center justify-between" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
-              <p className="text-sm text-[#222222] font-black">Tema claro / oscuro</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-4 py-3 border-2 border-[#222222] dark:border-[#F5E6D0] flex items-center justify-between" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-sm text-[#222222] dark:text-[#F5E6D0] font-black">Tema claro / oscuro</p>
               <ThemeToggle />
             </div>
           </div>
@@ -74,10 +74,10 @@ export default async function AjustesPage({
 
           {/* Sesión */}
           <div className="space-y-2">
-            <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Sesión
             </h2>
-            <div className="bg-[#FFF8EC] rounded-2xl p-4 border-2 border-[#222222]" style={{ boxShadow: '4px 4px 0px 0px #222222' }}>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-4 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
               <LogoutButton />
             </div>
           </div>

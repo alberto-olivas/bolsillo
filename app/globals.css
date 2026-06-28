@@ -26,6 +26,40 @@
   --shadow-offset-lg: 6px 6px 0px 0px #222222;
 }
 
+:root {
+  --bg-page: #FFF8EC;
+  --bg-card: #FFF8EC;
+  --bg-card-hover: #FFE9CE;
+  --bg-input: #FFE9CE;
+  --bg-cream: #FFE9CE;
+  --bg-cream-medium: #FBDDB2;
+  --border-main: #222222;
+  --shadow-main: #222222;
+  --text-main: #222222;
+  --text-muted: rgba(34,34,34,0.5);
+  --text-faint: rgba(34,34,34,0.3);
+  --bg-header: #222222;
+  --text-header: #FFE9CE;
+  --text-yellow: #FFD80B;
+}
+
+.dark {
+  --bg-page: #1A1612;
+  --bg-card: #2A2420;
+  --bg-card-hover: #332E28;
+  --bg-input: #332E28;
+  --bg-cream: #2A2420;
+  --bg-cream-medium: #3A3228;
+  --border-main: #F5E6D0;
+  --shadow-main: #F5E6D0;
+  --text-main: #F5E6D0;
+  --text-muted: rgba(245,230,208,0.5);
+  --text-faint: rgba(245,230,208,0.3);
+  --bg-header: #111008;
+  --text-header: #F5E6D0;
+  --text-yellow: #FFD80B;
+}
+
 body {
   background-color: #FFF8EC;
   color: #1a1a1a;
