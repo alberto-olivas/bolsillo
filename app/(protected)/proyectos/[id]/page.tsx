@@ -13,7 +13,7 @@ import SelectorProyecto from '@/components/proyectos/SelectorProyecto'
 import ArrastreMes from '@/components/movimientos/ArrastreMes'
 import BuscadorConLista from '@/components/movimientos/BuscadorConLista'
 import LupaBoton from '@/components/movimientos/LupaBoton'
-import { mesAnterior } from '@/lib/utils-fecha'
+import { mesAnterior, mesSiguiente } from '@/lib/utils-fecha'
 
 function fmt(n: number) {
   return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -222,7 +222,7 @@ export default async function ProyectoPage({
             </Link>
             <Suspense fallback={
               <div>
-                <p className="text-[#FFE9CE] font-black text-base leading-tight">{proyecto.nombre}</p>
+                <p className="text-[#FFD80B] font-black text-base leading-tight">{proyecto.nombre}</p>
                 <p className="text-[#FFE9CE]/50 text-xs capitalize font-bold">{proyecto.tipo}</p>
               </div>
             }>
@@ -242,6 +242,9 @@ export default async function ProyectoPage({
 
           {/* Balance total */}
           <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">💰</span>
+            </div>
             <p className="text-[#FFE9CE]/50 text-[10px] font-black uppercase tracking-widest mb-1">
               Balance total · {mesLabel}
             </p>
@@ -282,6 +285,25 @@ export default async function ProyectoPage({
                 </>
               )
             })()}
+          </div>
+
+          {/* Selector de mes */}
+          <div className="flex items-center justify-between mt-2">
+            <Link
+              href={`/proyectos/${id}?mes=${mesAnterior(mesAno)}`}
+              className="w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#FFE9CE]/30 text-[#FFE9CE]/60 hover:border-[#FFE9CE] hover:text-[#FFE9CE] transition-colors text-sm font-black"
+            >
+              ‹
+            </Link>
+            <span className="text-[#FFE9CE]/70 text-xs font-black uppercase tracking-widest capitalize">
+              {mesLabel}
+            </span>
+            <Link
+              href={`/proyectos/${id}?mes=${mesSiguiente(mesAno)}`}
+              className="w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#FFE9CE]/30 text-[#FFE9CE]/60 hover:border-[#FFE9CE] hover:text-[#FFE9CE] transition-colors text-sm font-black"
+            >
+              ›
+            </Link>
           </div>
         </div>
       </div>
