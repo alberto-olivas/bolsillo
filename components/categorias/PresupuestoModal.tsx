@@ -135,10 +135,14 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
             <button
               type="button"
               onClick={() => setEsFijo(v => !v)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${esFijo ? 'bg-[#222222]' : 'bg-[#222222]/20'}`}
+              className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
+                esFijo ? 'bg-[#222222]' : 'bg-[#222222]/20'
+              }`}
             >
               <span
-                className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${esFijo ? 'translate-x-5' : 'translate-x-0.5'}`}
+                className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  esFijo ? 'translate-x-5' : 'translate-x-0.5'
+                }`}
               />
             </button>
           </div>
