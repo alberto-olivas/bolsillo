@@ -41,6 +41,8 @@
   --bg-header: #222222;
   --text-header: #FFE9CE;
   --text-yellow: #FFD80B;
+  --chart-active: #222222;
+  --chart-inactive: #222222;
 }
 
 .dark {
@@ -58,6 +60,8 @@
   --bg-header: #111008;
   --text-header: #F5E6D0;
   --text-yellow: #FFD80B;
+  --chart-active: #FFD80B;
+  --chart-inactive: #F5E6D0;
 }
 
 body {

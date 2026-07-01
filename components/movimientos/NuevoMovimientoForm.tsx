@@ -102,13 +102,12 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
       onClick={() => { setAbierto(false); setError('') }}
     >
       <div
-        className="w-full max-w-sm bg-[#FFF8EC] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222]"
+        className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
         onClick={e => e.stopPropagation()}
       >
-        {/* Handle */}
-        <div className="w-10 h-1 bg-[#222222]/20 rounded-full mx-auto" />
+        <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full mx-auto" />
 
-        <p className="text-[#222222] font-black text-base">Nuevo movimiento</p>
+        <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-base">Nuevo movimiento</p>
 
         {/* Tipo */}
         <div className="grid grid-cols-2 gap-2">
@@ -117,10 +116,10 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
               key={t}
               type="button"
               onClick={() => handleCambiarTipo(t)}
-              className={`py-2.5 rounded-xl text-sm font-black transition-colors border-2 border-[#222222] ${
+              className={`py-2.5 rounded-xl text-sm font-black transition-colors border-2 border-[#222222] dark:border-[#F5E6D0] ${
                 tipo === t
-                  ? 'bg-[#222222] text-[#FFD80B]'
-                  : 'bg-[#FFE9CE] text-[#222222]/50 hover:bg-[#FBDDB2]'
+                  ? 'bg-[#222222] dark:bg-[#F5E6D0] text-[#FFD80B] dark:text-[#222222]'
+                  : 'bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222]/50 dark:text-[#F5E6D0]/50 hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228]'
               }`}
             >
               {t === 'gasto' ? '💸 Gasto' : '💰 Ingreso'}
@@ -130,7 +129,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
 
         {/* Cantidad */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">Cantidad (€)</label>
+          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">Cantidad (€)</label>
           <input
             type="number"
             inputMode="decimal"
@@ -139,13 +138,13 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
             value={cantidad}
             onChange={e => setCantidad(e.target.value)}
             placeholder="0.00"
-            className="w-full bg-[#FFE9CE] text-[#222222] placeholder-[#222222]/40 rounded-xl px-4 py-3 text-base border-2 border-[#222222] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
+            className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
           />
         </div>
 
         {/* Categoría */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">Categoría</label>
+          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">Categoría</label>
           <div className="grid grid-cols-4 gap-2">
             {categoriasFiltradas.map(cat => {
               const Icono = ICONOS[cat.icono] ?? Package
@@ -157,12 +156,12 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
                   onClick={() => setCategoriaId(cat.id)}
                   className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors border-2 ${
                     seleccionada
-                      ? 'border-[#222222] bg-[#FFD80B]/30'
-                      : 'border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2]'
+                      ? 'border-[#222222] dark:border-[#F5E6D0] bg-[#FFD80B]/30'
+                      : 'border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228]'
                   }`}
                 >
                   <Icono className="w-4 h-4" style={{ color: cat.color }} />
-                  <span className="text-[10px] font-black text-[#222222] leading-tight text-center">{cat.nombre}</span>
+                  <span className="text-[10px] font-black text-[#222222] dark:text-[#F5E6D0] leading-tight text-center">{cat.nombre}</span>
                 </button>
               )
             })}
@@ -171,19 +170,19 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
 
         {/* Fecha */}
         <div className="space-y-1.5 overflow-hidden">
-          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">Fecha</label>
+          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">Fecha</label>
           <input
             type="date"
             value={fecha}
             onChange={e => setFecha(e.target.value)}
-            className="w-full max-w-full appearance-none box-border min-w-0 bg-[#FFE9CE] text-[#222222] rounded-xl px-4 py-3 text-base border-2 border-[#222222] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
+            className="w-full max-w-full appearance-none box-border min-w-0 bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] rounded-xl px-4 py-3 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
           />
         </div>
 
         {/* Descripción */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">
-            Descripción <span className="text-[#222222]/30 normal-case font-bold">(opcional)</span>
+          <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">
+            Descripción <span className="text-[#222222]/30 dark:text-[#F5E6D0]/30 normal-case font-bold">(opcional)</span>
           </label>
           <input
             type="text"
@@ -191,40 +190,40 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
             onChange={e => setDescripcion(e.target.value)}
             placeholder="Ej: Mercadona"
             maxLength={100}
-            className="w-full bg-[#FFE9CE] text-[#222222] placeholder-[#222222]/40 rounded-xl px-4 py-3 text-base border-2 border-[#222222] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
+            className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
           />
         </div>
 
         {/* Gasto fijo */}
         <div
-          className="flex items-center justify-between bg-[#FFE9CE] rounded-xl px-4 py-3 border-2 border-[#222222] cursor-pointer"
+          className="flex items-center justify-between bg-[#FFE9CE] dark:bg-[#332E28] rounded-xl px-4 py-3 border-2 border-[#222222] dark:border-[#F5E6D0] cursor-pointer"
           onClick={() => setEsFijo(!esFijo)}
         >
           <div>
-            <p className="text-[#222222] text-sm font-black">Se repite cada mes</p>
-            <p className="text-[#222222]/50 text-xs font-medium">Guardará una plantilla de gasto fijo</p>
+            <p className="text-[#222222] dark:text-[#F5E6D0] text-sm font-black">Se repite cada mes</p>
+            <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-xs font-medium">Guardará una plantilla de gasto fijo</p>
           </div>
-          <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${esFijo ? 'bg-[#222222]' : 'bg-[#222222]/20'}`}>
+          <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${esFijo ? 'bg-[#222222] dark:bg-[#F5E6D0]' : 'bg-[#222222]/20 dark:bg-[#F5E6D0]/20'}`}>
             <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${esFijo ? 'translate-x-5' : 'translate-x-0.5'}`} />
           </div>
         </div>
 
         {esFijo && (
           <div className="space-y-1.5">
-            <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">Día del mes en que se repite</label>
+            <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">Día del mes en que se repite</label>
             <input
               type="number"
               min="1"
               max="31"
               value={diaDelMes}
               onChange={e => setDiaDelMes(Math.min(31, Math.max(1, Number(e.target.value))))}
-              className="w-full bg-[#FFE9CE] text-[#222222] rounded-xl px-4 py-3 text-base border-2 border-[#222222] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
+              className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] rounded-xl px-4 py-3 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
             />
           </div>
         )}
 
         {error && (
-          <p className="text-[#FD4C38] text-xs font-black bg-[#FFE2DD] px-3 py-2 rounded-xl border-2 border-[#FD4C38]">
+          <p className="text-[#FD4C38] text-xs font-black bg-[#FFE2DD] dark:bg-[#3A1A16] px-3 py-2 rounded-xl border-2 border-[#FD4C38]">
             {error}
           </p>
         )}
@@ -233,7 +232,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
           <button
             type="button"
             onClick={() => { setAbierto(false); setError('') }}
-            className="flex-1 bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222]/60 font-black py-3 rounded-xl transition-colors text-sm border-2 border-[#222222]"
+            className="flex-1 bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222]/60 dark:text-[#F5E6D0]/60 font-black py-3 rounded-xl transition-colors text-sm border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             Cancelar
           </button>

@@ -56,7 +56,7 @@ export default function SelectorProyecto({ actual, todos }: Props) {
                   <p className="text-neutral-900 dark:text-white text-sm font-medium">{p.nombre}</p>
                   <p className="text-neutral-500 text-xs capitalize">{p.tipo}</p>
                 </div>
-                {p.id === actual.id && <Check className="w-4 h-4 text-indigo-400 flex-shrink-0" />}
+                {p.id === actual.id && <Check className="w-4 h-4 text-[#FFD80B] flex-shrink-0" />}
               </button>
             ))}
           </div>

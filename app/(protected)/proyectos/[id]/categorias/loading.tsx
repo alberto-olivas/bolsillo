@@ -1,41 +1,41 @@
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6 animate-pulse">
 
         {/* Cabecera */}
         <div className="flex items-center gap-3">
-          <div className="w-5 h-5 rounded bg-neutral-200 dark:bg-neutral-800 flex-shrink-0" />
+          <div className="w-5 h-5 rounded bg-[#FBDDB2] dark:bg-[#332E28] flex-shrink-0" />
           <div className="space-y-1.5 flex-1">
-            <div className="h-5 w-36 rounded bg-neutral-200 dark:bg-neutral-800" />
-            <div className="h-3 w-20 rounded bg-neutral-200 dark:bg-neutral-800" />
+            <div className="h-5 w-36 rounded bg-[#FBDDB2] dark:bg-[#332E28]" />
+            <div className="h-3 w-20 rounded bg-[#FBDDB2] dark:bg-[#332E28]" />
           </div>
         </div>
 
         {/* Selector de mes */}
         <div className="flex items-center justify-between">
-          <div className="w-9 h-9 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
-          <div className="h-4 w-28 rounded bg-neutral-200 dark:bg-neutral-800" />
-          <div className="w-9 h-9 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+          <div className="w-9 h-9 rounded-xl bg-[#FBDDB2] dark:bg-[#332E28]" />
+          <div className="h-4 w-28 rounded bg-[#FBDDB2] dark:bg-[#332E28]" />
+          <div className="w-9 h-9 rounded-xl bg-[#FBDDB2] dark:bg-[#332E28]" />
         </div>
 
         {/* Donut grande */}
         <div className="flex justify-center py-2">
-          <div className="w-48 h-48 rounded-full bg-neutral-200 dark:bg-neutral-800" />
+          <div className="w-48 h-48 rounded-full bg-[#FBDDB2] dark:bg-[#332E28]" />
         </div>
 
         {/* Lista categorías */}
         <div className="space-y-2">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-4 space-y-2">
+            <div key={i} className="bg-[#FFE9CE] dark:bg-[#2A2420] rounded-2xl p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
-                  <div className="h-4 w-24 rounded bg-neutral-200 dark:bg-neutral-800" />
+                  <div className="w-8 h-8 rounded-xl bg-[#FBDDB2] dark:bg-[#332E28]" />
+                  <div className="h-4 w-24 rounded bg-[#FBDDB2] dark:bg-[#332E28]" />
                 </div>
-                <div className="h-4 w-16 rounded bg-neutral-200 dark:bg-neutral-800" />
+                <div className="h-4 w-16 rounded bg-[#FBDDB2] dark:bg-[#332E28]" />
               </div>
-              <div className="h-1.5 w-full rounded-full bg-neutral-200 dark:bg-neutral-800" />
+              <div className="h-1.5 w-full rounded-full bg-[#FBDDB2] dark:bg-[#332E28]" />
             </div>
           ))}
         </div>
