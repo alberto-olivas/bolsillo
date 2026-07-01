@@ -212,7 +212,7 @@ export default async function ProyectoPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8EC]">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
       <div className="relative bg-[#222222] px-4 pt-6 pb-6">
         <div className="max-w-sm mx-auto space-y-4">
           {/* Fila superior: nav + acciones */}

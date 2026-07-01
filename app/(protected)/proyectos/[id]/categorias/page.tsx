@@ -71,7 +71,7 @@ export default async function CategoriasPage({
   )?.total ?? 0
 
   return (
-    <div className="min-h-screen bg-[#FFF8EC]">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
       <div className="bg-[#222222] px-4 pt-6 pb-5">
         <div className="max-w-sm mx-auto space-y-3">
           <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export default async function CategoriasPage({
 
         <div className="flex items-center gap-2">
           <span className="text-[#FFD80B] text-lg">◆</span>
-          <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Estadísticas</p>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-xs font-black uppercase tracking-widest">Estadísticas</p>
         </div>
 
         {/* Donut ingresos vs gastos */}
@@ -123,7 +123,7 @@ export default async function CategoriasPage({
         {/* Título por categoría */}
         <div className="flex items-center gap-2">
           <span className="text-[#FFD80B] text-lg">◆</span>
-          <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Por categoría</p>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-xs font-black uppercase tracking-widest">Por categoría</p>
         </div>
 
         {/* Donut categorías */}
@@ -137,30 +137,30 @@ export default async function CategoriasPage({
           {categoriaStats.filter(c => c.total > 0).map(cat => (
             <div
               key={cat.catId}
-              className="bg-[#FFF8EC] rounded-2xl p-3 border-2 border-[#222222] flex items-center gap-2"
-              style={{ boxShadow: '3px 3px 0px 0px #222222' }}
+              className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-3 border-2 border-[#222222] dark:border-[#F5E6D0] flex items-center gap-2"
+              style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}
             >
               <div
-                className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222]"
+                className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222] dark:border-[#F5E6D0]"
                 style={{ backgroundColor: cat.color }}
               />
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-black text-[#222222] truncate">{cat.nombre}</p>
-                <div className="h-1.5 bg-[#222222]/10 rounded-full mt-1 border border-[#222222]/20 overflow-hidden">
+                <p className="text-[10px] font-black text-[#222222] dark:text-[#F5E6D0] truncate">{cat.nombre}</p>
+                <div className="h-1.5 bg-[#222222]/10 dark:bg-[#F5E6D0]/10 rounded-full mt-1 border border-[#222222]/20 dark:border-[#F5E6D0]/20 overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${cat.porcentaje}%`, backgroundColor: cat.color }}
                   />
                 </div>
               </div>
-              <p className="text-[11px] font-black text-[#222222] flex-shrink-0">{Math.round(cat.porcentaje)}%</p>
+              <p className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0] flex-shrink-0">{Math.round(cat.porcentaje)}%</p>
             </div>
           ))}
         </div>
 
         {/* Lista detalle */}
         <div className="space-y-2">
-          <p className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">Detalle</p>
+          <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">Detalle</p>
           <ListaCategorias
             categorias={categoriaStats}
             proyectoId={id}

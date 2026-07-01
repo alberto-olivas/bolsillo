@@ -63,7 +63,7 @@ export default async function PresupuestosPage({
   const nextMes = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, '0')}`
 
   return (
-    <div className="min-h-screen bg-[#FFF8EC]">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
       <div className="bg-[#8B53FF] px-4 pt-6 pb-8 relative overflow-hidden">
         <div className="max-w-sm mx-auto space-y-3">
           <div className="flex items-center gap-3">
@@ -97,16 +97,16 @@ export default async function PresupuestosPage({
         <div className="flex items-center justify-between">
           <Link
             href={`/proyectos/${id}/presupuestos?mes=${prevMes}`}
-            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
-            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222] dark:text-[#F5E6D0] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px var(--shadow-main)' }}
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
-          <span className="text-[#222222] font-black capitalize text-sm">{mesLabel}</span>
+          <span className="text-[#222222] dark:text-[#F5E6D0] font-black capitalize text-sm">{mesLabel}</span>
           <Link
             href={`/proyectos/${id}/presupuestos?mes=${nextMes}`}
-            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] bg-[#FFE9CE] hover:bg-[#FBDDB2] text-[#222222] transition-colors"
-            style={{ boxShadow: '2px 2px 0px 0px #222222' }}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222] dark:text-[#F5E6D0] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px var(--shadow-main)' }}
           >
             <ChevronRight className="w-5 h-5" />
           </Link>
@@ -114,7 +114,7 @@ export default async function PresupuestosPage({
 
         <div className="flex items-center gap-2">
           <span className="text-[#FFD80B] text-lg">◆</span>
-          <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Progreso por categoría</p>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-xs font-black uppercase tracking-widest">Progreso por categoría</p>
         </div>
 
         <ListaPresupuestos
