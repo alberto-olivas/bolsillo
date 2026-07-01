@@ -9,12 +9,11 @@ import NuevoMovimientoForm from '@/components/movimientos/NuevoMovimientoForm'
 import ResumenMes from '@/components/movimientos/ResumenMes'
 import PendientesConfirmar from '@/components/movimientos/PendientesConfirmar'
 import ListaMovimientos from '@/components/movimientos/ListaMovimientos'
-import DonutCategorias from '@/components/categorias/DonutCategorias'
 import SelectorProyecto from '@/components/proyectos/SelectorProyecto'
 import ArrastreMes from '@/components/movimientos/ArrastreMes'
 import BuscadorConLista from '@/components/movimientos/BuscadorConLista'
 import LupaBoton from '@/components/movimientos/LupaBoton'
-import { mesAnterior } from '@/lib/utils-fecha'
+import { mesAnterior, mesSiguiente } from '@/lib/utils-fecha'
 
 function fmt(n: number) {
   return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -88,6 +87,9 @@ export default async function ProyectoPage({
   let alertaIngresos = false
   let pctIngresosGastado = 0
   let alertasPresupuesto: { cat: { id: string; nombre: string; icono: string; color: string }; gastado: number; limite: number; pct: number; excedido: boolean }[] = []
+  let totalAhorro = 0
+  let totalPresupuesto = 0
+  let gastoPresupuestado = 0
 
   if (!esBusqueda) {
     // Pendientes: upsert luego select (secuencial, dependen del upsert)
@@ -187,6 +189,17 @@ export default async function ProyectoPage({
       if (pct < 80) return []
       return [{ cat, gastado, limite: Number(p.limite), pct, excedido: pct >= 100 }]
     }).sort((a, b) => b.pct - a.pct)
+
+    totalAhorro = miniDonutData.find(c =>
+      c.nombre.toLowerCase() === 'ahorro'
+    )?.total ?? 0
+    totalPresupuesto = (presupuestosRaw ?? []).reduce(
+      (s, p) => s + Number(p.limite), 0
+    )
+    gastoPresupuestado = (presupuestosRaw ?? []).reduce((s, p) => {
+      const gastado = gastadoPorCatId[p.categoria_id] ?? 0
+      return s + Math.min(gastado, Number(p.limite))
+    }, 0)
   }
 
   // Saldo acumulado por movimiento (extracto bancario)
@@ -199,7 +212,99 @@ export default async function ProyectoPage({
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
+      <div className="relative bg-[#222222] px-4 pt-6 pb-6">
+        <div className="max-w-sm mx-auto space-y-4">
+          {/* Fila superior: nav + acciones */}
+          <div className="flex items-center gap-3">
+            <Link href="/mis-proyectos" className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors flex-shrink-0">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <Suspense fallback={
+              <div>
+                <p className="text-[#FFD80B] font-black text-base leading-tight">{proyecto.nombre}</p>
+                <p className="text-[#FFE9CE]/50 text-xs capitalize font-bold">{proyecto.tipo}</p>
+              </div>
+            }>
+              <SelectorProyecto
+                actual={proyecto}
+                todos={todosLosProyectos ?? []}
+              />
+            </Suspense>
+            <Link
+              href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
+              className="flex-shrink-0 text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors p-1 rounded-xl"
+            >
+              <BarChart3 className="w-5 h-5" />
+            </Link>
+            <LupaBoton proyectoId={id} />
+          </div>
+
+          {/* Balance total */}
+          <div>
+            <p className="text-[#FFE9CE]/50 text-[10px] font-black uppercase tracking-widest mb-1">
+              Balance total · {mesLabel}
+            </p>
+            <p className={`text-4xl font-black tracking-tight ${
+              (arrastreConfirmadoImporte +
+                (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s,m) => s + Number(m.cantidad), 0) -
+                (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s,m) => s + Number(m.cantidad), 0)
+              ) >= 0 ? 'text-[#FFF8EC]' : 'text-[#FD4C38]'
+            }`}>
+              {(() => {
+                const ingresos = (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s,m) => s + Number(m.cantidad), 0)
+                const gastos = (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s,m) => s + Number(m.cantidad), 0)
+                const saldo = arrastreConfirmadoImporte + ingresos - gastos
+                return `${saldo >= 0 ? '+' : '−'}${Math.abs(saldo).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+              })()}
+            </p>
+          </div>
+
+          {/* Píldoras ingresos/gastos */}
+          <div className="flex gap-2">
+            {(() => {
+              const ingresos = (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s,m) => s + Number(m.cantidad), 0)
+              const gastos = (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s,m) => s + Number(m.cantidad), 0)
+              return (
+                <>
+                  <div className="flex items-center gap-1.5 bg-white/8 border border-white/15 rounded-full px-3 py-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#2FA84F] border border-[#222222] flex-shrink-0" />
+                    <span className="text-[#FFF8EC] text-xs font-black">
+                      +{ingresos.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-white/8 border border-white/15 rounded-full px-3 py-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#FD4C38] border border-[#222222] flex-shrink-0" />
+                    <span className="text-[#FFF8EC] text-xs font-black">
+                      −{gastos.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
+                    </span>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+
+          {/* Selector de mes */}
+          <div className="flex items-center justify-between mt-2">
+            <Link
+              href={`/proyectos/${id}?mes=${mesAnterior(mesAno)}`}
+              className="w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#FFE9CE]/30 text-[#FFE9CE]/60 hover:border-[#FFE9CE] hover:text-[#FFE9CE] transition-colors text-sm font-black"
+            >
+              ‹
+            </Link>
+            <span className="text-[#FFE9CE]/70 text-xs font-black uppercase tracking-widest capitalize">
+              {mesLabel}
+            </span>
+            <Link
+              href={`/proyectos/${id}?mes=${mesSiguiente(mesAno)}`}
+              className="w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#FFE9CE]/30 text-[#FFE9CE]/60 hover:border-[#FFE9CE] hover:text-[#FFE9CE] transition-colors text-sm font-black"
+            >
+              ›
+            </Link>
+          </div>
+        </div>
+        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-5xl opacity-10 pointer-events-none select-none">💰</span>
+      </div>
       <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
         {esBusqueda ? (
@@ -214,30 +319,6 @@ export default async function ProyectoPage({
         ) : (
           // Modo normal: vista completa con widgets de mes
           <>
-            {/* Cabecera */}
-            <div className="flex items-center gap-3">
-              <Link href="/mis-proyectos" className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors flex-shrink-0">
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
-              <Suspense fallback={
-                <div>
-                  <p className="text-neutral-900 dark:text-white font-bold text-lg leading-tight">{proyecto.nombre}</p>
-                  <p className="text-neutral-500 text-xs capitalize">{proyecto.tipo}</p>
-                </div>
-              }>
-                <SelectorProyecto
-                  actual={proyecto}
-                  todos={todosLosProyectos ?? []}
-                />
-              </Suspense>
-              <Link
-                href={`/proyectos/${id}/estadisticas?mes=${mesAno}`}
-                className="flex-shrink-0 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-1 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
-              >
-                <BarChart3 className="w-5 h-5" />
-              </Link>
-              <LupaBoton proyectoId={id} />
-            </div>
 
             {/* Alertas de presupuesto e ingresos */}
             {(alertaIngresos || alertasPresupuesto.length > 0) && (
@@ -286,28 +367,23 @@ export default async function ProyectoPage({
             )}
 
             {/* Resumen del mes */}
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFD80B] text-lg">◆</span>
+              <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Resumen</p>
+            </div>
             <ResumenMes
               movimientos={movimientos ?? []}
               arrastreConfirmado={arrastreConfirmadoImporte}
               mesLabelAnterior={mesLabelAnterior}
+              totalPresupuesto={totalPresupuesto}
+              gastoPresupuestado={gastoPresupuestado}
+              totalAhorro={totalAhorro}
             />
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFD80B] text-lg">◆</span>
+              <p className="text-[#222222] text-xs font-black uppercase tracking-widest">Últimos movimientos</p>
+            </div>
 
-            {/* Mini donut de categorías */}
-            {miniDonutData.length > 0 && (
-              <div className="flex flex-col items-center gap-2">
-                <DonutCategorias
-                  categorias={miniDonutData}
-                  totalGastos={miniDonutData.reduce((s, c) => s + c.total, 0)}
-                  className="w-36 h-36"
-                />
-                <Link
-                  href={`/proyectos/${id}/categorias?mes=${mesAno}`}
-                  className="text-indigo-400 text-xs hover:text-indigo-300 transition-colors"
-                >
-                  Ver todas las categorías →
-                </Link>
-              </div>
-            )}
 
             {/* Arrastre del mes anterior */}
             {arrastrePendiente && (
@@ -341,6 +417,7 @@ export default async function ProyectoPage({
               proyectoId={id}
               initialCat={cat}
               saldoPorId={saldoPorId}
+              ocultarSelectorMes={true}
             />
           </>
         )}

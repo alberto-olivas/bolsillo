@@ -29,21 +29,23 @@ export default async function PresupuestosPage({
     user,
     { data: proyecto },
     { data: categorias },
-    { data: movimientos },
+    { data: movimientosGasto },
     { data: presupuestosRaw },
+    { data: movimientos },
   ] = await Promise.all([
     getCachedUser(),
     supabase.from('proyectos').select('id, nombre').eq('id', id).single(),
     supabase.from('categorias').select('id, nombre, icono, color').eq('proyecto_id', id).eq('tipo', 'gasto').order('nombre'),
     supabase.from('movimientos').select('tipo, cantidad, categorias(id)').eq('proyecto_id', id).eq('tipo', 'gasto').gte('fecha', primerDia).lte('fecha', ultimoDia),
     supabase.from('presupuestos').select('id, categoria_id, limite, es_fijo, mes_ano').eq('proyecto_id', id).eq('activo', true).or(`es_fijo.eq.true,mes_ano.eq.${mesAno}`),
+    supabase.from('movimientos').select('tipo, cantidad').eq('proyecto_id', id).gte('fecha', primerDia).lte('fecha', ultimoDia),
   ])
 
   if (!user) redirect('/login')
   if (!proyecto) redirect('/mis-proyectos')
 
   const gastadoPorCat: { [catId: string]: number } = {}
-  for (const m of movimientos ?? []) {
+  for (const m of movimientosGasto ?? []) {
     const cat = m.categorias as any
     if (!cat?.id) continue
     gastadoPorCat[cat.id] = (gastadoPorCat[cat.id] ?? 0) + Number(m.cantidad)
@@ -57,90 +59,63 @@ export default async function PresupuestosPage({
     mesAno: p.mes_ano as string | null,
   }))
 
-  const alertas = presupuestos.flatMap(p => {
-    const cat = categorias?.find(c => c.id === p.categoriaId)
-    if (!cat || p.limite <= 0) return []
-    const gastado = gastadoPorCat[p.categoriaId] ?? 0
-    const pct = (gastado / p.limite) * 100
-    if (pct < 80) return []
-    return [{ cat, gastado, limite: p.limite, pct, excedido: pct >= 100 }]
-  }).sort((a, b) => b.pct - a.pct)
-
-  function fmt(n: number) {
-    return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  }
-
   const prevMes = month === 1 ? `${year - 1}-12` : `${year}-${String(month - 1).padStart(2, '0')}`
   const nextMes = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, '0')}`
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
-      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
-
-        {/* Cabecera */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/mis-proyectos"
-            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold text-neutral-900 dark:text-white">{proyecto.nombre}</h1>
-            <p className="text-neutral-500 text-xs">Presupuestos</p>
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
+      <div className="bg-[#8B53FF] px-4 pt-6 pb-8 relative overflow-hidden">
+        <div className="max-w-sm mx-auto space-y-3">
+          <div className="flex items-center gap-3">
+            <Link href="/mis-proyectos" className="text-white/60 hover:text-white transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <h1 className="text-xl font-black text-[#FFD80B]">Presupuestos</h1>
+            <div className="ml-auto">
+              <span className="bg-[#FFD80B] text-[#222222] text-xs font-black px-3 py-1.5 rounded-full border-2 border-[#222222]">
+                {mesLabel}
+              </span>
+            </div>
+          </div>
+          <div>
+            <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mb-1">Disponible este mes</p>
+            <p className="text-white text-4xl font-black tracking-tight">
+              {(() => {
+                const totalIngresos = (movimientos ?? []).filter(m => m.tipo === 'ingreso').reduce((s, m) => s + Number(m.cantidad), 0)
+                const totalGastos = (movimientos ?? []).filter(m => m.tipo === 'gasto').reduce((s, m) => s + Number(m.cantidad), 0)
+                const disponible = totalIngresos - totalGastos
+                return `€${Math.abs(disponible).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+              })()}
+            </p>
           </div>
         </div>
+        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-6xl opacity-10 pointer-events-none select-none">💰</span>
+      </div>
+      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-4">
 
         {/* Selector de mes */}
         <div className="flex items-center justify-between">
           <Link
             href={`/proyectos/${id}/presupuestos?mes=${prevMes}`}
-            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222] dark:text-[#F5E6D0] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px var(--shadow-main)' }}
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
-          <span className="text-neutral-900 dark:text-white font-medium capitalize text-sm">{mesLabel}</span>
+          <span className="text-[#222222] dark:text-[#F5E6D0] font-black capitalize text-sm">{mesLabel}</span>
           <Link
             href={`/proyectos/${id}/presupuestos?mes=${nextMes}`}
-            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222] dark:text-[#F5E6D0] transition-colors"
+            style={{ boxShadow: '2px 2px 0px 0px var(--shadow-main)' }}
           >
             <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
 
-        {alertas.length > 0 && (
-          <div className="space-y-2">
-            {alertas.map(a => (
-              <div
-                key={a.cat.id}
-                className={`rounded-2xl p-4 border flex items-start gap-3 ${
-                  a.excedido
-                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800/60'
-                    : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/60'
-                }`}
-              >
-                <span className="text-lg leading-none mt-0.5">{a.excedido ? '🚨' : '⚠️'}</span>
-                <div className="flex-1 min-w-0">
-                  {a.excedido ? (
-                    <>
-                      <p className="text-sm font-semibold text-red-700 dark:text-red-400">{a.cat.nombre}</p>
-                      <p className="text-xs text-red-600 dark:text-red-500 mt-0.5">
-                        Superado en +{fmt(a.gastado - a.limite)} €
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{a.cat.nombre}</p>
-                      <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
-                        Llevas el {Math.round(a.pct)}% ({fmt(a.gastado)} de {fmt(a.limite)} €)
-                      </p>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <span className="text-[#FFD80B] text-lg">◆</span>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-xs font-black uppercase tracking-widest">Progreso por categoría</p>
+        </div>
 
         <ListaPresupuestos
           categorias={categorias ?? []}

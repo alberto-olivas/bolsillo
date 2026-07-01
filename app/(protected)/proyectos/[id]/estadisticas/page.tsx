@@ -76,59 +76,56 @@ export default async function EstadisticasPage({
   )
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
-      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
-
-        {/* Cabecera */}
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/proyectos/${id}?mes=${mesResaltado}`}
-            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors flex-shrink-0"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex-1 min-w-0">
-            <p className="text-neutral-900 dark:text-white font-bold text-lg leading-tight truncate">
-              {proyecto.nombre}
-            </p>
-            <p className="text-neutral-500 text-xs">Estadísticas · últimos 6 meses</p>
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
+      <div className="bg-[#222222] px-4 pt-6 pb-5">
+        <div className="max-w-sm mx-auto">
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/proyectos/${id}?mes=${mesResaltado}`}
+              className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors flex-shrink-0"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div className="flex-1 min-w-0">
+              <p className="text-[#FFE9CE] font-black text-lg leading-tight truncate">{proyecto.nombre}</p>
+              <p className="text-[#FFE9CE]/50 text-xs font-bold">Estadísticas · últimos 6 meses</p>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
         {/* Chips de resumen */}
         <div className="grid grid-cols-3 gap-2">
-          <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-3 border border-neutral-200 dark:border-neutral-800">
-            <p className="text-neutral-500 dark:text-neutral-400 text-xs">Media/mes</p>
-            <p className="text-neutral-900 dark:text-white font-semibold text-sm mt-0.5 truncate">
-              {fmt(media)} €
-            </p>
+          <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-3 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
+            <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-xs font-bold">Media/mes</p>
+            <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-sm mt-0.5 truncate">{fmt(media)} €</p>
           </div>
-          <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-3 border border-neutral-200 dark:border-neutral-800">
-            <p className="text-neutral-500 dark:text-neutral-400 text-xs">Mes más alto</p>
-            <p className="text-neutral-900 dark:text-white font-semibold text-sm mt-0.5">
+          <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-3 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
+            <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-xs font-bold">Mes más alto</p>
+            <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-sm mt-0.5">
               {mesMaximo.total > 0 ? mesMaximo.mesLabel : '—'}
             </p>
             {mesMaximo.total > 0 && (
-              <p className="text-neutral-500 dark:text-neutral-400 text-xs truncate">{fmt(mesMaximo.total)} €</p>
+              <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-xs truncate">{fmt(mesMaximo.total)} €</p>
             )}
           </div>
-          <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-3 border border-neutral-200 dark:border-neutral-800">
-            <p className="text-neutral-500 dark:text-neutral-400 text-xs">Total 6M</p>
-            <p className="text-neutral-900 dark:text-white font-semibold text-sm mt-0.5 truncate">
-              {fmt(total6M)} €
-            </p>
+          <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-3 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
+            <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-xs font-bold">Total 6M</p>
+            <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-sm mt-0.5 truncate">{fmt(total6M)} €</p>
           </div>
         </div>
 
         {/* Gráfico de barras */}
-        <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-4 pt-4 pb-2 border border-neutral-200 dark:border-neutral-800">
+        <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-4 pt-4 pb-2 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}>
           <GraficoBarras
             datos={meses6}
             proyectoId={id}
             mesResaltado={mesResaltado}
           />
           {mesesConGasto.length > 0 && (
-            <p className="text-center text-neutral-400 dark:text-neutral-600 text-xs pb-2">
+            <p className="text-center text-[#222222]/40 dark:text-[#F5E6D0]/40 text-xs pb-2">
               Toca una barra para ver ese mes
             </p>
           )}

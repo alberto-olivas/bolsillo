@@ -33,7 +33,7 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="text-sm text-neutral-600 dark:text-neutral-400">
+        <label htmlFor="email" className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">
           Email
         </label>
         <input
@@ -44,12 +44,12 @@ export default function LoginForm() {
           required
           autoComplete="email"
           placeholder="tu@email.com"
-          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#D85A30] transition-colors"
+          className="bg-[#FFE9CE] border-2 border-[#222222] rounded-xl px-4 py-3 text-[#222222] placeholder-[#222222]/40 focus:outline-none focus:ring-2 focus:ring-[#FFD80B] transition-colors w-full"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="text-sm text-neutral-600 dark:text-neutral-400">
+        <label htmlFor="password" className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50">
           Contraseña
         </label>
         <input
@@ -60,12 +60,12 @@ export default function LoginForm() {
           required
           autoComplete="current-password"
           placeholder="••••••••"
-          className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg px-4 py-3 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#D85A30] transition-colors"
+          className="bg-[#FFE9CE] border-2 border-[#222222] rounded-xl px-4 py-3 text-[#222222] placeholder-[#222222]/40 focus:outline-none focus:ring-2 focus:ring-[#FFD80B] transition-colors w-full"
         />
       </div>
 
       {error && (
-        <p className="text-red-400 text-sm bg-red-400/10 px-3 py-2 rounded-lg">
+        <p className="text-[#FD4C38] text-sm bg-[#FFE2DD] px-3 py-2 rounded-xl border-2 border-[#FD4C38] font-bold">
           {error}
         </p>
       )}
@@ -73,14 +73,15 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="bg-[#D85A30] hover:bg-[#c14f28] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 rounded-lg transition-colors mt-2"
+        className="bg-[#222222] hover:bg-[#000000] disabled:opacity-50 disabled:cursor-not-allowed text-[#FFD80B] font-black py-3 rounded-xl transition-colors mt-2 w-full border-2 border-[#222222]"
+        style={{ boxShadow: '4px 4px 0px 0px rgba(34,34,34,0.2)' }}
       >
         {loading ? 'Entrando...' : 'Iniciar sesión'}
       </button>
 
-      <p className="text-center text-neutral-500 dark:text-neutral-400 text-sm">
+      <p className="text-center text-[#222222]/50 text-sm font-medium">
         ¿No tienes cuenta?{' '}
-        <Link href="/register" className="text-[#D85A30] dark:text-[#e8784a] hover:underline transition-colors">
+        <Link href="/register" className="text-[#8B53FF] font-black hover:underline transition-colors">
           Regístrate
         </Link>
       </p>

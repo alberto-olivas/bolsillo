@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { crearMovimiento } from '@/app/actions/movimientos'
 import { ICONOS } from '@/lib/iconos-categorias'
-import { Plus, Package } from 'lucide-react'
+import { Package } from 'lucide-react'
 
 type Categoria = {
   id: string
@@ -14,29 +14,22 @@ type Categoria = {
   tipo: string
 }
 
-type Props = {
+function fechaHoy() {
+  return new Date().toISOString().split('T')[0]
+}
+
+export default function NuevoMovimientoGlobal({
+  proyectoId,
+  categorias,
+}: {
   proyectoId: string
   categorias: Categoria[]
-  mesAno: string
-}
-
-function fechaPorDefecto(mesAno: string): string {
-  const hoy = new Date()
-  const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
-  if (mesAno === mesActual) return hoy.toISOString().split('T')[0]
-  const [y, m] = mesAno.split('-').map(Number)
-  if (mesAno < mesActual) {
-    return new Date(y, m, 0).toISOString().split('T')[0]
-  }
-  return `${mesAno}-01`
-}
-
-export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: Props) {
+}) {
   const [abierto, setAbierto] = useState(false)
   const [tipo, setTipo] = useState<'gasto' | 'ingreso'>('gasto')
   const [cantidad, setCantidad] = useState('')
   const [categoriaId, setCategoriaId] = useState('')
-  const [fecha, setFecha] = useState(() => fechaPorDefecto(mesAno))
+  const [fecha, setFecha] = useState(fechaHoy)
   const [descripcion, setDescripcion] = useState('')
   const [esFijo, setEsFijo] = useState(false)
   const [diaDelMes, setDiaDelMes] = useState(1)
@@ -44,11 +37,32 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   const [error, setError] = useState('')
   const router = useRouter()
 
+  useEffect(() => {
+    const handler = () => {
+      setFecha(fechaHoy())
+      setAbierto(true)
+    }
+    window.addEventListener('abrir-nuevo-movimiento', handler)
+    return () => window.removeEventListener('abrir-nuevo-movimiento', handler)
+  }, [])
+
   const categoriasFiltradas = categorias.filter(c => c.tipo === tipo)
 
   function handleCambiarTipo(t: 'gasto' | 'ingreso') {
     setTipo(t)
     setCategoriaId('')
+  }
+
+  function handleClose() {
+    setAbierto(false)
+    setError('')
+    setTipo('gasto')
+    setCantidad('')
+    setCategoriaId('')
+    setFecha(fechaHoy())
+    setDescripcion('')
+    setEsFijo(false)
+    setDiaDelMes(1)
   }
 
   async function handleGuardar() {
@@ -66,15 +80,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
     try {
       await crearMovimiento(proyectoId, tipo, cantidadNum, categoriaId, fecha, descripcion || undefined, esFijo, esFijo ? diaDelMes : undefined)
       setCargando(false)
-      setAbierto(false)
-      setTipo('gasto')
-      setCantidad('')
-      setCategoriaId('')
-      setFecha(fechaPorDefecto(mesAno))
-      setDescripcion('')
-      setEsFijo(false)
-      setDiaDelMes(1)
-      setError('')
+      handleClose()
       router.refresh()
     } catch {
       setError('Error al guardar. Inténtalo de nuevo.')
@@ -82,24 +88,12 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
     }
   }
 
-  if (!abierto) {
-    return (
-      <button
-        type="button"
-        onClick={() => setAbierto(true)}
-        className="w-full flex items-center justify-center gap-2 bg-[#222222] hover:bg-[#000000] text-[#FFD80B] font-black rounded-2xl py-4 transition-colors text-sm border-2 border-[#222222]"
-        style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}
-      >
-        <Plus className="w-4 h-4" />
-        Nuevo movimiento
-      </button>
-    )
-  }
+  if (!abierto) return null
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-[#222222]/60"
-      onClick={() => { setAbierto(false); setError('') }}
+      onClick={handleClose}
     >
       <div
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
@@ -138,6 +132,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
             value={cantidad}
             onChange={e => setCantidad(e.target.value)}
             placeholder="0.00"
+            autoFocus
             className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
           />
         </div>
@@ -231,7 +226,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => { setAbierto(false); setError('') }}
+            onClick={handleClose}
             className="flex-1 bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222]/60 dark:text-[#F5E6D0]/60 font-black py-3 rounded-xl transition-colors text-sm border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             Cancelar

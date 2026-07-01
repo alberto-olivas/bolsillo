@@ -61,8 +61,8 @@ export default function GraficoBarras({ datos, proyectoId, mesResaltado }: Props
               width={BAR_W}
               height={barHeight}
               rx={6}
-              fill="#6366f1"
-              opacity={activa ? 1 : 0.3}
+              fill={activa ? 'var(--chart-active)' : 'var(--chart-inactive)'}
+              opacity={activa ? 1 : 0.35}
             />
             {/* Importe encima */}
             {d.total > 0 && (
@@ -71,8 +71,9 @@ export default function GraficoBarras({ datos, proyectoId, mesResaltado }: Props
                 y={y - 5}
                 textAnchor="middle"
                 fontSize={9}
-                fill={activa ? '#6366f1' : '#9ca3af'}
-                fontWeight={activa ? '600' : '400'}
+                fill={activa ? 'var(--chart-active)' : 'var(--chart-inactive)'}
+                opacity={activa ? 1 : 0.5}
+                fontWeight={activa ? '700' : '400'}
               >
                 {fmtBar(d.total)}
               </text>
@@ -83,8 +84,9 @@ export default function GraficoBarras({ datos, proyectoId, mesResaltado }: Props
               y={PAD_TOP + BAR_H + 16}
               textAnchor="middle"
               fontSize={10}
-              fill={activa ? '#6366f1' : '#6b7280'}
-              fontWeight={activa ? '600' : '400'}
+              fill={activa ? 'var(--chart-active)' : 'var(--chart-inactive)'}
+              opacity={activa ? 1 : 0.5}
+              fontWeight={activa ? '700' : '400'}
             >
               {d.mesLabel}
             </text>

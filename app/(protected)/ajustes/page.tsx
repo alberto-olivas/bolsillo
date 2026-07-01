@@ -28,41 +28,43 @@ export default async function AjustesPage({
 
   return (
     <>
-      <div className="min-h-screen bg-white dark:bg-neutral-950">
+      <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
+        <div className="bg-[#222222] px-4 pt-6 pb-5">
+          <div className="max-w-sm mx-auto">
+            <h1 className="text-lg font-black text-[#FFE9CE]">Ajustes</h1>
+          </div>
+        </div>
         <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
-
-          {/* Cabecera */}
-          <h1 className="text-lg font-bold text-neutral-900 dark:text-white">Ajustes</h1>
 
           {/* Cuenta */}
           <div className="space-y-2">
-            <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Cuenta
             </h2>
-            <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-4 py-3 border border-neutral-200 dark:border-neutral-800">
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">Email</p>
-              <p className="text-sm text-neutral-900 dark:text-white mt-0.5">{perfil?.email ?? user.email}</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-4 py-3 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">Email</p>
+              <p className="text-sm text-[#222222] dark:text-[#F5E6D0] mt-0.5 font-medium">{perfil?.email ?? user.email}</p>
             </div>
           </div>
 
           {/* Perfil */}
           <div className="space-y-2">
-            <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Perfil
             </h2>
-            <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-4 border border-neutral-200 dark:border-neutral-800">
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">Nombre</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-4 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50 mb-3">Nombre</p>
               <EditarNombreForm nombreActual={perfil?.nombre ?? ''} />
             </div>
           </div>
 
           {/* Apariencia */}
           <div className="space-y-2">
-            <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Apariencia
             </h2>
-            <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl px-4 py-3 border border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
-              <p className="text-sm text-neutral-900 dark:text-white">Tema claro / oscuro</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl px-4 py-3 border-2 border-[#222222] dark:border-[#F5E6D0] flex items-center justify-between" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-sm text-[#222222] dark:text-[#F5E6D0] font-black">Tema claro / oscuro</p>
               <ThemeToggle />
             </div>
           </div>
@@ -72,10 +74,10 @@ export default async function AjustesPage({
 
           {/* Sesión */}
           <div className="space-y-2">
-            <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
+            <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">
               Sesión
             </h2>
-            <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-4 border border-neutral-200 dark:border-neutral-800">
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-4 border-2 border-[#222222] dark:border-[#F5E6D0]" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
               <LogoutButton />
             </div>
           </div>

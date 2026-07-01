@@ -33,26 +33,23 @@ export default async function MisProyectosPage() {
   if (!perfil?.nombre) redirect('/completar-perfil')
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
-      <div className="max-w-sm mx-auto px-4 py-6 space-y-6">
-
-        {/* Cabecera */}
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
+      <div className="bg-[#222222] px-4 pt-6 pb-5">
+        <div className="max-w-sm mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#D85A30]">Bolsillo</h1>
-            <p className="text-neutral-500 text-xs mt-0.5">Hola, {perfil?.nombre ?? 'tú'}</p>
+            <h1 className="text-xl font-black text-[#FFD80B]">Bolsillo 💼</h1>
+            <p className="text-[#FFE9CE]/60 text-xs mt-0.5 font-bold">Hola, {perfil?.nombre ?? 'tú'}</p>
           </div>
-          <Link
-            href="/ajustes"
-            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2"
-          >
+          <Link href="/ajustes" className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors p-2">
             <Settings className="w-5 h-5" />
           </Link>
         </div>
+      </div>
+      <div className="max-w-sm mx-auto px-4 py-6 space-y-6">
 
         {/* Lista de proyectos */}
         <div className="space-y-3">
-          <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">Mis proyectos</h2>
+          <h2 className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">Mis proyectos</h2>
 
           {proyectos && proyectos.length > 0 ? (
             proyectos.map(p => (
@@ -66,9 +63,9 @@ export default async function MisProyectosPage() {
               />
             ))
           ) : (
-            <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-800 text-center">
-              <p className="text-neutral-500 text-sm">No tienes proyectos todavía.</p>
-              <p className="text-neutral-400 dark:text-neutral-600 text-xs mt-1">Crea uno o únete con un código.</p>
+            <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-6 border-2 border-[#222222] dark:border-[#F5E6D0] text-center" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
+              <p className="text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-bold">No tienes proyectos todavía.</p>
+              <p className="text-[#222222]/40 dark:text-[#F5E6D0]/40 text-xs mt-1 font-medium">Crea uno o únete con un código.</p>
             </div>
           )}
         </div>

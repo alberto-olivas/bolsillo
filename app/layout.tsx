@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Nunito } from 'next/font/google'
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
 import CoinRain from "@/components/ui/CoinRain";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const nunito = Nunito({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800', '900'],
+  variable: '--font-nunito',
+})
 
 export const metadata: Metadata = {
   title: "Bolsillo — Control de gastos",
@@ -35,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={geistSans.variable} suppressHydrationWarning>
+    <html lang="es" className={nunito.variable} suppressHydrationWarning>
       <body className="min-h-full antialiased">
         <CoinRain />
         <Providers>{children}</Providers>

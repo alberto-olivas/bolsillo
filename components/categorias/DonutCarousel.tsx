@@ -38,7 +38,7 @@ export default function DonutCarousel({ categorias, totalGastos, totalIngresos }
 
   return (
     <div className="space-y-3">
-      <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
+      <h2 className="text-[#222222]/50 text-[10px] font-black uppercase tracking-widest">
         {TITLES[active]}
       </h2>
 
@@ -63,8 +63,8 @@ export default function DonutCarousel({ categorias, totalGastos, totalIngresos }
             onClick={() => goTo(i)}
             className={`w-2 h-2 rounded-full transition-colors ${
               active === i
-                ? 'bg-neutral-900 dark:bg-white'
-                : 'bg-neutral-300 dark:bg-neutral-600'
+                ? 'bg-[#222222]'
+                : 'bg-[#222222]/20'
             }`}
           />
         ))}

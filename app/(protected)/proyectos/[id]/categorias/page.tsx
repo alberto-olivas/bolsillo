@@ -3,8 +3,9 @@ export const dynamic = 'force-dynamic'
 import { createClient, getCachedUser } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
-import DonutCarousel from '@/components/categorias/DonutCarousel'
+import { ArrowLeft } from 'lucide-react'
+import DonutBalanceMes from '@/components/categorias/DonutBalanceMes'
+import DonutCategorias from '@/components/categorias/DonutCategorias'
 import ListaCategorias from '@/components/categorias/ListaCategorias'
 
 export default async function CategoriasPage({
@@ -65,53 +66,101 @@ export default async function CategoriasPage({
   const prevMes = month === 1 ? `${year - 1}-12` : `${year}-${String(month - 1).padStart(2, '0')}`
   const nextMes = month === 12 ? `${year + 1}-01` : `${year}-${String(month + 1).padStart(2, '0')}`
 
-  return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950">
-      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
+  const totalAhorroMes = categoriaStats.find(c =>
+    c.nombre.toLowerCase() === 'ahorro'
+  )?.total ?? 0
 
-        {/* Cabecera */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/mis-proyectos"
-            className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold text-neutral-900 dark:text-white">{proyecto.nombre}</h1>
-            <p className="text-neutral-500 text-xs">Categorías</p>
+  return (
+    <div className="min-h-screen bg-[#FFF8EC] dark:bg-[#1A1612]">
+      <div className="bg-[#222222] px-4 pt-6 pb-5">
+        <div className="max-w-sm mx-auto space-y-3">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/mis-proyectos"
+              className="text-[#FFE9CE]/60 hover:text-[#FFE9CE] transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div className="flex-1">
+              <h1 className="text-lg font-black text-[#FFE9CE]">{proyecto.nombre}</h1>
+              <p className="text-[#FFE9CE]/50 text-xs font-bold">Categorías</p>
+            </div>
+          </div>
+          {/* Selector de mes */}
+          <div className="flex items-center justify-between">
+            <Link
+              href={`/proyectos/${id}/categorias?mes=${prevMes}`}
+              className="w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#FFE9CE]/30 text-[#FFE9CE]/60 hover:border-[#FFE9CE] hover:text-[#FFE9CE] transition-colors text-sm font-black"
+            >
+              ‹
+            </Link>
+            <span className="text-[#FFE9CE]/70 text-xs font-black uppercase tracking-widest capitalize">
+              {mesLabel}
+            </span>
+            <Link
+              href={`/proyectos/${id}/categorias?mes=${nextMes}`}
+              className="w-7 h-7 flex items-center justify-center rounded-full border-2 border-[#FFE9CE]/30 text-[#FFE9CE]/60 hover:border-[#FFE9CE] hover:text-[#FFE9CE] transition-colors text-sm font-black"
+            >
+              ›
+            </Link>
           </div>
         </div>
+      </div>
+      <div className="max-w-sm mx-auto px-4 py-6 pb-24 space-y-6">
 
-        {/* Selector de mes */}
-        <div className="flex items-center justify-between">
-          <Link
-            href={`/proyectos/${id}/categorias?mes=${prevMes}`}
-            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </Link>
-          <span className="text-neutral-900 dark:text-white font-medium capitalize text-sm">{mesLabel}</span>
-          <Link
-            href={`/proyectos/${id}/categorias?mes=${nextMes}`}
-            className="p-2 rounded-xl text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Link>
+        <div className="flex items-center gap-2">
+          <span className="text-[#FFD80B] text-lg">◆</span>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-xs font-black uppercase tracking-widest">Estadísticas</p>
         </div>
 
-        {/* Carrusel de donuts */}
-        <DonutCarousel
-          categorias={categoriaStats}
+        {/* Donut ingresos vs gastos */}
+        <DonutBalanceMes
           totalGastos={totalGastos}
           totalIngresos={totalIngresos}
+          totalAhorro={totalAhorroMes}
         />
 
-        {/* Lista de categorías */}
+        {/* Título por categoría */}
+        <div className="flex items-center gap-2">
+          <span className="text-[#FFD80B] text-lg">◆</span>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-xs font-black uppercase tracking-widest">Por categoría</p>
+        </div>
+
+        {/* Donut categorías */}
+        <DonutCategorias
+          categorias={categoriaStats}
+          totalGastos={totalGastos}
+        />
+
+        {/* Grid de chips de categoría */}
+        <div className="grid grid-cols-2 gap-2">
+          {categoriaStats.filter(c => c.total > 0).map(cat => (
+            <div
+              key={cat.catId}
+              className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-3 border-2 border-[#222222] dark:border-[#F5E6D0] flex items-center gap-2"
+              style={{ boxShadow: '3px 3px 0px 0px var(--shadow-main)' }}
+            >
+              <div
+                className="w-3 h-3 rounded-sm flex-shrink-0 border-2 border-[#222222] dark:border-[#F5E6D0]"
+                style={{ backgroundColor: cat.color }}
+              />
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-black text-[#222222] dark:text-[#F5E6D0] truncate">{cat.nombre}</p>
+                <div className="h-1.5 bg-[#222222]/10 dark:bg-[#F5E6D0]/10 rounded-full mt-1 border border-[#222222]/20 dark:border-[#F5E6D0]/20 overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${cat.porcentaje}%`, backgroundColor: cat.color }}
+                  />
+                </div>
+              </div>
+              <p className="text-[11px] font-black text-[#222222] dark:text-[#F5E6D0] flex-shrink-0">{Math.round(cat.porcentaje)}%</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Lista detalle */}
         <div className="space-y-2">
-          <h2 className="text-neutral-500 dark:text-neutral-400 text-xs font-medium uppercase tracking-wider">
-            Detalle por categoría
-          </h2>
+          <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-widest">Detalle</p>
           <ListaCategorias
             categorias={categoriaStats}
             proyectoId={id}

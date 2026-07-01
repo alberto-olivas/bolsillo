@@ -28,38 +28,38 @@ export default function ProyectoCard({ id, nombre, tipo, codigo_invitacion, miem
   }
 
   return (
-    <div className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200 dark:border-neutral-800 space-y-3">
+    <div className="bg-[#FFF8EC] dark:bg-[#2A2420] rounded-2xl p-5 border-2 border-[#222222] dark:border-[#F5E6D0] space-y-3" style={{ boxShadow: '4px 4px 0px 0px var(--shadow-main)' }}>
       {/* Cabecera */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#FAECE7] dark:bg-[#2d1208] flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#FFD80B] border-2 border-[#222222] dark:border-[#F5E6D0] flex items-center justify-center flex-shrink-0">
             {tipo === 'personal'
-              ? <FolderOpen className="w-4 h-4 text-[#D85A30]" />
-              : <Users className="w-4 h-4 text-[#D85A30]" />
+              ? <FolderOpen className="w-4 h-4 text-[#222222]" />
+              : <Users className="w-4 h-4 text-[#222222]" />
             }
           </div>
           <div>
-            <p className="text-neutral-900 dark:text-white font-medium text-sm leading-tight">{nombre}</p>
-            <span className={`text-xs font-medium ${tipo === 'personal' ? 'text-neutral-500' : 'text-[#D85A30]'}`}>
+            <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-sm leading-tight">{nombre}</p>
+            <span className={`text-xs font-medium ${tipo === 'personal' ? 'text-[#222222]/50 dark:text-[#F5E6D0]/50 font-bold' : 'text-[#8B53FF] font-black'}`}>
               {tipo === 'personal' ? 'Personal' : 'Compartido'}
             </span>
           </div>
         </div>
         {tipo === 'personal' && (
-          <Lock className="w-4 h-4 text-neutral-400 dark:text-neutral-600 flex-shrink-0 mt-0.5" />
+          <Lock className="w-4 h-4 text-[#222222]/30 dark:text-[#F5E6D0]/30 flex-shrink-0 mt-0.5" />
         )}
       </div>
 
       {/* Código de invitación (solo proyectos compartidos) */}
       {tipo === 'compartido' && codigo_invitacion && (
-        <div className="flex items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-xl px-3 py-2">
+        <div className="flex items-center justify-between bg-[#FFE9CE] dark:bg-[#332E28] rounded-xl px-3 py-2 border-2 border-[#222222] dark:border-[#F5E6D0]">
           <div>
-            <p className="text-neutral-500 text-xs">Código de invitación</p>
-            <p className="text-neutral-900 dark:text-white font-mono font-bold tracking-widest text-sm">{codigo_invitacion}</p>
+            <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-wide">Código de invitación</p>
+            <p className="text-[#222222] dark:text-[#F5E6D0] font-mono font-black tracking-widest text-sm">{codigo_invitacion}</p>
           </div>
           <button
             onClick={copiarCodigo}
-            className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-1"
+            className="text-[#222222]/50 dark:text-[#F5E6D0]/50 hover:text-[#222222] dark:hover:text-[#F5E6D0] transition-colors p-1"
             title="Copiar código"
           >
             {copiado ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -70,10 +70,10 @@ export default function ProyectoCard({ id, nombre, tipo, codigo_invitacion, miem
       {/* Miembros (solo compartidos) */}
       {tipo === 'compartido' && miembros.length > 0 && (
         <div className="space-y-1">
-          <p className="text-neutral-500 text-xs">{miembros.length} {miembros.length === 1 ? 'miembro' : 'miembros'}</p>
+          <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-[10px] font-black uppercase tracking-wide">{miembros.length} {miembros.length === 1 ? 'miembro' : 'miembros'}</p>
           <div className="flex flex-wrap gap-1">
             {miembros.map(m => (
-              <span key={m.user_id} className="text-xs bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 rounded-full px-2 py-0.5">
+              <span key={m.user_id} className="text-xs bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] border-2 border-[#222222] dark:border-[#F5E6D0] rounded-full px-2 py-0.5 font-bold">
                 {m.perfiles?.nombre ?? m.perfiles?.email ?? 'Desconocido'}
               </span>
             ))}
@@ -84,7 +84,7 @@ export default function ProyectoCard({ id, nombre, tipo, codigo_invitacion, miem
       {/* Botón ver movimientos */}
       <Link
         href={`/proyectos/${id}`}
-        className="flex items-center justify-between w-full bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white rounded-xl px-4 py-2.5 transition-colors text-sm"
+        className="flex items-center justify-between w-full bg-[#222222] hover:bg-[#000000] text-[#FFD80B] rounded-xl px-4 py-2.5 transition-colors text-sm font-black border-2 border-[#222222]"
       >
         <span>Ver movimientos</span>
         <ArrowRight className="w-4 h-4" />

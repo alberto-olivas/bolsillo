@@ -93,14 +93,14 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
   // Vista: confirmar eliminación
   if (modo === 'eliminar') {
     return (
-      <div className="py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0 space-y-2">
-        <p className="text-neutral-900 dark:text-white text-sm">¿Eliminar este movimiento?</p>
+      <div className="py-3 border-b border-[#222222]/10 dark:border-[#F5E6D0]/10 last:border-0 space-y-2">
+        <p className="text-[#222222] dark:text-[#F5E6D0] text-sm font-black">¿Eliminar este movimiento?</p>
         {error && <p className="text-red-400 text-xs">{error}</p>}
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => { setModo('normal'); setError('') }}
-            className="flex-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 text-sm font-medium py-2 rounded-xl transition-colors"
+            className="flex-1 bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-black py-2 rounded-xl transition-colors border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             Cancelar
           </button>
@@ -108,7 +108,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
             type="button"
             disabled={cargando}
             onClick={handleEliminar}
-            className="flex-1 bg-red-600 hover:bg-red-500 disabled:bg-red-900 disabled:text-red-400 text-white text-sm font-semibold py-2 rounded-xl transition-colors"
+            className="flex-1 bg-[#FD4C38] hover:bg-[#e03020] disabled:bg-[#FD4C38]/50 text-white text-sm font-black py-2 rounded-xl transition-colors border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             {cargando ? 'Eliminando...' : 'Sí, eliminar'}
           </button>
@@ -120,7 +120,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
   // Vista: formulario de edición
   if (modo === 'editar') {
     return (
-      <div className="py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0 space-y-3">
+      <div className="py-3 border-b border-[#222222]/10 dark:border-[#F5E6D0]/10 last:border-0 space-y-3">
         {/* Cantidad */}
         <input
           type="number"
@@ -130,7 +130,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           value={editCantidad}
           onChange={e => setEditCantidad(e.target.value)}
           placeholder="0.00"
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-2.5 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
         />
 
         {/* Categoría */}
@@ -145,12 +145,12 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
                 onClick={() => setEditCategoriaId(cat.id)}
                 className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors border ${
                   seleccionada
-                    ? 'border-indigo-500 bg-indigo-600/20'
-                    : 'border-neutral-300 dark:border-neutral-700 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700'
+                    ? 'border-[#222222] dark:border-[#F5E6D0] bg-[#FFD80B]/30 border-2'
+                    : 'border-[#222222] dark:border-[#F5E6D0] bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] border-2'
                 }`}
               >
                 <CatIcono className="w-4 h-4" style={{ color: cat.color }} />
-                <span className="text-xs text-neutral-700 dark:text-neutral-300 leading-tight text-center">{cat.nombre}</span>
+                <span className="text-xs text-[#222222] dark:text-[#F5E6D0] leading-tight text-center">{cat.nombre}</span>
               </button>
             )
           })}
@@ -161,7 +161,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           type="date"
           value={editFecha}
           onChange={e => setEditFecha(e.target.value)}
-          className="w-full max-w-full appearance-none box-border min-w-0 bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full max-w-full appearance-none box-border min-w-0 bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] rounded-xl px-4 py-2.5 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
         />
 
         {/* Descripción */}
@@ -171,16 +171,16 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           onChange={e => setEditDescripcion(e.target.value)}
           placeholder="Descripción (opcional)"
           maxLength={100}
-          className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 rounded-xl px-4 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+          className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-2.5 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
         />
 
         {/* Gasto fijo */}
         <div
-          className="flex items-center justify-between bg-neutral-200 dark:bg-neutral-800 rounded-xl px-3 py-2.5 border border-neutral-300 dark:border-neutral-700 cursor-pointer"
+          className="flex items-center justify-between bg-[#FFE9CE] dark:bg-[#332E28] rounded-xl px-3 py-2.5 border-2 border-[#222222] dark:border-[#F5E6D0] cursor-pointer"
           onClick={() => setEditEsFijo(!editEsFijo)}
         >
-          <p className="text-neutral-900 dark:text-white text-sm">Se repite cada mes</p>
-          <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${editEsFijo ? 'bg-indigo-600' : 'bg-neutral-400 dark:bg-neutral-600'}`}>
+          <p className="text-[#222222] dark:text-[#F5E6D0] text-sm">Se repite cada mes</p>
+          <div className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${editEsFijo ? 'bg-[#222222] dark:bg-[#F5E6D0]' : 'bg-[#222222]/30 dark:bg-[#F5E6D0]/30'}`}>
             <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${editEsFijo ? 'translate-x-5' : 'translate-x-0.5'}`} />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
             value={editDiaDelMes}
             onChange={e => setEditDiaDelMes(Math.min(31, Math.max(1, Number(e.target.value))))}
             placeholder="Día del mes (1-31)"
-            className="w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-xl px-3 py-2.5 text-base border border-neutral-300 dark:border-neutral-700 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] rounded-xl px-3 py-2.5 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
           />
         )}
 
@@ -203,7 +203,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
           <button
             type="button"
             onClick={() => { setModo('normal'); setError('') }}
-            className="flex-1 bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 text-sm font-medium py-2 rounded-xl transition-colors"
+            className="flex-1 bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222]/60 dark:text-[#F5E6D0]/60 text-sm font-black py-2 rounded-xl transition-colors border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             Cancelar
           </button>
@@ -211,7 +211,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
             type="button"
             disabled={cargando}
             onClick={handleGuardarEdicion}
-            className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:text-indigo-400 text-white text-sm font-semibold py-2 rounded-xl transition-colors"
+            className="flex-1 bg-[#222222] hover:bg-[#000000] disabled:bg-[#222222]/50 text-[#FFD80B] text-sm font-black py-2 rounded-xl transition-colors border-2 border-[#222222]"
           >
             {cargando ? 'Guardando...' : 'Guardar'}
           </button>
@@ -222,29 +222,29 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
 
   // Vista: normal
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-0">
+    <div className="flex items-center gap-3 py-3 border-b border-[#222222]/10 dark:border-[#F5E6D0]/10 last:border-0">
       <div
-        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#222222]/20 dark:border-[#F5E6D0]/20"
         style={{ backgroundColor: color + '33' }}
       >
         <Icono className="w-4 h-4" style={{ color }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-neutral-900 dark:text-white text-sm font-medium truncate">
+        <p className="text-[#222222] dark:text-[#F5E6D0] text-sm font-black truncate">
           {categoria?.nombre ?? 'Sin categoría'}
         </p>
-        <p className="text-neutral-500 text-xs truncate">
+        <p className="text-[#222222]/50 dark:text-[#F5E6D0]/50 text-xs truncate font-medium">
           {descripcion ? `${descripcion} · ` : ''}{formatFecha(fecha)}
           {usuario && ` · ${usuario.nombre ?? usuario.email}`}
-          {esFijo && <span className="ml-1 text-indigo-400">· Fijo</span>}
+          {esFijo && <span className="ml-1 text-[#8B53FF] font-black">· Fijo</span>}
         </p>
       </div>
       <div className="flex flex-col items-end flex-shrink-0">
-        <span className={`text-sm font-semibold ${tipo === 'gasto' ? 'text-red-400' : 'text-green-400'}`}>
+        <span className={`text-sm font-black ${tipo === 'gasto' ? 'text-[#FD4C38]' : 'text-[#2FA84F]'}`}>
           {tipo === 'gasto' ? '-' : '+'}{fmt(Number(cantidad))} €
         </span>
         {saldo !== undefined && (
-          <span className={`text-xs ${saldo < 0 ? 'text-red-400' : 'text-neutral-400 dark:text-neutral-500'}`}>
+          <span className={`text-xs ${saldo < 0 ? 'text-[#FD4C38]' : 'text-[#222222]/30 dark:text-[#F5E6D0]/30'}`}>
             {fmt(saldo)} €
           </span>
         )}
@@ -253,7 +253,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
         <button
           type="button"
           onClick={() => setModo('editar')}
-          className="p-1.5 text-neutral-400 dark:text-neutral-600 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          className="p-1.5 text-[#222222]/30 dark:text-[#F5E6D0]/30 hover:text-[#222222] dark:hover:text-[#F5E6D0] transition-colors rounded-lg hover:bg-[#FFE9CE] dark:hover:bg-[#332E28]"
           title="Editar"
         >
           <Pencil className="w-3.5 h-3.5" />
@@ -261,7 +261,7 @@ export default function MovimientoItem({ id, tipo, cantidad, fecha, descripcion,
         <button
           type="button"
           onClick={() => setModo('eliminar')}
-          className="p-1.5 text-neutral-400 dark:text-neutral-600 hover:text-red-400 transition-colors rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800"
+          className="p-1.5 text-[#222222]/30 dark:text-[#F5E6D0]/30 hover:text-[#FD4C38] transition-colors rounded-lg hover:bg-[#FFE2DD] dark:hover:bg-[#3A1A16]"
           title="Eliminar"
         >
           <Trash2 className="w-3.5 h-3.5" />

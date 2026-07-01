@@ -50,7 +50,6 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
     setLoading(true)
     setError('')
 
-    // Si cambió el tipo, eliminar el presupuesto anterior antes de crear el nuevo
     if (presupuesto && presupuesto.esFijo !== esFijo) {
       await eliminarPresupuesto(presupuesto.id)
     }
@@ -80,27 +79,27 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-[#222222]/60"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-t-3xl p-6 pb-24 space-y-5 max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-5 max-h-[85vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
         onClick={e => e.stopPropagation()}
       >
         {/* Handle */}
-        <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full mx-auto" />
+        <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full mx-auto" />
 
-        {/* Cabecera: icono + nombre de categoría */}
+        {/* Cabecera */}
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-[#222222]/20 dark:border-[#F5E6D0]/20"
             style={{ backgroundColor: categoria.color + '33' }}
           >
             <Icono className="w-5 h-5" style={{ color: categoria.color }} />
           </div>
           <div>
-            <p className="text-base font-semibold text-neutral-900 dark:text-white">{categoria.nombre}</p>
-            <p className="text-xs text-neutral-500">
+            <p className="text-base font-black text-[#222222] dark:text-[#F5E6D0]">{categoria.nombre}</p>
+            <p className="text-xs text-[#222222]/50 dark:text-[#F5E6D0]/50 font-bold">
               {presupuesto ? 'Editar presupuesto' : 'Nuevo presupuesto'}
             </p>
           </div>
@@ -109,7 +108,7 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
         <form onSubmit={handleGuardar} className="space-y-4">
           {/* Límite */}
           <div className="space-y-1.5">
-            <label className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">
+            <label className="text-[10px] font-black uppercase tracking-wide text-[#222222]/50 dark:text-[#F5E6D0]/50">
               Límite mensual (€)
             </label>
             <input
@@ -119,48 +118,56 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
               value={limiteStr}
               onChange={e => setLimiteStr(e.target.value)}
               placeholder="0,00"
-              className="w-full bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-500 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-[#FFE9CE] dark:bg-[#332E28] border-2 border-[#222222] dark:border-[#F5E6D0] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
               autoFocus
             />
           </div>
 
           {/* Toggle Fijo / Puntual */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between bg-[#FFE9CE] dark:bg-[#332E28] rounded-xl px-4 py-3 border-2 border-[#222222] dark:border-[#F5E6D0]">
             <div>
-              <p className="text-sm text-neutral-900 dark:text-white font-medium">Repetir cada mes</p>
-              <p className="text-xs text-neutral-500 mt-0.5">
+              <p className="text-sm text-[#222222] dark:text-[#F5E6D0] font-black">Repetir cada mes</p>
+              <p className="text-xs text-[#222222]/50 dark:text-[#F5E6D0]/50 mt-0.5 font-medium">
                 {esFijo ? 'Se aplica a todos los meses' : `Solo para ${fmtMes(mesAno)}`}
               </p>
             </div>
             <button
               type="button"
               onClick={() => setEsFijo(v => !v)}
-              className={`relative w-11 h-6 rounded-full transition-colors ${esFijo ? 'bg-indigo-600' : 'bg-neutral-300 dark:bg-neutral-600'}`}
+              className={`relative inline-flex w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
+                esFijo ? 'bg-[#222222] dark:bg-[#F5E6D0]' : 'bg-[#222222]/20 dark:bg-[#F5E6D0]/20'
+              }`}
             >
               <span
-                className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${esFijo ? 'translate-x-5' : 'translate-x-0.5'}`}
+                className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                  esFijo ? 'translate-x-6' : 'translate-x-1'
+                }`}
               />
             </button>
           </div>
 
-          {error && <p className="text-red-400 text-xs">{error}</p>}
+          {error && (
+            <p className="text-[#FD4C38] text-xs font-black bg-[#FFE2DD] dark:bg-[#3A1A16] px-3 py-2 rounded-xl border-2 border-[#FD4C38]">
+              {error}
+            </p>
+          )}
 
           {/* Guardar */}
           <button
             type="submit"
             disabled={loading || !limiteStr || isNaN(limite) || limite <= 0}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-3 rounded-xl text-sm transition-colors"
+            className="w-full bg-[#222222] hover:bg-[#000000] disabled:opacity-50 disabled:cursor-not-allowed text-[#FFD80B] font-black py-3 rounded-xl text-sm transition-colors border-2 border-[#222222]"
           >
             {loading ? 'Guardando...' : 'Guardar presupuesto'}
           </button>
         </form>
 
-        {/* Eliminar (solo si existe presupuesto) */}
+        {/* Eliminar */}
         {presupuesto && (
           <button
             onClick={handleEliminar}
             disabled={loadingEliminar}
-            className="w-full text-red-400 hover:text-red-500 disabled:opacity-50 text-sm font-medium py-2 transition-colors"
+            className="w-full text-[#FD4C38] hover:text-[#e03020] disabled:opacity-50 text-sm font-black py-2 transition-colors"
           >
             {loadingEliminar ? 'Eliminando...' : 'Eliminar presupuesto'}
           </button>
