@@ -41,9 +41,9 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
   const [error, setError] = useState('')
   const [cerrando, setCerrando] = useState(false)
 
-  const [dragY, setDragY] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
   const touchStartY = useRef(0)
+  const dragY = useRef(0)
 
   const router = useRouter()
   const Icono = ICONOS[categoria.icono] ?? Package
@@ -59,21 +59,29 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartY.current = e.touches[0].clientY
-    setIsDragging(true)
   }
 
   function handleTouchMove(e: React.TouchEvent) {
     const delta = e.touches[0].clientY - touchStartY.current
-    if (delta > 0) setDragY(delta)
+    if (delta > 0 && panelRef.current) {
+      dragY.current = delta
+      panelRef.current.style.transform = `translateY(${delta}px)`
+      panelRef.current.style.transition = 'none'
+      panelRef.current.style.animation = 'none'
+    }
   }
 
   function handleTouchEnd() {
-    setIsDragging(false)
-    if (dragY > 100) {
-      setDragY(0)
+    if (dragY.current > 100) {
+      dragY.current = 0
       triggerClose()
     } else {
-      setDragY(0)
+      dragY.current = 0
+      if (panelRef.current) {
+        panelRef.current.style.transform = 'translateY(0)'
+        panelRef.current.style.transition = 'transform 200ms ease'
+        panelRef.current.style.animation = ''
+      }
     }
   }
 
@@ -118,17 +126,16 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
       onClick={triggerClose}
     >
       <div
+        ref={panelRef}
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-5 max-h-[85vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
         style={{
-          transform: `translateY(${dragY}px)`,
-          transition: isDragging ? 'none' : dragY > 0 ? 'transform 200ms ease' : undefined,
           animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
         }}
         onClick={e => e.stopPropagation()}
       >
         {/* Handle — zona de swipe */}
         <div
-          className="flex justify-center pb-1 -mt-2 cursor-grab active:cursor-grabbing"
+          className="flex justify-center pb-1 -mt-2 py-2"
           style={{ touchAction: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -199,7 +206,6 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
             </p>
           )}
 
-          {/* Guardar */}
           <button
             type="submit"
             disabled={loading || !limiteStr || isNaN(limite) || limite <= 0}
@@ -209,7 +215,6 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
           </button>
         </form>
 
-        {/* Eliminar */}
         {presupuesto && (
           <button
             onClick={handleEliminar}

@@ -29,19 +29,6 @@ function fechaPorDefecto(mesAno: string): string {
   return `${mesAno}-01`
 }
 
-function estadoInicial(mesAno: string) {
-  return {
-    tipo: 'gasto' as 'gasto' | 'ingreso',
-    cantidad: '',
-    categoriaId: '',
-    fecha: fechaPorDefecto(mesAno),
-    descripcion: '',
-    esFijo: false,
-    diaDelMes: 1,
-    error: '',
-  }
-}
-
 export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: Props) {
   const [abierto, setAbierto] = useState(false)
   const [cerrando, setCerrando] = useState(false)
@@ -55,51 +42,58 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
 
-  const [dragY, setDragY] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
   const touchStartY = useRef(0)
+  const dragY = useRef(0)
 
   const router = useRouter()
   const categoriasFiltradas = categorias.filter(c => c.tipo === tipo)
 
   function resetEstado() {
-    const ini = estadoInicial(mesAno)
-    setTipo(ini.tipo)
-    setCantidad(ini.cantidad)
-    setCategoriaId(ini.categoriaId)
-    setFecha(ini.fecha)
-    setDescripcion(ini.descripcion)
-    setEsFijo(ini.esFijo)
-    setDiaDelMes(ini.diaDelMes)
-    setError(ini.error)
+    setTipo('gasto')
+    setCantidad('')
+    setCategoriaId('')
+    setFecha(fechaPorDefecto(mesAno))
+    setDescripcion('')
+    setEsFijo(false)
+    setDiaDelMes(1)
+    setError('')
   }
 
   function triggerClose() {
-    resetEstado()
     setCerrando(true)
     setTimeout(() => {
       setCerrando(false)
       setAbierto(false)
+      resetEstado()
     }, 280)
   }
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartY.current = e.touches[0].clientY
-    setIsDragging(true)
   }
 
   function handleTouchMove(e: React.TouchEvent) {
     const delta = e.touches[0].clientY - touchStartY.current
-    if (delta > 0) setDragY(delta)
+    if (delta > 0 && panelRef.current) {
+      dragY.current = delta
+      panelRef.current.style.transform = `translateY(${delta}px)`
+      panelRef.current.style.transition = 'none'
+      panelRef.current.style.animation = 'none'
+    }
   }
 
   function handleTouchEnd() {
-    setIsDragging(false)
-    if (dragY > 100) {
-      setDragY(0)
+    if (dragY.current > 100) {
+      dragY.current = 0
       triggerClose()
     } else {
-      setDragY(0)
+      dragY.current = 0
+      if (panelRef.current) {
+        panelRef.current.style.transform = 'translateY(0)'
+        panelRef.current.style.transition = 'transform 200ms ease'
+        panelRef.current.style.animation = ''
+      }
     }
   }
 
@@ -151,17 +145,16 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
       onClick={triggerClose}
     >
       <div
+        ref={panelRef}
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
         style={{
-          transform: `translateY(${dragY}px)`,
-          transition: isDragging ? 'none' : dragY > 0 ? 'transform 200ms ease' : undefined,
           animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
         }}
         onClick={e => e.stopPropagation()}
       >
         {/* Handle — zona de swipe */}
         <div
-          className="flex justify-center pb-1 -mt-2 cursor-grab active:cursor-grabbing"
+          className="flex justify-center pb-1 -mt-2 py-2"
           style={{ touchAction: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
