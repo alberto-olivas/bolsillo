@@ -73,7 +73,12 @@
   to   { transform: translateY(100%); }
 }
 
+html {
+  overscroll-behavior: none;
+}
+
 body {
+  overscroll-behavior: none;
   background-color: #FFF8EC;
   color: #1a1a1a;
 }

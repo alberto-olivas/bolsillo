@@ -44,6 +44,15 @@ export default function NuevoMovimientoGlobal({
   const router = useRouter()
 
   useEffect(() => {
+    if (abierto) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [abierto])
+
+  useEffect(() => {
     const handler = () => {
       setFecha(fechaHoy())
       setAbierto(true)

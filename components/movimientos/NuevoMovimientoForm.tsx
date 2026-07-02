@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { crearMovimiento } from '@/app/actions/movimientos'
 import { ICONOS } from '@/lib/iconos-categorias'
@@ -47,6 +47,15 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   const dragY = useRef(0)
 
   const router = useRouter()
+
+  useEffect(() => {
+    if (abierto) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [abierto])
   const categoriasFiltradas = categorias.filter(c => c.tipo === tipo)
 
   function resetEstado() {
