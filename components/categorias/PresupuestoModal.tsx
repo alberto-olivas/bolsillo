@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Package } from 'lucide-react'
@@ -39,10 +39,43 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
   const [loading, setLoading] = useState(false)
   const [loadingEliminar, setLoadingEliminar] = useState(false)
   const [error, setError] = useState('')
-  const router = useRouter()
+  const [cerrando, setCerrando] = useState(false)
 
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const touchStartY = useRef(0)
+
+  const router = useRouter()
   const Icono = ICONOS[categoria.icono] ?? Package
   const limite = parseFloat(limiteStr.replace(',', '.'))
+
+  function triggerClose() {
+    setCerrando(true)
+    setTimeout(() => {
+      setCerrando(false)
+      onClose()
+    }, 280)
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartY.current = e.touches[0].clientY
+    setIsDragging(true)
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    const delta = e.touches[0].clientY - touchStartY.current
+    if (delta > 0) setDragY(delta)
+  }
+
+  function handleTouchEnd() {
+    setIsDragging(false)
+    if (dragY > 100) {
+      setDragY(0)
+      triggerClose()
+    } else {
+      setDragY(0)
+    }
+  }
 
   async function handleGuardar(e: React.FormEvent) {
     e.preventDefault()
@@ -61,6 +94,7 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
     } else {
       setLoading(false)
       router.refresh()
+      triggerClose()
     }
   }
 
@@ -74,20 +108,34 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
     } else {
       setLoadingEliminar(false)
       router.refresh()
+      triggerClose()
     }
   }
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-[#222222]/60"
-      onClick={onClose}
+      onClick={triggerClose}
     >
       <div
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-5 max-h-[85vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
+        style={{
+          transform: `translateY(${dragY}px)`,
+          transition: isDragging ? 'none' : dragY > 0 ? 'transform 200ms ease' : undefined,
+          animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Handle */}
-        <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full mx-auto" />
+        {/* Handle — zona de swipe */}
+        <div
+          className="flex justify-center pb-1 -mt-2 cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full" />
+        </div>
 
         {/* Cabecera */}
         <div className="flex items-center gap-3">
@@ -119,7 +167,6 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
               onChange={e => setLimiteStr(e.target.value)}
               placeholder="0,00"
               className="w-full bg-[#FFE9CE] dark:bg-[#332E28] border-2 border-[#222222] dark:border-[#F5E6D0] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
-              autoFocus
             />
           </div>
 

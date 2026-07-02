@@ -64,6 +64,15 @@
   --chart-inactive: #F5E6D0;
 }
 
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes slideDown {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+
 body {
   background-color: #FFF8EC;
   color: #1a1a1a;

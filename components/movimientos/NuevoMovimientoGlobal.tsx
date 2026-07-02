@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { crearMovimiento } from '@/app/actions/movimientos'
 import { ICONOS } from '@/lib/iconos-categorias'
@@ -26,6 +26,7 @@ export default function NuevoMovimientoGlobal({
   categorias: Categoria[]
 }) {
   const [abierto, setAbierto] = useState(false)
+  const [cerrando, setCerrando] = useState(false)
   const [tipo, setTipo] = useState<'gasto' | 'ingreso'>('gasto')
   const [cantidad, setCantidad] = useState('')
   const [categoriaId, setCategoriaId] = useState('')
@@ -35,6 +36,11 @@ export default function NuevoMovimientoGlobal({
   const [diaDelMes, setDiaDelMes] = useState(1)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
+
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const touchStartY = useRef(0)
+
   const router = useRouter()
 
   useEffect(() => {
@@ -53,9 +59,7 @@ export default function NuevoMovimientoGlobal({
     setCategoriaId('')
   }
 
-  function handleClose() {
-    setAbierto(false)
-    setError('')
+  function doReset() {
     setTipo('gasto')
     setCantidad('')
     setCategoriaId('')
@@ -63,6 +67,36 @@ export default function NuevoMovimientoGlobal({
     setDescripcion('')
     setEsFijo(false)
     setDiaDelMes(1)
+    setError('')
+  }
+
+  function triggerClose() {
+    doReset()
+    setCerrando(true)
+    setTimeout(() => {
+      setCerrando(false)
+      setAbierto(false)
+    }, 280)
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartY.current = e.touches[0].clientY
+    setIsDragging(true)
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    const delta = e.touches[0].clientY - touchStartY.current
+    if (delta > 0) setDragY(delta)
+  }
+
+  function handleTouchEnd() {
+    setIsDragging(false)
+    if (dragY > 100) {
+      setDragY(0)
+      triggerClose()
+    } else {
+      setDragY(0)
+    }
   }
 
   async function handleGuardar() {
@@ -80,8 +114,8 @@ export default function NuevoMovimientoGlobal({
     try {
       await crearMovimiento(proyectoId, tipo, cantidadNum, categoriaId, fecha, descripcion || undefined, esFijo, esFijo ? diaDelMes : undefined)
       setCargando(false)
-      handleClose()
       router.refresh()
+      triggerClose()
     } catch {
       setError('Error al guardar. Inténtalo de nuevo.')
       setCargando(false)
@@ -93,13 +127,27 @@ export default function NuevoMovimientoGlobal({
   return (
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-[#222222]/60"
-      onClick={handleClose}
+      onClick={triggerClose}
     >
       <div
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
+        style={{
+          transform: `translateY(${dragY}px)`,
+          transition: isDragging ? 'none' : dragY > 0 ? 'transform 200ms ease' : undefined,
+          animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full mx-auto" />
+        {/* Handle — zona de swipe */}
+        <div
+          className="flex justify-center pb-1 -mt-2 cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full" />
+        </div>
 
         <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-base">Nuevo movimiento</p>
 
@@ -132,7 +180,6 @@ export default function NuevoMovimientoGlobal({
             value={cantidad}
             onChange={e => setCantidad(e.target.value)}
             placeholder="0.00"
-            autoFocus
             className="w-full bg-[#FFE9CE] dark:bg-[#332E28] text-[#222222] dark:text-[#F5E6D0] placeholder-[#222222]/40 dark:placeholder-[#F5E6D0]/40 rounded-xl px-4 py-3 text-base border-2 border-[#222222] dark:border-[#F5E6D0] focus:outline-none focus:ring-2 focus:ring-[#FFD80B]"
           />
         </div>
@@ -226,7 +273,7 @@ export default function NuevoMovimientoGlobal({
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={handleClose}
+            onClick={triggerClose}
             className="flex-1 bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222]/60 dark:text-[#F5E6D0]/60 font-black py-3 rounded-xl transition-colors text-sm border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             Cancelar

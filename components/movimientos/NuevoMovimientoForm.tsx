@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { crearMovimiento } from '@/app/actions/movimientos'
 import { ICONOS } from '@/lib/iconos-categorias'
@@ -25,14 +25,26 @@ function fechaPorDefecto(mesAno: string): string {
   const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
   if (mesAno === mesActual) return hoy.toISOString().split('T')[0]
   const [y, m] = mesAno.split('-').map(Number)
-  if (mesAno < mesActual) {
-    return new Date(y, m, 0).toISOString().split('T')[0]
-  }
+  if (mesAno < mesActual) return new Date(y, m, 0).toISOString().split('T')[0]
   return `${mesAno}-01`
+}
+
+function estadoInicial(mesAno: string) {
+  return {
+    tipo: 'gasto' as 'gasto' | 'ingreso',
+    cantidad: '',
+    categoriaId: '',
+    fecha: fechaPorDefecto(mesAno),
+    descripcion: '',
+    esFijo: false,
+    diaDelMes: 1,
+    error: '',
+  }
 }
 
 export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: Props) {
   const [abierto, setAbierto] = useState(false)
+  const [cerrando, setCerrando] = useState(false)
   const [tipo, setTipo] = useState<'gasto' | 'ingreso'>('gasto')
   const [cantidad, setCantidad] = useState('')
   const [categoriaId, setCategoriaId] = useState('')
@@ -42,9 +54,54 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   const [diaDelMes, setDiaDelMes] = useState(1)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
-  const router = useRouter()
 
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const touchStartY = useRef(0)
+
+  const router = useRouter()
   const categoriasFiltradas = categorias.filter(c => c.tipo === tipo)
+
+  function resetEstado() {
+    const ini = estadoInicial(mesAno)
+    setTipo(ini.tipo)
+    setCantidad(ini.cantidad)
+    setCategoriaId(ini.categoriaId)
+    setFecha(ini.fecha)
+    setDescripcion(ini.descripcion)
+    setEsFijo(ini.esFijo)
+    setDiaDelMes(ini.diaDelMes)
+    setError(ini.error)
+  }
+
+  function triggerClose() {
+    resetEstado()
+    setCerrando(true)
+    setTimeout(() => {
+      setCerrando(false)
+      setAbierto(false)
+    }, 280)
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartY.current = e.touches[0].clientY
+    setIsDragging(true)
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    const delta = e.touches[0].clientY - touchStartY.current
+    if (delta > 0) setDragY(delta)
+  }
+
+  function handleTouchEnd() {
+    setIsDragging(false)
+    if (dragY > 100) {
+      setDragY(0)
+      triggerClose()
+    } else {
+      setDragY(0)
+    }
+  }
 
   function handleCambiarTipo(t: 'gasto' | 'ingreso') {
     setTipo(t)
@@ -66,16 +123,8 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
     try {
       await crearMovimiento(proyectoId, tipo, cantidadNum, categoriaId, fecha, descripcion || undefined, esFijo, esFijo ? diaDelMes : undefined)
       setCargando(false)
-      setAbierto(false)
-      setTipo('gasto')
-      setCantidad('')
-      setCategoriaId('')
-      setFecha(fechaPorDefecto(mesAno))
-      setDescripcion('')
-      setEsFijo(false)
-      setDiaDelMes(1)
-      setError('')
       router.refresh()
+      triggerClose()
     } catch {
       setError('Error al guardar. Inténtalo de nuevo.')
       setCargando(false)
@@ -99,13 +148,27 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-[#222222]/60"
-      onClick={() => { setAbierto(false); setError('') }}
+      onClick={triggerClose}
     >
       <div
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
+        style={{
+          transform: `translateY(${dragY}px)`,
+          transition: isDragging ? 'none' : dragY > 0 ? 'transform 200ms ease' : undefined,
+          animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full mx-auto" />
+        {/* Handle — zona de swipe */}
+        <div
+          className="flex justify-center pb-1 -mt-2 cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="w-10 h-1 bg-[#222222]/20 dark:bg-[#F5E6D0]/20 rounded-full" />
+        </div>
 
         <p className="text-[#222222] dark:text-[#F5E6D0] font-black text-base">Nuevo movimiento</p>
 
@@ -231,7 +294,7 @@ export default function NuevoMovimientoForm({ proyectoId, categorias, mesAno }: 
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => { setAbierto(false); setError('') }}
+            onClick={triggerClose}
             className="flex-1 bg-[#FFE9CE] dark:bg-[#332E28] hover:bg-[#FBDDB2] dark:hover:bg-[#3A3228] text-[#222222]/60 dark:text-[#F5E6D0]/60 font-black py-3 rounded-xl transition-colors text-sm border-2 border-[#222222] dark:border-[#F5E6D0]"
           >
             Cancelar
