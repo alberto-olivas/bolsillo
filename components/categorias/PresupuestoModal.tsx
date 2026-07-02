@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ICONOS } from '@/lib/iconos-categorias'
 import { Package } from 'lucide-react'
@@ -47,10 +47,6 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
 
   const router = useRouter()
 
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
   const Icono = ICONOS[categoria.icono] ?? Package
   const limite = parseFloat(limiteStr.replace(',', '.'))
 
@@ -135,6 +131,7 @@ export default function PresupuestoModal({ categoria, presupuesto, proyectoId, m
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-5 max-h-[85vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
         style={{
           animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
+          overscrollBehavior: 'contain',
         }}
         onClick={e => e.stopPropagation()}
       >

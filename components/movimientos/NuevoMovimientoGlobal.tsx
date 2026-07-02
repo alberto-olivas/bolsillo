@@ -44,15 +44,6 @@ export default function NuevoMovimientoGlobal({
   const router = useRouter()
 
   useEffect(() => {
-    if (abierto) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => { document.body.style.overflow = '' }
-  }, [abierto])
-
-  useEffect(() => {
     const handler = () => {
       setFecha(fechaHoy())
       setAbierto(true)
@@ -151,6 +142,7 @@ export default function NuevoMovimientoGlobal({
         className="w-full max-w-sm bg-[#FFF8EC] dark:bg-[#2A2420] rounded-t-3xl p-6 pb-10 space-y-4 max-h-[90vh] overflow-y-auto border-t-2 border-x-2 border-[#222222] dark:border-[#F5E6D0]"
         style={{
           animation: cerrando ? 'slideDown 280ms ease forwards' : 'slideUp 300ms ease forwards',
+          overscrollBehavior: 'contain',
         }}
         onClick={e => e.stopPropagation()}
       >
